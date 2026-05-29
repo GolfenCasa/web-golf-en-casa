@@ -206,9 +206,13 @@ export default function GolfSimulatorLanding() {
                   </div>
                 ))}
               </div>
-              <div className="mt-16 flex w-full justify-center md:justify-end">
+            
+              </motion.div>
+              
+             <div className="mt-8 flex flex-col items-center gap-5 sm:items-start">
+
   <video
-      className="w-full max-w-[280px] rounded-[2rem] border border-white/10 shadow-2xl sm:max-w-[340px] md:max-w-[360px] lg:max-w-[420px]"
+    className="w-full max-w-[280px] rounded-[2rem] border border-white/10 shadow-2xl sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px]"
     controls
     autoPlay
     muted
@@ -218,29 +222,43 @@ export default function GolfSimulatorLanding() {
     <source src="/video_promocion3.mp4" type="video/mp4" />
     Tu navegador no soporta vídeo HTML5.
   </video>
-</div>
-            </motion.div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative z-10">
-              <div className="rounded-[2rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur">
-                <div className="aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-zinc-800 via-zinc-900 to-emerald-950 p-6">
-                  <div className="flex h-full flex-col justify-between rounded-3xl border border-emerald-400/20 bg-black/30 p-6">
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Proyecto a medida</p>
-                      <h2 className="mt-4 text-3xl font-black">Tu espacio convertido en un campo de golf indoor</h2>
-                    </div>
-                    <div className="grid gap-3">
-                      {['Análisis de medidas y seguridad', 'Componentes optimizados por presupuesto', 'Instalación lista para jugar'].map((item) => (
-                        <div key={item} className="flex items-center gap-3 rounded-2xl bg-white/10 p-3 text-sm text-zinc-200">
-                          <CheckCircle2 className="h-5 w-5 text-emerald-400" /> {item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+  <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur">
+    <div className="rounded-[1.5rem] bg-gradient-to-br from-zinc-800 via-zinc-900 to-emerald-950 p-5">
+
+      <p className="text-xs uppercase tracking-[0.25em] text-emerald-300">
+        Proyecto a medida
+      </p>
+
+      <h2 className="mt-4 text-xl font-black leading-tight sm:text-2xl">
+        Tu espacio convertido en un campo de golf indoor
+      </h2>
+
+      <div className="mt-5 grid gap-3">
+
+        {[
+          'Análisis de medidas y seguridad',
+          'Componentes optimizados por presupuesto',
+          'Instalación lista para jugar',
+        ].map((item) => (
+          <div
+            key={item}
+            className="flex items-center gap-3 rounded-2xl bg-white/10 p-3 text-sm text-zinc-200"
+          >
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+            {item}
           </div>
+        ))}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+  
+</div>
+            
+          
         </section>
 
         <section id="servicios" className="mx-auto max-w-7xl px-5 py-20">
