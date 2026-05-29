@@ -91,9 +91,9 @@ export default function GolfSimulatorLanding() {
   )}`;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <a href="#inicio" className="flex items-center gap-3">
             <img
  src="/logo.png"
@@ -105,48 +105,77 @@ export default function GolfSimulatorLanding() {
               <p className="text-xs text-zinc-400">Simuladores & Consultoría</p>
             </div>
           </a>
-          <nav className="hidden items-center gap-7 text-sm text-zinc-300 md:flex">
-            <a href="#servicios" className="hover:text-white">Servicios</a>
-            <a href="#proceso" className="hover:text-white">Proceso</a>
-            <a href="#paquetes" className="hover:text-white">Paquetes</a>
-            <a href="#contacto" className="hover:text-white">Contacto</a>
-          </nav>
-          <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-5 py-2.5 font-semibold text-zinc-950 transition hover:bg-emerald-400">Reserva Consultoría</a>
-       <div className="flex items-center gap-4 text-xl">
-  <a
-    href="https://youtube.com/@Golf_en_Casa"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-zinc-400 transition hover:text-red-500"
-  >
-    <FaYoutube />
+         <nav className="hidden items-center gap-6 text-sm text-zinc-300 lg:flex">
+  <a href="#servicios" className="transition hover:text-white">
+    Servicios
   </a>
 
-  <a
-    href="https://instagram.com/golf.en.casa/"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-zinc-400 transition hover:text-pink-500"
-  >
-    <FaInstagram />
+  <a href="#proceso" className="transition hover:text-white">
+    Proceso
   </a>
 
-  <a
-    href="https://www.facebook.com/GolfenCasaSimuladores/?ref=PROFILE_EDIT_xav_ig_profile_page_web#"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="text-zinc-400 transition hover:text-blue-500"
-  >
-    <FaFacebook />
+  <a href="#paquetes" className="transition hover:text-white">
+    Paquetes
   </a>
 
+  <a href="#contacto" className="transition hover:text-white">
+    Contacto
+  </a>
+</nav>
+
+<div className="flex items-center gap-3 sm:gap-4">
+
+  <div className="hidden items-center gap-3 text-lg text-zinc-400 md:flex">
+    <a
+      href="https://youtube.com/@Golf_en_Casa"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="transition hover:text-red-500"
+    >
+      <FaYoutube />
+    </a>
+
+    <a
+      href="https://instagram.com/golf.en.casa/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="transition hover:text-pink-500"
+    >
+      <FaInstagram />
+    </a>
+
+    <a
+      href="https://www.facebook.com/GolfenCasaSimuladores/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="transition hover:text-blue-500"
+    >
+      <FaFacebook />
+    </a>
+
+    <a
+      href="https://www.tiktok.com/@golf_en_casa"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="transition hover:text-white"
+    >
+      <FaTiktok />
+    </a>
+  </div>
+
   <a
-    href="https://www.tiktok.com/@golf_en_casa?_t=ZN-8vwiEoVTBF0&_r=1"
+    href={calendlyUrl}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-zinc-400 transition hover:text-white"
+    className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-3 py-2 text-xs font-bold text-zinc-950 transition hover:bg-emerald-400 sm:px-5 sm:py-2.5 sm:text-sm"
   >
-    <FaTiktok />
+    <span className="hidden sm:inline">
+      Reserva Consultoría
+    </span>
+
+    <span className="sm:hidden">
+      Reserva
+    </span>
   </a>
 </div>
         </div>
@@ -155,7 +184,7 @@ export default function GolfSimulatorLanding() {
       <main id="inicio">
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.28),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.18),transparent_30%)]" />
-          <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28">
+          <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 md:items-center md:py-20 lg:px-8 lg:py-28">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative z-10">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">
                 <Star className="h-4 w-4" /> Diseño, instalación y consultoría para simuladores de golf
@@ -177,13 +206,14 @@ export default function GolfSimulatorLanding() {
                   </div>
                 ))}
               </div>
-              <div className="mt-12 flex justify-center">
+              <div className="mt-16 flex w-full justify-center md:justify-end">
   <video
-    className="w-full max-w-sm rounded-[2rem] border border-white/10 shadow-2xl"
+      className="w-full max-w-[280px] rounded-[2rem] border border-white/10 shadow-2xl sm:max-w-[340px] md:max-w-[360px] lg:max-w-[420px]"
     controls
     autoPlay
     muted
     loop
+    playsInline
   >
     <source src="/video_promocion3.mp4" type="video/mp4" />
     Tu navegador no soporta vídeo HTML5.
@@ -219,7 +249,7 @@ export default function GolfSimulatorLanding() {
             <h2 className="mt-3 text-4xl font-black md:text-5xl">Todo lo que necesitas para montar bien tu simulador.</h2>
             <p className="mt-5 text-zinc-300">Desde una simple revisión de viabilidad hasta el diseño completo y la instalación final.</p>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {services.map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-3xl border border-white/10 bg-white/[0.04] text-white shadow-xl">
             
