@@ -185,7 +185,7 @@ export default function GolfSimulatorLanding() {
     muted
     loop
   >
-    <source src="/video_promocion2.mp4" />
+    <source src="/video_promocion2.mp4" type="video/mp4" />
     Tu navegador no soporta vídeo HTML5.
   </video>
 </div>
