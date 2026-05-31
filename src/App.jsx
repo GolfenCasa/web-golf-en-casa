@@ -5,7 +5,8 @@ import {
   FaYoutube,
   FaInstagram,
   FaFacebook,
-  FaTiktok
+  FaTiktok,
+  FaWhatsapp
 } from "react-icons/fa";
 import ReactCompareImage from "react-compare-image";
 
@@ -15,6 +16,9 @@ const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/60min';
 const youtubeCourseUrl = 'https://youtube.com/playlist?list=PLfYDa4ADpRpYQ8iuZZrYMbw1-5TRONady';
 const formularioUrl ='https://docs.google.com/forms/d/e/1FAIpQLSecIKbWPdNzt3hQmUO4sNHw_eLWAfGC3XXv87MGgzmESydqaw/viewform?pli=1'
 const email = 'info@golfencasa.net';
+const whatsappNumber = '34652401121';
+const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
 const services = [
   {
@@ -96,6 +100,15 @@ export default function GolfSimulatorLanding() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+        <a
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar por WhatsApp"
+      className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400 sm:bottom-6 sm:right-6 sm:h-16 sm:w-16"
+    >
+      <FaWhatsapp />
+    </a>
       <div className="fixed right-4 top-24 z-[999] md:right-6 lg:right-8">
   <button
     onClick={() => setMenuOpen(!menuOpen)}
