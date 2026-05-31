@@ -19,6 +19,7 @@ const email = 'info@golfencasa.net';
 const whatsappNumber = '34652401121';
 const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+const amazonStoreUrl = 'https://amzn.eu/d/0624cyZy';
 
 const services = [
   {
@@ -160,6 +161,12 @@ export default function GolfSimulatorLanding() {
         Contacto
       </a>
 
+      <a href="#tienda-amazon" 
+      onClick={() => setMenuOpen(false)}
+      className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white">
+  Tienda
+</a>
+
       <a
         href={calendlyUrl}
         target="_blank"
@@ -202,6 +209,9 @@ export default function GolfSimulatorLanding() {
   <a href="#contacto" className="transition hover:text-white">
     Contacto
   </a>
+  <a href="#tienda-amazon" className="transition hover:text-white">
+  Tienda
+</a>
 </nav>
 
 <div className="flex items-center gap-3 sm:gap-4">
@@ -379,6 +389,72 @@ export default function GolfSimulatorLanding() {
             </div>
           </div>
         </section>
+
+<section id="tienda-amazon" className="bg-zinc-950 px-4 py-20 sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-950 to-emerald-950 p-6 shadow-2xl sm:p-8 lg:p-10">
+      <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            Tienda recomendada
+          </p>
+
+          <h2 className="mt-4 text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
+            Material recomendado para montar y mejorar tu simulador de golf
+          </h2>
+
+          <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg">
+            He preparado una selección de productos de golf, accesorios, material de entrenamiento y componentes útiles para simuladores indoor. Una forma sencilla de encontrar artículos que recomiendo para mejorar tu espacio de práctica en casa.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a
+              href={amazonStoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 text-base font-bold text-zinc-950 transition hover:bg-emerald-400 sm:w-auto"
+            >
+              Ver tienda de Amazon
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
+
+            <a
+              href="#contacto"
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-4 text-base font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+            >
+              Pedir recomendación personalizada
+            </a>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-white/10 bg-white/10 p-5 backdrop-blur">
+          <div className="grid gap-4">
+            {[
+              'Accesorios para simuladores',
+              'Material de entrenamiento',
+              'Bolas, tees y alfombrillas',
+              'Tecnología y componentes útiles',
+            ].map((item) => (
+              <div
+                key={item}
+                className="flex items-center gap-3 rounded-2xl bg-black/20 p-4 text-sm text-zinc-200 sm:text-base"
+              >
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-400" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
 
         <section id="proceso" className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr]">
           <div>
