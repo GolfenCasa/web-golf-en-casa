@@ -82,6 +82,10 @@ const packages = [
 ];
 
 export default function GolfSimulatorLanding() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/60min';
+
   const [form, setForm] = useState({ name: '', email: '', phone: '', space: '', budget: '', message: '' });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -92,7 +96,69 @@ export default function GolfSimulatorLanding() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
-      
+      <div className="fixed right-4 top-24 z-[999] md:right-6 lg:right-8">
+  <button
+    onClick={() => setMenuOpen(!menuOpen)}
+    className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-zinc-900/90 text-2xl text-white shadow-2xl backdrop-blur transition hover:bg-zinc-800"
+    aria-label="Abrir menú de navegación"
+  >
+    ☰
+  </button>
+
+  {menuOpen && (
+    <div className="mt-3 w-56 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur">
+      <a
+        href="#inicio"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Inicio
+      </a>
+
+      <a
+        href="#servicios"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Servicios
+      </a>
+
+      <a
+        href="#proceso"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Proceso
+      </a>
+
+      <a
+        href="#paquetes"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Paquetes
+      </a>
+
+      <a
+        href="#contacto"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Contacto
+      </a>
+
+      <a
+        href={calendlyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => setMenuOpen(false)}
+        className="block bg-emerald-500 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
+      >
+        Reservar consultoría
+      </a>
+    </div>
+  )}
+</div>
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <a href="#inicio" className="flex items-center gap-3">
