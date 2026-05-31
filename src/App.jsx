@@ -8,7 +8,8 @@ import {
   FaTiktok,
   FaWhatsapp
 } from "react-icons/fa";
-import ReactCompareImage from "react-compare-image";
+
+import CookieBanner from "./components/CookieBanner";
 
 
 
@@ -680,7 +681,13 @@ export default function GolfSimulatorLanding() {
                 <p className="flex items-center gap-3"><MapPin className="h-5 w-5 text-emerald-600" /> Servicio en España y online para otros países</p>
               </div>
             </div>
-            <form className="rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-xl" onSubmit={(e) => e.preventDefault()}>
+           <form
+  className="rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-xl"
+  onSubmit={(e) => {
+    e.preventDefault();
+    window.location.href = mailtoHref;
+  }}
+>
               <div className="grid gap-4 md:grid-cols-2">
                 <input name="name" value={form.name} onChange={handleChange} placeholder="Nombre" className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
                 <input name="email" value={form.email} onChange={handleChange} placeholder="Email" className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
@@ -699,12 +706,54 @@ export default function GolfSimulatorLanding() {
                   <option>10.000 € - 20.000 €</option>
                   <option>Más de 20.000 €</option>
                 </select>
-                <textarea name="message" value={form.message} onChange={handleChange} placeholder="Medidas del espacio, objetivo del simulador y dudas principales" rows="5" className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2" />
-              </div>
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                <a href={mailtoHref} className="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700">Solicitar Presupuesto</a>
-                <a href={calendlyUrl} className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-5 py-3 font-semibold transition hover:bg-zinc-100">Reservar Consultoría</a>
-              </div>
+                <textarea
+  name="message"
+  value={form.message}
+  onChange={handleChange}
+  placeholder="Medidas del espacio, objetivo del simulador y dudas principales"
+  rows="5"
+  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2"
+/>
+</div>
+
+<label className="mt-4 flex items-start gap-3 text-sm text-zinc-600">
+  <input
+    type="checkbox"
+    required
+    className="mt-1"
+  />
+
+  <span>
+    He leído y acepto la
+    <a
+      href="/politica-privacidad"
+      className="ml-1 text-emerald-600 underline"
+    >
+      Política de Privacidad
+    </a>.
+  </span>
+</label>
+
+<div className="mt-5 flex flex-col gap-3 sm:flex-row">
+  <button
+  type="submit"
+  className="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700"
+>
+  Solicitar Presupuesto
+</button>
+
+  <a
+    href={calendlyUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-5 py-3 font-semibold transition hover:bg-zinc-100"
+  >
+    Reservar Consultoría
+  </a>
+</div>
+
+
+
             </form>
           </div>
         </section>
@@ -774,13 +823,26 @@ export default function GolfSimulatorLanding() {
       </a>
 
     </div>
+<div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
+  <a href="/aviso-legal" className="hover:text-white">
+    Aviso Legal
+  </a>
 
+  <a href="/politica-privacidad" className="hover:text-white">
+    Política de Privacidad
+  </a>
+
+  <a href="/politica-cookies" className="hover:text-white">
+    Política de Cookies
+  </a>
+</div>
     <p className="mt-8 text-sm text-zinc-500">
       © 2026 Golf en Casa. Todos los derechos reservados.
     </p>
 
   </div>
       </footer>
+      <CookieBanner />
     </div>
   );
 }
