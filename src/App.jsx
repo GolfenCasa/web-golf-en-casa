@@ -101,7 +101,7 @@ export default function GolfSimulatorLanding() {
     alt="Golf en Casa"
   className="h-20 w-auto"
 />
-<link rel="icon" type="image/png" href="/favicon.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
             <div>
               <p className="text-sm font-semibold tracking-wide">Golf en Casa</p>
               <p className="text-xs text-zinc-400">Simuladores & Consultoría</p>
