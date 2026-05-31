@@ -86,6 +86,70 @@ const packages = [
   },
 ];
 
+function BeforeAfterSlider({ before, after, alt }) {
+  const [position, setPosition] = useState(50);
+
+  return (
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200">
+      <img
+        src={before}
+        alt={`${alt} antes`}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+
+      <div
+        className="absolute inset-0 overflow-hidden"
+        style={{ width: `${position}%` }}
+      >
+        <img
+          src={after}
+          alt={`${alt} después`}
+          className="h-full w-full object-cover"
+          style={{
+            width: `${100 / (position / 100)}%`,
+            maxWidth: 'none',
+          }}
+        />
+      </div>
+
+      <div
+        className="absolute bottom-4 left-4 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white"
+      >
+        Después
+      </div>
+
+      <div
+        className="absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white"
+      >
+        Antes
+      </div>
+
+      <div
+        className="absolute bottom-0 top-0 z-10 w-1 bg-white shadow-2xl"
+        style={{ left: `${position}%` }}
+      />
+
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={position}
+        onChange={(e) => setPosition(e.target.value)}
+        className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+        aria-label="Comparador antes y después"
+      />
+
+      <div
+        className="pointer-events-none absolute top-1/2 z-30 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white bg-black/70 text-sm font-black text-white shadow-xl"
+        style={{ left: `${position}%` }}
+      >
+        ↔
+      </div>
+    </div>
+  );
+}
+
+
 export default function GolfSimulatorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -144,6 +208,14 @@ export default function GolfSimulatorLanding() {
       >
         Proceso
       </a>
+<a
+  href="#trabajos"
+  onClick={() => setMenuOpen(false)}
+  className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+>
+  Trabajos realizados
+</a>
+
 
       <a
         href="#paquetes"
@@ -201,6 +273,10 @@ export default function GolfSimulatorLanding() {
   <a href="#proceso" className="transition hover:text-white">
     Proceso
   </a>
+
+  <a href="#trabajos" className="transition hover:text-white">
+  Trabajos
+</a>
 
   <a href="#paquetes" className="transition hover:text-white">
     Paquetes
@@ -473,14 +549,77 @@ export default function GolfSimulatorLanding() {
 <div className="mt-12 flex justify-center">
 <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-[2rem] shadow-2xl">
  
-    <ReactCompareImage
-      leftImage="/antes.jpg"
-      rightImage="/despues.jpg"
-    />
+   
   </div>
 </div>
 
         </section>
+
+<section id="trabajos" className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    <div className="max-w-3xl">
+      <p className="font-semibold uppercase tracking-[0.25em] text-emerald-600">
+        Trabajos realizados
+      </p>
+
+      <h2 className="mt-3 text-4xl font-black md:text-5xl">
+        Proyectos reales de simuladores de golf
+      </h2>
+
+      <p className="mt-5 text-lg leading-8 text-zinc-600">
+        Ejemplos de instalaciones, diseños y espacios indoor golf realizados o proyectados a medida. Usa el deslizador para comparar el antes y el después de cada proyecto.
+      </p>
+    </div>
+
+    <div className="mt-12 grid gap-6 lg:grid-cols-2">
+      {[
+        {
+          title: 'Simulador en vivienda particular',
+          location: 'Proyecto residencial',
+          before: '/antes_1.jpg',
+          after: '/despues_1.JPEG',
+          description:
+            'Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación.',
+        },
+        {
+          title: 'Proyecto personalizado a medida',
+          location: 'Diseño adaptado al espacio',
+          before: '/antes_2.JPEG',
+          after: '/despues_2.JPEG',
+          description:
+            'Diseño de una solución personalizada según las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador.',
+        },
+      ].map((project) => (
+        <article
+          key={project.title}
+          className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-50 shadow-xl"
+        >
+          <BeforeAfterSlider
+            before={project.before}
+            after={project.after}
+            alt={project.title}
+          />
+
+          <div className="p-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
+              {project.location}
+            </p>
+
+            <h3 className="mt-3 text-2xl font-black">
+              {project.title}
+            </h3>
+
+            <p className="mt-4 leading-7 text-zinc-600">
+              {project.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+
 
         <section id="paquetes" className="bg-zinc-900 py-20">
           <div className="mx-auto max-w-7xl px-5">
