@@ -87,6 +87,31 @@ const packages = [
   },
 ];
 
+const featuredVideos = [
+  {
+    title: 'Simulador de Golf en Casa: Imprescindibles para Montar el Tuyo',
+    description:
+      'Guía práctica para entender qué necesitas antes de comprar pantalla, proyector, launch monitor, PC y software.',
+    url: 'https://www.youtube.com/watch?v=OZdkZCFdy1U&t=12s',
+  },
+  {
+    title: 'Evita estos ERRORES al montar tu SIMULADOR de GOLF en casa',
+    description:
+      'Consejos para evitar problemas de espacio, altura, sombras, rebotes, proyector mal colocado o mala elección de componentes.',
+    url: 'https://www.youtube.com/watch?v=y5G7zprqxQM',
+  },
+  {
+    title: 'Garmin R10 Review en Español | 43.000 campos de golf en la palma de tu mano',
+    description:
+      'Vídeo destacado del canal con una review completa del Garmin R10, uno de los monitores de lanzamiento más populares y asequibles.',
+    url: 'https://www.youtube.com/watch?v=6POQ9au41hQ&t=33s',
+  },
+];
+
+
+
+
+
 function BeforeAfterSlider({ before, after, alt }) {
   const [position, setPosition] = useState(50);
 
@@ -150,6 +175,23 @@ function BeforeAfterSlider({ before, after, alt }) {
   );
 }
 
+function getYouTubeId(url) {
+  if (!url) return '';
+
+  const patterns = [
+    /youtube\.com\/watch\?v=([^&]+)/,
+    /youtu\.be\/([^?&]+)/,
+    /youtube\.com\/shorts\/([^?&]+)/,
+    /youtube\.com\/embed\/([^?&]+)/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) return match[1];
+  }
+
+  return url;
+}
 
 export default function GolfSimulatorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -218,6 +260,14 @@ export default function GolfSimulatorLanding() {
 </a>
 
 
+<a
+  href="#videos"
+  onClick={() => setMenuOpen(false)}
+  className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+>
+  Vídeos destacados
+</a>
+
       <a
         href="#paquetes"
         onClick={() => setMenuOpen(false)}
@@ -277,6 +327,10 @@ export default function GolfSimulatorLanding() {
 
   <a href="#trabajos" className="transition hover:text-white">
   Trabajos
+</a>
+
+<a href="#videos" className="transition hover:text-white">
+  Vídeos
 </a>
 
   <a href="#paquetes" className="transition hover:text-white">
@@ -620,7 +674,97 @@ export default function GolfSimulatorLanding() {
   </div>
 </section>
 
+<section id="videos" className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div className="max-w-3xl">
+        <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+          Vídeos destacados
+        </p>
 
+        <h2 className="mt-3 text-4xl font-black md:text-5xl">
+          Aprende más en el canal Golf en Casa
+        </h2>
+
+        <p className="mt-5 text-lg leading-8 text-zinc-300">
+          Selección de vídeos útiles para entender mejor cómo diseñar, elegir componentes y montar un simulador de golf en casa o negocio.
+        </p>
+      </div>
+
+      <a
+        href="https://youtube.com/@Golf_en_Casa"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-4 text-base font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+      >
+        <FaYoutube className="mr-2 h-5 w-5 text-red-500" />
+        Ver canal
+      </a>
+    </div>
+
+    <div className="mt-12 grid gap-6 lg:grid-cols-3">
+      {featuredVideos.map((video) => {
+        const videoId = getYouTubeId(video.url);
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+
+        return (
+          <article
+            key={video.url}
+            className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-2xl"
+          >
+            <a
+              href={video.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative block aspect-video w-full overflow-hidden bg-zinc-900"
+              aria-label={`Ver vídeo: ${video.title}`}
+            >
+              <img
+                src={thumbnailUrl}
+                alt={video.title}
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-black/25 transition group-hover:bg-black/40" />
+
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 text-white shadow-2xl transition group-hover:scale-110">
+                  <FaYoutube className="text-3xl" />
+                </div>
+              </div>
+            </a>
+
+            <div className="p-6">
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-400">
+                <FaYoutube className="text-red-500" />
+                YouTube
+              </p>
+
+              <h3 className="mt-3 text-2xl font-black leading-tight">
+                {video.title}
+              </h3>
+
+              <p className="mt-4 leading-7 text-zinc-400">
+                {video.description}
+              </p>
+
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center font-bold text-emerald-400 transition hover:text-emerald-300"
+              >
+                Ver vídeo en YouTube
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
 
         <section id="paquetes" className="bg-zinc-900 py-20">
           <div className="mx-auto max-w-7xl px-5">
