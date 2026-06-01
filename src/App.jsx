@@ -917,7 +917,7 @@ export default function GolfSimulatorLanding() {
     <img
       src="/logo.png"
       alt="Golf en Casa"
-      className="mx-auto h-24 w-auto"
+      className="mx-auto mt-4 h-24 w-auto"
     />
 
     <h3 className="mt-6 text-2xl font-bold">
