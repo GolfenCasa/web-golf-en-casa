@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 
 import CookieBanner from "./components/CookieBanner";
+import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
 
 
 
