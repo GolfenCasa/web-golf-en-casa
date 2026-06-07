@@ -153,15 +153,21 @@ export default function LandingSimuladoresGolf() {
             </div>
           </div>
 
-          <div className="mt-12 lg:mt-0 lg:w-[42%]">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-4 shadow-2xl">
-              <img
-                src="/despues_1.JPEG"
-                alt="Simulador de golf instalado"
-                className="aspect-[4/3] w-full rounded-2xl object-cover"
-              />
-            </div>
-          </div>
+          <div className="mt-12 flex justify-center lg:mt-0 lg:w-[42%]">
+  <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl">
+    <video
+      className="w-full rounded-[1.5rem] border border-white/10 shadow-2xl"
+      controls
+      autoPlay
+      muted
+      loop
+      playsInline
+    >
+      <source src="/video_promocion3.mp4" type="video/mp4" />
+      Tu navegador no soporta vídeo HTML5.
+    </video>
+  </div>
+</div>
         </div>
       </section>
 
