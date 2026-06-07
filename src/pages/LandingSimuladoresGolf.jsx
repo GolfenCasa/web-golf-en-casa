@@ -277,7 +277,7 @@ export default function LandingSimuladoresGolf() {
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
             >
               <CalendarDays className="mr-2 h-5 w-5" />
-              Reservar llamada
+              Reservar llamada Gratuita
             </a>
 
             <a
