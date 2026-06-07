@@ -51,7 +51,7 @@ export default function LandingSimuladoresGolf() {
       event: "form_submit",
       form_name: "landing_presupuesto_simulador",
     });
-
+setTimeout(() => {
     const body = encodeURIComponent(
       `Nombre: ${form.name}
 Email: ${form.email}
@@ -66,7 +66,7 @@ ${form.message}`
     );
 
     window.location.href = `mailto:${EMAIL}?subject=Solicitud de presupuesto simulador de golf&body=${body}`;
-  };
+  };500);
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
