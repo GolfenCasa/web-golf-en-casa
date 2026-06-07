@@ -13,6 +13,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<GolfSimulatorLanding />} />
+        <Route
+    path="/instalacion-simuladores-golf"
+    element={<LandingSimuladoresGolf />}
+  />
         <Route path="/aviso-legal" element={<AvisoLegal />} />
         <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
         <Route path="/politica-cookies" element={<PoliticaCookies />} />
