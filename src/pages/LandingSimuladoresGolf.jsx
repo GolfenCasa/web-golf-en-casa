@@ -99,7 +99,7 @@ export default function LandingSimuladoresGolf() {
               href="#presupuesto"
               className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
             >
-              Solita estudio Gratuito
+              Solicitar estudio Gratuito
             </a>
           </div>
         </div>
