@@ -14,7 +14,7 @@ import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
 
 
 
-const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/60min';
+const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
 const youtubeCourseUrl = 'https://youtube.com/playlist?list=PLfYDa4ADpRpYQ8iuZZrYMbw1-5TRONady';
 const formularioUrl ='https://docs.google.com/forms/d/e/1FAIpQLSecIKbWPdNzt3hQmUO4sNHw_eLWAfGC3XXv87MGgzmESydqaw/viewform?pli=1'
 const email = 'info@golfencasa.net';
@@ -66,13 +66,13 @@ const packages = [
     description: 'Ideal si estás empezando y no sabes qué comprar.',
     features: ['Videollamada 60 min', 'Revisión de medidas', 'Recomendaciones clave', 'Siguientes pasos claros'],
     cta: 'Reservar Consultoría',
-    url: 'https://calendly.com/simuladores-golfencasa/60min',
+    url: 'https://calendly.com/simuladores-golfencasa/mentoria-basica',
   },
   {
     name: 'Diseño Pro',
     price: 'A medida',
     description: 'Para definir el proyecto completo antes de invertir.',
-    features: ['Lista de materiales', 'Distribución recomendada', 'Opciones por presupuesto', 'Prevención de errores habituales'],
+    features: ['Lista de materiales', 'Distribución recomendada', 'Opciones por presupuesto', 'Plano de instalación'],
     cta: 'Reservar Consultoría Pro',
      featured: true,
     url: 'https://calendly.com/simuladores-golfencasa/new-meeting',
@@ -197,7 +197,7 @@ function getYouTubeId(url) {
 export default function GolfSimulatorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/60min';
+  const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
 
   const [form, setForm] = useState({ name: '', email: '', phone: '', space: '', budget: '', message: '' });
 
@@ -310,7 +310,7 @@ export default function GolfSimulatorLanding() {
         onClick={() => setMenuOpen(false)}
         className="block bg-emerald-500 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
       >
-        Reservar consultoría
+        Reservar llamada Gratuita
       </a>
     </div>
   )}
@@ -405,7 +405,7 @@ export default function GolfSimulatorLanding() {
     className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-3 py-2 text-xs font-bold text-zinc-950 transition hover:bg-emerald-400 sm:px-5 sm:py-2.5 sm:text-sm"
   >
     <span className="hidden sm:inline">
-      Reserva Consultoría
+      Reserva llamada Gratuita
     </span>
 
     <span className="sm:hidden">
@@ -905,7 +905,7 @@ export default function GolfSimulatorLanding() {
     rel="noopener noreferrer"
     className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-5 py-3 font-semibold transition hover:bg-zinc-100"
   >
-    Reservar Consultoría
+    Reservar llamada Gratuita
   </a>
 </div>
 
