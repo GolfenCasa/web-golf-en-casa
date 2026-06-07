@@ -66,8 +66,8 @@ ${form.message}`
     );
 
     window.location.href = `mailto:${EMAIL}?subject=Solicitud de presupuesto simulador de golf&body=${body}`;
-  };500);
-
+  }, 500);
+};
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       {/* WHATSAPP FLOTANTE */}
