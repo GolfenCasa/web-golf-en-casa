@@ -206,6 +206,9 @@ export default function GolfSimulatorLanding() {
   const mailtoHref = `mailto:${email}?subject=Solicitud de presupuesto simulador de golf&body=${encodeURIComponent(
     `Nombre: ${form.name}\nEmail: ${form.email}\nTeléfono: ${form.phone}\nTipo de espacio: ${form.space}\nPresupuesto estimado: ${form.budget}\n\nMensaje:\n${form.message}`
   )}`;
+  if (window.location.pathname === "/instalacion-simuladores-golf") {
+  return <LandingSimuladoresGolf />;
+}
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
