@@ -207,7 +207,16 @@ export default function GolfSimulatorLanding() {
     `Nombre: ${form.name}\nEmail: ${form.email}\nTeléfono: ${form.phone}\nTipo de espacio: ${form.space}\nPresupuesto estimado: ${form.budget}\n\nMensaje:\n${form.message}`
   )}`;
   if (window.location.pathname === "/instalacion-simuladores-golf") {
-  return <LandingSimuladoresGolf />;
+  return (
+    <div className="min-h-screen bg-zinc-950 p-10 text-white">
+      <h1 className="text-4xl font-bold text-emerald-400">
+        Landing funcionando
+      </h1>
+      <p className="mt-4">
+        Si ves esto, el problema está dentro del archivo LandingSimuladoresGolf.jsx.
+      </p>
+    </div>
+  );
 }
 
   return (
