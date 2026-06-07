@@ -7,6 +7,7 @@ import GolfSimulatorLanding from './App.jsx';
 import AvisoLegal from './pages/AvisoLegal.jsx';
 import PoliticaPrivacidad from './pages/PoliticaPrivacidad.jsx';
 import PoliticaCookies from './pages/PoliticaCookies.jsx';
+import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
