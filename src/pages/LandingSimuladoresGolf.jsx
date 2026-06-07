@@ -25,8 +25,49 @@ const WHATSAPP_URL =
   "https://wa.me/34652401121?text=Hola,%20quiero%20información%20sobre%20un%20simulador%20de%20golf";
 
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
+const EMAIL = "info@golfencasa.net";
 
 export default function LandingSimuladoresGolf() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    city: "",
+    projectType: "",
+    budget: "",
+    dimensions: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "form_submit",
+      form_name: "landing_presupuesto_simulador",
+    });
+
+    const body = encodeURIComponent(
+      `Nombre: ${form.name}
+Email: ${form.email}
+Teléfono: ${form.phone}
+Ciudad / provincia: ${form.city}
+Tipo de instalación: ${form.projectType}
+Presupuesto aproximado: ${form.budget}
+Medidas del espacio: ${form.dimensions}
+
+Mensaje:
+${form.message}`
+    );
+
+    window.location.href = `mailto:${EMAIL}?subject=Solicitud de presupuesto simulador de golf&body=${body}`;
+  };
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       {/* WHATSAPP FLOTANTE */}
@@ -96,10 +137,10 @@ export default function LandingSimuladoresGolf() {
             </div>
 
             <a
-              href="#presupuesto"
+              href="#formulario"
               className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
             >
-              Solicitar estudio Gratuito
+              Solicitar estudio gratuito
             </a>
           </div>
         </div>
@@ -128,7 +169,7 @@ export default function LandingSimuladoresGolf() {
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a
-                href="#presupuesto"
+                href="#formulario"
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
               >
                 Solicitar presupuesto
@@ -154,20 +195,20 @@ export default function LandingSimuladoresGolf() {
           </div>
 
           <div className="mt-12 flex justify-center lg:mt-0 lg:w-[42%]">
-  <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl">
-    <video
-      className="w-full rounded-[1.5rem] border border-white/10 shadow-2xl"
-      controls
-      autoPlay
-      muted
-      loop
-      playsInline
-    >
-      <source src="/video_promocion3.mp4" type="video/mp4" />
-      Tu navegador no soporta vídeo HTML5.
-    </video>
-  </div>
-</div>
+            <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl">
+              <video
+                className="w-full rounded-[1.5rem] border border-white/10 shadow-2xl"
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+              >
+                <source src="/video_promocion3.mp4" type="video/mp4" />
+                Tu navegador no soporta vídeo HTML5.
+              </video>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -184,10 +225,26 @@ export default function LandingSimuladoresGolf() {
         </div>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <Card icon={<Ruler />} title="¿Tengo altura suficiente?" text="Analizamos medidas, swing, distancia a pantalla y seguridad." />
-          <Card icon={<Monitor />} title="¿Qué proyector necesito?" text="Calculamos distancia, formato, resolución y tamaño de imagen." />
-          <Card icon={<Trophy />} title="¿Qué monitor compro?" text="Te ayudamos a elegir entre Garmin, Uneekor, Foresight, ProTee y más." />
-          <Card icon={<Wrench />} title="¿Quién lo instala?" text="Podemos asesorarte, diseñarlo o encargarnos del proyecto completo." />
+          <Card
+            icon={<Ruler />}
+            title="¿Tengo altura suficiente?"
+            text="Analizamos medidas, swing, distancia a pantalla y seguridad."
+          />
+          <Card
+            icon={<Monitor />}
+            title="¿Qué proyector necesito?"
+            text="Calculamos distancia, formato, resolución y tamaño de imagen."
+          />
+          <Card
+            icon={<Trophy />}
+            title="¿Qué monitor compro?"
+            text="Te ayudamos a elegir entre Garmin, Uneekor, Foresight, ProTee y más."
+          />
+          <Card
+            icon={<Wrench />}
+            title="¿Quién lo instala?"
+            text="Podemos asesorarte, diseñarlo o encargarnos del proyecto completo."
+          />
         </div>
       </section>
 
@@ -199,9 +256,21 @@ export default function LandingSimuladoresGolf() {
           </h2>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            <Service icon={<Home />} title="Viviendas particulares" text="Habitaciones, garajes, sótanos o espacios polivalentes para entrenar y jugar desde casa." />
-            <Service icon={<Building2 />} title="Academias y clubes" text="Soluciones para clases, fitting, entrenamiento técnico y experiencia indoor." />
-            <Service icon={<ShieldCheck />} title="Negocios indoor" text="Diseño para centros de ocio, locales comerciales o espacios premium de golf." />
+            <Service
+              icon={<Home />}
+              title="Viviendas particulares"
+              text="Habitaciones, garajes, sótanos o espacios polivalentes para entrenar y jugar desde casa."
+            />
+            <Service
+              icon={<Building2 />}
+              title="Academias y clubes"
+              text="Soluciones para clases, fitting, entrenamiento técnico y experiencia indoor."
+            />
+            <Service
+              icon={<ShieldCheck />}
+              title="Negocios indoor"
+              text="Diseño para centros de ocio, locales comerciales o espacios premium de golf."
+            />
           </div>
         </div>
       </section>
@@ -244,20 +313,178 @@ export default function LandingSimuladoresGolf() {
         </div>
       </section>
 
+      {/* FORMULARIO */}
+      <section
+        id="formulario"
+        className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Solicita tu estudio
+            </p>
+
+            <h2 className="mt-3 text-4xl font-black md:text-5xl">
+              Cuéntanos tu proyecto de simulador
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              Rellena estos datos básicos y te orientaremos sobre la mejor
+              solución para tu espacio, presupuesto y objetivo.
+            </p>
+
+            <div className="mt-8 space-y-4 text-zinc-300">
+              <Benefit text="Respuesta personalizada" />
+              <Benefit text="Revisión de medidas y viabilidad" />
+              <Benefit text="Opciones según presupuesto" />
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-2xl"
+          >
+            <div className="grid gap-4 md:grid-cols-2">
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                placeholder="Nombre"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              />
+
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                placeholder="Email"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              />
+
+              <input
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                placeholder="Teléfono"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              />
+
+              <input
+                name="city"
+                value={form.city}
+                onChange={handleChange}
+                placeholder="Ciudad / provincia"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              />
+
+              <select
+                name="projectType"
+                value={form.projectType}
+                onChange={handleChange}
+                required
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              >
+                <option value="">Tipo de instalación</option>
+                <option>Vivienda particular</option>
+                <option>Academia / club</option>
+                <option>Negocio indoor</option>
+                <option>Otro</option>
+              </select>
+
+              <select
+                name="budget"
+                value={form.budget}
+                onChange={handleChange}
+                required
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+              >
+                <option value="">Presupuesto aproximado</option>
+                <option>Menos de 5.000 €</option>
+                <option>5.000 € - 10.000 €</option>
+                <option>10.000 € - 20.000 €</option>
+                <option>Más de 20.000 €</option>
+              </select>
+
+              <input
+                name="dimensions"
+                value={form.dimensions}
+                onChange={handleChange}
+                placeholder="Medidas aproximadas: ancho x fondo x alto"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
+              />
+
+              <textarea
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                rows="5"
+                placeholder="Cuéntanos qué quieres montar, dudas principales o material que ya tienes"
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
+              />
+            </div>
+
+            <label className="mt-4 flex items-start gap-3 text-sm text-zinc-300">
+              <input type="checkbox" required className="mt-1" />
+              <span>
+                He leído y acepto la{" "}
+                <a
+                  href="/politica-privacidad"
+                  className="text-emerald-400 underline"
+                >
+                  Política de Privacidad
+                </a>
+                .
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-400"
+            >
+              Enviar solicitud de presupuesto
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </button>
+          </form>
+        </div>
+      </section>
+
       {/* PROCESO */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <h2 className="text-3xl font-bold sm:text-4xl">Cómo trabajamos</h2>
 
         <div className="mt-10 grid gap-6 md:grid-cols-4">
-          <Step number="01" title="Analizamos tu espacio" text="Medidas, altura, ubicación de bola, pantalla y zona de swing." />
-          <Step number="02" title="Diseñamos la solución" text="Distribución, estructura, pantalla, proyector, monitor y software." />
-          <Step number="03" title="Presupuesto claro" text="Te damos opciones según objetivo, espacio y presupuesto disponible." />
-          <Step number="04" title="Instalación y ajuste" text="Montaje, configuración y pruebas para dejarlo listo para jugar." />
+          <Step
+            number="01"
+            title="Analizamos tu espacio"
+            text="Medidas, altura, ubicación de bola, pantalla y zona de swing."
+          />
+          <Step
+            number="02"
+            title="Diseñamos la solución"
+            text="Distribución, estructura, pantalla, proyector, monitor y software."
+          />
+          <Step
+            number="03"
+            title="Presupuesto claro"
+            text="Te damos opciones según objetivo, espacio y presupuesto disponible."
+          />
+          <Step
+            number="04"
+            title="Instalación y ajuste"
+            text="Montaje, configuración y pruebas para dejarlo listo para jugar."
+          />
         </div>
       </section>
 
       {/* CTA */}
-      <section id="presupuesto" className="border-t border-white/10 bg-emerald-400 text-zinc-950">
+      <section
+        id="presupuesto"
+        className="border-t border-white/10 bg-emerald-400 text-zinc-950"
+      >
         <div className="mx-auto max-w-7xl px-6 py-16 lg:flex lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">
@@ -277,7 +504,7 @@ export default function LandingSimuladoresGolf() {
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
             >
               <CalendarDays className="mr-2 h-5 w-5" />
-              Reservar llamada Gratuita
+              Reservar llamada gratuita
             </a>
 
             <a
