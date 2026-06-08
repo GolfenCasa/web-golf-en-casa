@@ -518,11 +518,89 @@ ${form.message}`
             </a>
           </div>
         </div>
-      </section>
+            </section>
+
+      {/* FOOTER MARCA */}
+      <footer className="border-t border-white/10 bg-zinc-950 px-5 py-12 text-center">
+        <div className="mx-auto max-w-7xl">
+          <img
+            src="/logo.png"
+            alt="Golf en Casa"
+            className="mx-auto h-24 w-auto"
+          />
+
+          <h3 className="mt-6 text-2xl font-bold text-white">
+            Golf en Casa
+          </h3>
+
+          <p className="mt-3 text-zinc-400">
+            Simuladores de Golf · Consultoría · Instalación · Formación
+          </p>
+
+          <div className="mt-8 flex justify-center gap-8 text-4xl">
+            <a
+              href="https://youtube.com/@Golf_en_Casa"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="YouTube Golf en Casa"
+              className="text-zinc-400 transition hover:text-red-500"
+            >
+              <FaYoutube />
+            </a>
+
+            <a
+              href="https://instagram.com/golf.en.casa/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram Golf en Casa"
+              className="text-zinc-400 transition hover:text-pink-500"
+            >
+              <FaInstagram />
+            </a>
+
+            <a
+              href="https://www.facebook.com/GolfenCasaSimuladores/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook Golf en Casa"
+              className="text-zinc-400 transition hover:text-blue-500"
+            >
+              <FaFacebook />
+            </a>
+
+            <a
+              href="https://www.tiktok.com/@golf_en_casa"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="TikTok Golf en Casa"
+              className="text-zinc-400 transition hover:text-white"
+            >
+              <FaTiktok />
+            </a>
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-zinc-400">
+            <a href="/aviso-legal" className="hover:text-white">
+              Aviso Legal
+            </a>
+
+            <a href="/politica-privacidad" className="hover:text-white">
+              Política de Privacidad
+            </a>
+
+            <a href="/politica-cookies" className="hover:text-white">
+              Política de Cookies
+            </a>
+          </div>
+
+          <p className="mt-8 text-sm text-zinc-500">
+            © 2026 Golf en Casa. Todos los derechos reservados.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }
-
 function Benefit({ text }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
