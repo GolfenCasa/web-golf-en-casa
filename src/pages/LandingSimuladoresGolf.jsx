@@ -11,6 +11,8 @@ import {
   Home,
   Building2,
   Trophy,
+  Euro,
+  HelpCircle,
 } from "lucide-react";
 
 import {
@@ -157,14 +159,15 @@ ${form.message}`
             </p>
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Diseñamos e instalamos tu simulador de golf en casa, academia o
-              negocio
+              Instala un simulador de golf profesional sin errores de espacio,
+              tecnología ni presupuesto
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Te ayudamos a elegir el monitor de lanzamiento, pantalla,
-              proyector, estructura, alfombra y software adecuados para evitar
-              errores caros y conseguir una instalación profesional.
+              Diseñamos e instalamos simuladores de golf a medida para viviendas,
+              academias y negocios indoor en toda España. Te ayudamos a elegir
+              monitor de lanzamiento, pantalla, proyector, estructura, alfombra
+              y software según tu espacio y presupuesto.
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -172,7 +175,7 @@ ${form.message}`
                 href="#formulario"
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
               >
-                Solicitar presupuesto
+                Recibir estudio gratuito
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
 
@@ -190,7 +193,13 @@ ${form.message}`
             <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
               <Benefit text="Estudio personalizado" />
               <Benefit text="Diseño a medida" />
-              <Benefit text="Instalación completa" />
+              <Benefit text="Presupuesto claro" />
+            </div>
+
+            <div className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
+              <MiniStat label="Desde" value="3.000 €" />
+              <MiniStat label="Servicio" value="Toda España" />
+              <MiniStat label="Proyecto" value="Llave en mano" />
             </div>
           </div>
 
@@ -272,6 +281,69 @@ ${form.message}`
               text="Diseño para centros de ocio, locales comerciales o espacios premium de golf."
             />
           </div>
+        </div>
+      </section>
+
+      {/* PRECIOS ORIENTATIVOS */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Presupuesto orientativo
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              ¿Cuánto cuesta montar un simulador de golf?
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              El precio depende del monitor de lanzamiento, pantalla de impacto,
+              proyector, estructura, alfombra, software, iluminación y montaje.
+              
+            </p>
+
+            <div className="mt-8 rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-6 text-sm leading-6 text-emerald-100">
+              Cada sala es diferente: altura, ancho, fondo, posición de golpeo,
+              tipo de jugador y nivel de acabado pueden cambiar el presupuesto final.
+              Por eso revisamos primero las medidas y el objetivo del proyecto.
+            </div>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            <PriceCard
+              title="Básico"
+              price="Desde 3.000 €"
+              text="Para empezar a practicar en casa con una configuración sencilla y escalable."
+            />
+            <PriceCard
+              featured
+              title="Intermedio"
+              price="6.000 € - 10.000 €"
+              text="La opción más habitual para viviendas, academias y uso frecuente."
+            />
+            <PriceCard
+              title="Premium"
+              price="10.000 €+"
+              text="Instalaciones llave en mano con mayor acabado, precisión y experiencia."
+            />
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <a
+            href="#formulario"
+            className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
+          >
+            Calcular mi presupuesto
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </a>
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+          >
+            <MessageCircle className="mr-2 h-5 w-5" />
+            Preguntar por WhatsApp
+          </a>
         </div>
       </section>
 
@@ -480,6 +552,51 @@ ${form.message}`
         </div>
       </section>
 
+      {/* FAQ SEO */}
+      <section className="border-t border-white/10 bg-white/[0.03]">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="max-w-3xl">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Preguntas frecuentes
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Dudas habituales antes de montar un simulador de golf
+            </h2>
+            <p className="mt-5 text-zinc-300">
+              Resolvemos las preguntas más importantes sobre espacio, presupuesto,
+              monitores de lanzamiento, proyectores e instalación.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            <FAQItem
+              question="¿Qué altura mínima necesito para un simulador de golf?"
+              answer="Depende de tu estatura, swing y palo más largo. Antes de comprar material conviene revisar altura, ancho, fondo, zona de bola y seguridad."
+            />
+            <FAQItem
+              question="¿Cuánto cuesta un simulador de golf en casa?"
+              answer="Como orientación, una instalación básica puede partir de unos 3.000 €, una intermedia suele estar entre 6.000 € y 10.000 €, y una premium puede superar los 10.000 €."
+            />
+            <FAQItem
+              question="¿Instaláis simuladores de golf en toda España?"
+              answer="Sí. Podemos ayudarte con consultoría, diseño, selección de componentes e instalación completa según la ubicación y el tipo de proyecto."
+            />
+            <FAQItem
+              question="¿Puedo montar un simulador en un garaje o sótano?"
+              answer="Sí, siempre que el espacio permita un swing seguro, una distancia adecuada a la pantalla y una configuración correcta del proyector y monitor."
+            />
+            <FAQItem
+              question="¿Qué monitor de lanzamiento me conviene?"
+              answer="Depende del presupuesto, si jugarán diestros y zurdos, el espacio disponible, el software que quieras usar y el nivel de precisión que busques."
+            />
+            <FAQItem
+              question="¿Puedo empezar con algo básico y mejorar después?"
+              answer="Sí. Podemos plantear el proyecto por fases para controlar la inversión inicial y dejar preparada una evolución futura del simulador."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section
         id="presupuesto"
@@ -601,6 +718,60 @@ ${form.message}`
     </main>
   );
 }
+function MiniStat({ label, value }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+      <span className="block text-xs uppercase tracking-[0.2em] text-zinc-400">
+        {label}
+      </span>
+      <strong className="mt-1 block text-lg text-white">{value}</strong>
+    </div>
+  );
+}
+
+function PriceCard({ title, price, text, featured = false }) {
+  return (
+    <article
+      className={`rounded-3xl border p-6 shadow-2xl ${
+        featured
+          ? "border-emerald-400/50 bg-emerald-400 text-zinc-950"
+          : "border-white/10 bg-white/5 text-white"
+      }`}
+    >
+      <div
+        className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl ${
+          featured ? "bg-zinc-950 text-emerald-300" : "bg-emerald-400/10 text-emerald-300"
+        }`}
+      >
+        <Euro className="h-6 w-6" />
+      </div>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className={`mt-3 text-2xl font-black ${featured ? "text-zinc-950" : "text-white"}`}>
+        {price}
+      </p>
+      <p className={`mt-4 text-sm leading-6 ${featured ? "text-zinc-800" : "text-zinc-300"}`}>
+        {text}
+      </p>
+    </article>
+  );
+}
+
+function FAQItem({ question, answer }) {
+  return (
+    <article className="rounded-3xl border border-white/10 bg-zinc-950 p-6">
+      <div className="flex gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+          <HelpCircle className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-white">{question}</h3>
+          <p className="mt-3 text-sm leading-6 text-zinc-300">{answer}</p>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function Benefit({ text }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
