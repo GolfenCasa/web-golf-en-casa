@@ -24,7 +24,7 @@ import {
 } from "react-icons/fa";
 
 const WHATSAPP_URL =
-  "https://wa.me/34652401121?text=Hola,%20quiero%20información%20sobre%20un%20simulador%20de%20golf";
+  "https://wa.me/34678107234?text=Hola,%20quiero%20información%20sobre%20un%20simulador%20de%20golf";
 
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
