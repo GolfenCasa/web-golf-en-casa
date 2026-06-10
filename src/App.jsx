@@ -834,7 +834,7 @@ export default function GolfSimulatorLanding() {
               <p className="mt-5 leading-8 text-zinc-600">Rellena los datos básicos y prepara medidas aproximadas de ancho, fondo y alto. Cuanto más claro sea el espacio, mejor podremos definir la solución.</p>
               <div className="mt-8 space-y-4 text-zinc-700">
                 <p className="flex items-center gap-3"><Mail className="h-5 w-5 text-emerald-600" /> {email}</p>
-                <p className="flex items-center gap-3"><Phone className="h-5 w-5 text-emerald-600" /> +34 652 40 11 21</p>
+                <p className="flex items-center gap-3"><Phone className="h-5 w-5 text-emerald-600" /> +34 678 10 72 34</p>
                 <p className="flex items-center gap-3"><MapPin className="h-5 w-5 text-emerald-600" /> Servicio en España y online para otros países</p>
               </div>
             </div>
