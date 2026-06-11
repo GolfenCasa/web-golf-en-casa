@@ -24,7 +24,7 @@ import {
 } from "react-icons/fa";
 
 const WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20quiero%20información%20sobre%20un%20simulador%20de%20golf";
+  "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestra%20web%20y%20quiero%20información%20para%20montar%20un%20simulador%20de%20golf.%20Mi%20espacio%20es%20de%20aprox:%20";
 
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
@@ -73,15 +73,22 @@ ${form.message}`
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       {/* WHATSAPP FLOTANTE */}
-      <a
-        href={WHATSAPP_URL}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="Contactar por WhatsApp"
-        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
-      >
-        <FaWhatsapp />
-      </a>
+     <a
+  href={WHATSAPP_URL}
+  target="_blank"
+  rel="noreferrer"
+  aria-label="Contactar por WhatsApp"
+  onClick={() => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "click_whatsapp",
+      location: "floating_button",
+    });
+  }}
+  className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
+>
+  <FaWhatsapp />
+</a>
 
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
@@ -139,11 +146,21 @@ ${form.message}`
             </div>
 
             <a
-              href="#formulario"
-              className="rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
-            >
-              Solicitar estudio gratuito
-            </a>
+  href={WHATSAPP_URL}
+  target="_blank"
+  rel="noreferrer"
+  onClick={() => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "click_whatsapp",
+      location: "header",
+    });
+  }}
+  className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-400"
+>
+  <FaWhatsapp className="mr-2 text-lg" />
+  WhatsApp
+</a>
           </div>
         </div>
       </header>
@@ -170,25 +187,39 @@ ${form.message}`
               y software según tu espacio y presupuesto.
             </p>
 
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="#formulario"
-                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
-              >
-                Recibir estudio gratuito
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
 
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
-              >
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Hablar por WhatsApp
-              </a>
-            </div>
+
+<div className="mt-8 flex flex-col gap-4 sm:flex-row">
+  <a
+    href={WHATSAPP_URL}
+    target="_blank"
+    rel="noreferrer"
+    onClick={() => {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "click_whatsapp",
+        location: "hero",
+      });
+    }}
+    className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white shadow-2xl shadow-green-500/20 transition hover:bg-green-400"
+  >
+    <FaWhatsapp className="mr-2 text-xl" />
+    Hablar por WhatsApp
+  </a>
+
+  <a
+    href="#formulario"
+    className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+  >
+    Recibir estudio gratuito
+    <ArrowRight className="ml-2 h-5 w-5" />
+  </a>
+</div>
+
+<p className="mt-4 text-sm text-zinc-400">
+  Respuesta rápida por WhatsApp. Puedes enviar medidas, fotos del espacio o dudas sobre componentes.
+</p>
+
 
             <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
               <Benefit text="Estudio personalizado" />
@@ -384,6 +415,63 @@ ${form.message}`
           </div>
         </div>
       </section>
+
+<section className="border-y border-white/10 bg-green-500/10 px-4 py-14 text-white sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div>
+        <p className="font-semibold uppercase tracking-[0.25em] text-green-400">
+          Contacto rápido
+        </p>
+
+        <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+          Envíanos fotos o medidas por WhatsApp y te orientamos
+        </h2>
+
+        <p className="mt-5 text-lg leading-8 text-zinc-300">
+          Para valorar un simulador de golf, lo más útil es conocer ancho, fondo, altura y uso previsto. Si tienes fotos del espacio, también puedes enviarlas directamente por WhatsApp.
+        </p>
+      </div>
+
+      <div className="rounded-[2rem] border border-green-400/20 bg-zinc-950 p-6">
+        <div className="grid gap-4">
+          {[
+            "Medidas aproximadas: ancho x fondo x alto",
+            "Fotos o vídeo del espacio",
+            "Uso previsto: casa, academia o negocio",
+            "Presupuesto aproximado si ya lo tienes claro",
+          ].map((item) => (
+            <div
+              key={item}
+              className="flex items-center gap-3 rounded-2xl bg-white/5 p-4 text-sm text-zinc-200 sm:text-base"
+            >
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-green-400" />
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: "click_whatsapp",
+              location: "contact_section",
+            });
+          }}
+          className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-400"
+        >
+          <FaWhatsapp className="mr-2 text-xl" />
+          Enviar información por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* FORMULARIO */}
       <section
@@ -614,26 +702,33 @@ ${form.message}`
           </div>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:mt-0">
-            <a
-              href={CALENDLY_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
-            >
-              <CalendarDays className="mr-2 h-5 w-5" />
-              Reservar llamada gratuita
-            </a>
+  <a
+    href={WHATSAPP_URL}
+    target="_blank"
+    rel="noreferrer"
+    onClick={() => {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "click_whatsapp",
+        location: "final_cta",
+      });
+    }}
+    className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
+  >
+    <FaWhatsapp className="mr-2 text-xl" />
+    Consultar por WhatsApp
+  </a>
 
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-semibold hover:bg-emerald-300"
-            >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              WhatsApp
-            </a>
-          </div>
+  <a
+    href={CALENDLY_URL}
+    target="_blank"
+    rel="noreferrer"
+    className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-semibold hover:bg-emerald-300"
+  >
+    <CalendarDays className="mr-2 h-5 w-5" />
+    Reservar llamada
+  </a>
+</div>
         </div>
             </section>
 
