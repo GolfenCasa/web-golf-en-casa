@@ -389,7 +389,7 @@ ${form.message}`
       <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10">
         <div className="mx-auto max-w-7xl px-6">
           <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500">
-  Trabajamos con tecnología compatible con las principales marcas del sector
+  Trabajamos con las principales marcas del sector
 </p>
         </div>
 
