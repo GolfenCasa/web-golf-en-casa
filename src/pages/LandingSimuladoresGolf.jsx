@@ -13,7 +13,6 @@ import {
   Trophy,
   HelpCircle,
   Euro,
-  ClipboardCheck,
   Star,
   UserCheck,
   MapPin,
@@ -36,64 +35,33 @@ const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
 
 const technologies = [
-  {
-    name: "GSPro",
-    logo: "/logos/gspro.png",
-  },
-  {
-    name: "Garmin",
-    logo: "/logos/garmin.png",
-  },
-  {
-    name: "Rapsodo",
-    logo: "/logos/rapsodo.png",
-  },
- {
-    name: "Bushnell",
-    logo: "/logos/bushnell.png",
-  },
-
-  {
-    name: "Uneekor",
-    logo: "/logos/uneekor.png",
-  },
-  {
-    name: "Foresight Sports",
-    logo: "/logos/foresight.png",
-  },
-  {
-    name: "ProTee",
-    logo: "/logos/protee.png",
-  },
-  {
-    name: "TrackMan",
-    logo: "/logos/trackman.png",
-  },
-  {
-    name: "BenQ",
-    logo: "/logos/benq.png",
-  },
-  {
-    name: "Optoma",
-    logo: "/logos/optoma.png",
-  },
+  { name: "GSPro", logo: "/logos/gspro.png" },
+  { name: "Garmin", logo: "/logos/garmin.png" },
+  { name: "Rapsodo", logo: "/logos/rapsodo.png" },
+  { name: "Bushnell", logo: "/logos/bushnell.png" },
+  { name: "Uneekor", logo: "/logos/uneekor.png" },
+  { name: "Foresight Sports", logo: "/logos/foresight.png" },
+  { name: "ProTee", logo: "/logos/protee.png" },
+  { name: "TrackMan", logo: "/logos/trackman.png" },
+  { name: "BenQ", logo: "/logos/benq.png" },
+  { name: "Optoma", logo: "/logos/optoma.png" },
 ];
 
 const testimonials = [
   {
     name: "Cliente en Écija",
-    role: "Simulador residencial",
-    text: "Nos ayudó a elegir los componentes correctos y a adaptar el simulador al espacio real que teníamos disponible.",
+    role: "Diseño e instalación residencial",
+    text: "Queríamos montar un simulador de golf en casa, pero no sabíamos por dónde empezar. Francisco nos diseñó e instaló una solución adaptada a nuestro espacio, presupuesto y necesidades, dejando todo listo para poder entrenar y jugar desde casa.",
   },
   {
     name: "Cliente en Jerez",
-    role: "Proyecto a medida",
-    text: "La orientación previa fue clave para evitar errores con medidas, pantalla, proyector y zona de golpeo.",
+    role: "Instalación de simulador en casa",
+    text: "Estoy empezando en el golf y tener un simulador en casa me parecía una opción inmejorable para entrenar y jugar cuando quisiera. Me decidí a montarlo y Francisco se encargó de todo: diseño, elección de componentes, instalación y configuración final.",
   },
   {
     name: "Consulta online",
     role: "Asesoramiento técnico",
-    text: "En una llamada aclaramos qué monitor de lanzamiento tenía sentido, qué presupuesto necesitaba y cómo plantear el proyecto por fases.",
+    text: "En una llamada aclaramos si tenía sentido empezar con Garmin, Rapsodo o subir a una opción más avanzada. Salí con una idea clara del presupuesto, las medidas necesarias y los siguientes pasos.",
   },
 ];
 
@@ -222,15 +190,15 @@ ${form.message}`
             </div>
 
             <a
-  href={WHATSAPP_URL}
-  target="_blank"
-  rel="noreferrer"
-  onClick={() => pushDataLayer("click_whatsapp", "header")}
-  className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-400"
->
-  <FaWhatsapp className="mr-2 text-lg" />
-  WhatsApp
-</a>
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => pushDataLayer("click_whatsapp", "header")}
+              className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-400"
+            >
+              <FaWhatsapp className="mr-2 text-lg" />
+              WhatsApp
+            </a>
           </div>
         </div>
       </header>
@@ -362,7 +330,10 @@ ${form.message}`
               <a
                 href="#formulario"
                 onClick={() =>
-                  pushDataLayer("click_solicitar_presupuesto", "personal_section")
+                  pushDataLayer(
+                    "click_solicitar_presupuesto",
+                    "personal_section"
+                  )
                 }
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
               >
@@ -374,7 +345,9 @@ ${form.message}`
                 href={CALENDLY_URL}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_calendly", "personal_section")}
+                onClick={() =>
+                  pushDataLayer("click_calendly", "personal_section")
+                }
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
                 <CalendarDays className="mr-2 h-5 w-5" />
@@ -385,27 +358,96 @@ ${form.message}`
         </div>
       </section>
 
+      {/* INSTALACIONES REALES */}
+      <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-600">
+              Instalaciones reales
+            </p>
+
+            <h2 className="mt-3 text-4xl font-black md:text-5xl">
+              Proyectos de simuladores de golf a medida
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-zinc-600">
+              Ejemplos reales de espacios transformados en zonas de práctica y
+              juego indoor. Usa el deslizador para ver el antes y después.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <ProjectCard
+              title="Simulador de golf en vivienda particular"
+              location="Écija, Sevilla"
+              before="/antes_1.jpg"
+              after="/despues_1.JPEG"
+              description="Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación."
+            />
+
+            <ProjectCard
+              title="Simulador de golf personalizado"
+              location="Jerez, Cádiz"
+              before="/antes_2.JPEG"
+              after="/despues_2.JPEG"
+              description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
+            />
+          </div>
+
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => pushDataLayer("click_whatsapp", "projects_section")}
+              className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-4 font-bold text-white transition hover:bg-green-400"
+            >
+              <FaWhatsapp className="mr-2 text-xl" />
+              Quiero algo parecido en mi espacio
+            </a>
+
+            <a
+              href="#formulario"
+              onClick={() =>
+                pushDataLayer(
+                  "click_solicitar_presupuesto",
+                  "projects_section"
+                )
+              }
+              className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-zinc-100"
+            >
+              Solicitar estudio gratuito
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* CARRUSEL TECNOLOGÍAS */}
       <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10">
         <div className="mx-auto max-w-7xl px-6">
           <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500">
-  Trabajamos con las principales marcas del sector
-</p>
+            Trabajamos con las principales marcas del sector
+          </p>
         </div>
 
-
         <div className="mt-8 flex overflow-hidden">
-  <div className="animate-[marquee_32s_linear_infinite] flex min-w-full shrink-0 items-center gap-5 px-4">
-    {[...technologies, ...technologies].map((item, index) => (
-      <TechnologyBadge
-        key={`${item.name}-${index}`}
-        name={item.name}
-        logo={item.logo}
-      />
-    ))}
-  </div>
-</div>
+          <div className="animate-[marquee_32s_linear_infinite] flex min-w-full shrink-0 items-center gap-5 px-4">
+            {[...technologies, ...technologies].map((item, index) => (
+              <TechnologyBadge
+                key={`${item.name}-${index}`}
+                name={item.name}
+                logo={item.logo}
+              />
+            ))}
+          </div>
+        </div>
 
+        <p className="mx-auto mt-6 max-w-4xl px-6 text-center text-xs leading-5 text-zinc-500">
+          Marcas mencionadas como tecnologías compatibles o habituales en
+          proyectos de simuladores. Golf en Casa no representa oficialmente a
+          estas marcas salvo indicación expresa.
+        </p>
 
         <style>{`
           @keyframes marquee {
@@ -545,44 +587,6 @@ ${form.message}`
         </div>
       </section>
 
-      {/* INSTALACIONES REALES */}
-      <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-3xl">
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-600">
-              Instalaciones reales
-            </p>
-
-            <h2 className="mt-3 text-4xl font-black md:text-5xl">
-              Proyectos de simuladores de golf a medida
-            </h2>
-
-            <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Ejemplos reales de espacios transformados en zonas de práctica y
-              juego indoor. Usa el deslizador para ver el antes y después.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
-            <ProjectCard
-              title="Simulador de golf en vivienda particular"
-              location="Écija, Sevilla"
-              before="/antes_1.jpg"
-              after="/despues_1.JPEG"
-              description="Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación."
-            />
-
-            <ProjectCard
-              title="Simulador de golf personalizado"
-              location="Jerez, Cádiz"
-              before="/antes_2.JPEG"
-              after="/despues_2.JPEG"
-              description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
-            />
-          </div>
-        </div>
-      </section>
-
       {/* OPINIONES */}
       <section className="border-y border-white/10 bg-white/[0.03] px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -651,7 +655,9 @@ ${form.message}`
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "contact_section")}
+                onClick={() =>
+                  pushDataLayer("click_whatsapp", "contact_section")
+                }
                 className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-400"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -1143,6 +1149,7 @@ function TechnologyBadge({ name, logo }) {
     </div>
   );
 }
+
 function TestimonialCard({ name, role, text }) {
   return (
     <article className="rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
