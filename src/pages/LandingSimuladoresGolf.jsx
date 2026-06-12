@@ -11,8 +11,14 @@ import {
   Home,
   Building2,
   Trophy,
-  Euro,
   HelpCircle,
+  Euro,
+  ClipboardCheck,
+  Star,
+  UserCheck,
+  MapPin,
+  Quote,
+  Camera,
 } from "lucide-react";
 
 import {
@@ -24,10 +30,72 @@ import {
 } from "react-icons/fa";
 
 const WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestra%20web%20y%20quiero%20información%20para%20montar%20un%20simulador%20de%20golf.%20Mi%20espacio%20es%20de%20aprox:%20";
+  "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestra%20web%20y%20quiero%20saber%20si%20mi%20espacio%20es%20apto%20para%20montar%20un%20simulador%20de%20golf.%20Mis%20medidas%20aproximadas%20son:%20";
 
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
+
+const technologies = [
+  {
+    name: "GSPro",
+    logo: "/logos/gspro.png",
+  },
+  {
+    name: "Garmin",
+    logo: "/logos/garmin.png",
+  },
+  {
+    name: "Rapsodo",
+    logo: "/logos/rapsodo.png",
+  },
+ {
+    name: "Bushnell",
+    logo: "/logos/bushnell.png",
+  },
+
+  {
+    name: "Uneekor",
+    logo: "/logos/uneekor.png",
+  },
+  {
+    name: "Foresight Sports",
+    logo: "/logos/foresight.png",
+  },
+  {
+    name: "ProTee",
+    logo: "/logos/protee.png",
+  },
+  {
+    name: "TrackMan",
+    logo: "/logos/trackman.png",
+  },
+  {
+    name: "BenQ",
+    logo: "/logos/benq.png",
+  },
+  {
+    name: "Optoma",
+    logo: "/logos/optoma.png",
+  },
+];
+
+const testimonials = [
+  {
+    name: "Cliente en Écija",
+    role: "Simulador residencial",
+    text: "Nos ayudó a elegir los componentes correctos y a adaptar el simulador al espacio real que teníamos disponible.",
+  },
+  {
+    name: "Cliente en Jerez",
+    role: "Proyecto a medida",
+    text: "La orientación previa fue clave para evitar errores con medidas, pantalla, proyector y zona de golpeo.",
+  },
+  {
+    name: "Consulta online",
+    role: "Asesoramiento técnico",
+    text: "En una llamada aclaramos qué monitor de lanzamiento tenía sentido, qué presupuesto necesitaba y cómo plantear el proyecto por fases.",
+  },
+];
 
 export default function LandingSimuladoresGolf() {
   const [form, setForm] = useState({
@@ -45,17 +113,26 @@ export default function LandingSimuladoresGolf() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const pushDataLayer = (event, location) => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event,
+      location,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: "form_submit",
-      form_name: "landing_presupuesto_simulador",
+      form_name: "landing_estudio_viabilidad_simulador",
     });
-setTimeout(() => {
-    const body = encodeURIComponent(
-      `Nombre: ${form.name}
+
+    setTimeout(() => {
+      const body = encodeURIComponent(
+        `Nombre: ${form.name}
 Email: ${form.email}
 Teléfono: ${form.phone}
 Ciudad / provincia: ${form.city}
@@ -65,30 +142,25 @@ Medidas del espacio: ${form.dimensions}
 
 Mensaje:
 ${form.message}`
-    );
+      );
 
-    window.location.href = `mailto:${EMAIL}?subject=Solicitud de presupuesto simulador de golf&body=${body}`;
-  }, 500);
-};
+      window.location.href = `mailto:${EMAIL}?subject=Solicitud de estudio gratuito de viabilidad - Simulador de golf&body=${body}`;
+    }, 500);
+  };
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       {/* WHATSAPP FLOTANTE */}
-     <a
-  href={WHATSAPP_URL}
-  target="_blank"
-  rel="noreferrer"
-  aria-label="Contactar por WhatsApp"
-  onClick={() => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "click_whatsapp",
-      location: "floating_button",
-    });
-  }}
-  className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
->
-  <FaWhatsapp />
-</a>
+      <a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Contactar por WhatsApp"
+        onClick={() => pushDataLayer("click_whatsapp", "floating_button")}
+        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
+      >
+        <FaWhatsapp />
+      </a>
 
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
@@ -113,6 +185,7 @@ ${form.message}`
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-red-500"
+                aria-label="YouTube Golf en Casa"
               >
                 <FaYoutube />
               </a>
@@ -122,6 +195,7 @@ ${form.message}`
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-pink-500"
+                aria-label="Instagram Golf en Casa"
               >
                 <FaInstagram />
               </a>
@@ -131,6 +205,7 @@ ${form.message}`
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-blue-500"
+                aria-label="Facebook Golf en Casa"
               >
                 <FaFacebook />
               </a>
@@ -140,6 +215,7 @@ ${form.message}`
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-white"
+                aria-label="TikTok Golf en Casa"
               >
                 <FaTiktok />
               </a>
@@ -149,13 +225,7 @@ ${form.message}`
   href={WHATSAPP_URL}
   target="_blank"
   rel="noreferrer"
-  onClick={() => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "click_whatsapp",
-      location: "header",
-    });
-  }}
+  onClick={() => pushDataLayer("click_whatsapp", "header")}
   className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-400"
 >
   <FaWhatsapp className="mr-2 text-lg" />
@@ -176,61 +246,56 @@ ${form.message}`
             </p>
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Instala un simulador de golf profesional sin errores de espacio,
-              tecnología ni presupuesto
+              Descubre si tu espacio es apto para montar un simulador de golf
+              profesional
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Diseñamos e instalamos simuladores de golf a medida para viviendas,
-              academias y negocios indoor en toda España. Te ayudamos a elegir
-              monitor de lanzamiento, pantalla, proyector, estructura, alfombra
-              y software según tu espacio y presupuesto.
+              Te ayudamos a validar medidas, elegir tecnología y evitar errores
+              antes de comprar monitor, pantalla, proyector, estructura,
+              alfombra o software. Diseñamos e instalamos simuladores de golf a
+              medida para viviendas, academias y negocios indoor en toda España.
             </p>
 
-
-
-<div className="mt-8 flex flex-col gap-4 sm:flex-row">
-  <a
-    href={WHATSAPP_URL}
-    target="_blank"
-    rel="noreferrer"
-    onClick={() => {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "click_whatsapp",
-        location: "hero",
-      });
-    }}
-    className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white shadow-2xl shadow-green-500/20 transition hover:bg-green-400"
-  >
-    <FaWhatsapp className="mr-2 text-xl" />
-    Hablar por WhatsApp
-  </a>
-
-  <a
-    href="#formulario"
-    className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
-  >
-    Recibir estudio gratuito
-    <ArrowRight className="ml-2 h-5 w-5" />
-  </a>
-</div>
-
-<p className="mt-4 text-sm text-zinc-400">
-  Respuesta rápida por WhatsApp. Puedes enviar medidas, fotos del espacio o dudas sobre componentes.
-</p>
-
-
-            <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
-              <Benefit text="Estudio personalizado" />
-              <Benefit text="Diseño a medida" />
-              <Benefit text="Presupuesto claro" />
-            </div>
-
-            <div className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
-              <MiniStat label="Desde" value="3.000 €" />
+            <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
+              <MiniStat label="Desde" value="3.000 €" highlighted />
               <MiniStat label="Servicio" value="Toda España" />
               <MiniStat label="Proyecto" value="Llave en mano" />
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#formulario"
+                onClick={() =>
+                  pushDataLayer("click_solicitar_presupuesto", "hero")
+                }
+                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300"
+              >
+                Descubrir si mi espacio es apto
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDataLayer("click_whatsapp", "hero")}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                <FaWhatsapp className="mr-2 text-xl" />
+                Enviar medidas por WhatsApp
+              </a>
+            </div>
+
+            <p className="mt-4 text-sm text-zinc-400">
+              Revisión inicial gratuita. Puedes enviar medidas, fotos del
+              espacio o dudas sobre componentes.
+            </p>
+
+            <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
+              <Benefit text="Viabilidad del espacio" />
+              <Benefit text="Diseño a medida" />
+              <Benefit text="Presupuesto claro" />
             </div>
           </div>
 
@@ -250,6 +315,104 @@ ${form.message}`
             </div>
           </div>
         </div>
+      </section>
+
+      {/* PRESENTACIÓN PERSONAL */}
+      <section className="border-b border-white/10 bg-white/[0.03]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-400/10 blur-2xl" />
+            <img
+              src="/francisco-golf-en-casa.png"
+              alt="Francisco Menacho, fundador de Golf en Casa"
+              className="relative w-full max-w-md rounded-[2rem] border border-white/10 object-cover shadow-2xl"
+            />
+          </div>
+
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Te acompaño en el proyecto
+            </p>
+
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Soy Francisco Menacho, fundador de Golf en Casa
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              Ayudo a golfistas, academias y negocios a diseñar simuladores de
+              golf realistas, seguros y adaptados al espacio disponible. Mi
+              objetivo es que no compres componentes incompatibles ni descubras
+              demasiado tarde que la sala, el proyector o el monitor no encajan.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <TrustPoint
+                icon={<UserCheck />}
+                title="Asesoramiento personalizado"
+                text="Reviso tu caso antes de recomendar material o presupuesto."
+              />
+              <TrustPoint
+                icon={<ShieldCheck />}
+                title="Menos errores de compra"
+                text="Validamos espacio, tecnología y configuración antes de invertir."
+              />
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#formulario"
+                onClick={() =>
+                  pushDataLayer("click_solicitar_presupuesto", "personal_section")
+                }
+                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
+              >
+                Solicitar estudio de viabilidad
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+
+              <a
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDataLayer("click_calendly", "personal_section")}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                <CalendarDays className="mr-2 h-5 w-5" />
+                Reservar llamada
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CARRUSEL TECNOLOGÍAS */}
+      <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500">
+  Trabajamos con tecnología compatible con las principales marcas del sector
+</p>
+        </div>
+
+
+        <div className="mt-8 flex overflow-hidden">
+  <div className="animate-[marquee_32s_linear_infinite] flex min-w-full shrink-0 items-center gap-5 px-4">
+    {[...technologies, ...technologies].map((item, index) => (
+      <TechnologyBadge
+        key={`${item.name}-${index}`}
+        name={item.name}
+        logo={item.logo}
+      />
+    ))}
+  </div>
+</div>
+
+
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}</style>
       </section>
 
       {/* PROBLEMAS */}
@@ -328,13 +491,13 @@ ${form.message}`
             <p className="mt-5 text-lg leading-8 text-zinc-300">
               El precio depende del monitor de lanzamiento, pantalla de impacto,
               proyector, estructura, alfombra, software, iluminación y montaje.
-              
             </p>
 
             <div className="mt-8 rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-6 text-sm leading-6 text-emerald-100">
               Cada sala es diferente: altura, ancho, fondo, posición de golpeo,
-              tipo de jugador y nivel de acabado pueden cambiar el presupuesto final.
-              Por eso revisamos primero las medidas y el objetivo del proyecto.
+              tipo de jugador y nivel de acabado pueden cambiar el presupuesto
+              final. Por eso revisamos primero las medidas y el objetivo del
+              proyecto.
             </div>
           </div>
 
@@ -361,6 +524,9 @@ ${form.message}`
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <a
             href="#formulario"
+            onClick={() =>
+              pushDataLayer("click_solicitar_presupuesto", "pricing")
+            }
             className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
           >
             Calcular mi presupuesto
@@ -370,6 +536,7 @@ ${form.message}`
             href={WHATSAPP_URL}
             target="_blank"
             rel="noreferrer"
+            onClick={() => pushDataLayer("click_whatsapp", "pricing")}
             className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
           >
             <MessageCircle className="mr-2 h-5 w-5" />
@@ -378,100 +545,122 @@ ${form.message}`
         </div>
       </section>
 
-      {/* PROYECTOS */}
+      {/* INSTALACIONES REALES */}
       <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-600">
-              Proyectos realizados
+              Instalaciones reales
             </p>
 
             <h2 className="mt-3 text-4xl font-black md:text-5xl">
-              Ejemplos reales de simuladores de golf
+              Proyectos de simuladores de golf a medida
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Proyectos de simuladores en viviendas y espacios personalizados.
-              Usa el deslizador para ver la transformación antes y después.
+              Ejemplos reales de espacios transformados en zonas de práctica y
+              juego indoor. Usa el deslizador para ver el antes y después.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-2">
             <ProjectCard
-              title="Simulador en vivienda particular"
-              location="Proyecto residencial"
+              title="Simulador de golf en vivienda particular"
+              location="Écija, Sevilla"
               before="/antes_1.jpg"
               after="/despues_1.JPEG"
               description="Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación."
             />
 
             <ProjectCard
-              title="Proyecto personalizado a medida"
-              location="Diseño adaptado al espacio"
+              title="Simulador de golf personalizado"
+              location="Jerez, Cádiz"
               before="/antes_2.JPEG"
               after="/despues_2.JPEG"
-              description="Diseño de una solución personalizada según las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
+              description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
             />
           </div>
         </div>
       </section>
 
-<section className="border-y border-white/10 bg-green-500/10 px-4 py-14 text-white sm:px-6 lg:px-8">
-  <div className="mx-auto max-w-7xl">
-    <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-      <div>
-        <p className="font-semibold uppercase tracking-[0.25em] text-green-400">
-          Contacto rápido
-        </p>
+      {/* OPINIONES */}
+      <section className="border-y border-white/10 bg-white/[0.03] px-4 py-20 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-3xl">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Opiniones
+            </p>
 
-        <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-          Envíanos fotos o medidas por WhatsApp y te orientamos
-        </h2>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Clientes que ya han recibido asesoramiento para su simulador
+            </h2>
 
-        <p className="mt-5 text-lg leading-8 text-zinc-300">
-          Para valorar un simulador de golf, lo más útil es conocer ancho, fondo, altura y uso previsto. Si tienes fotos del espacio, también puedes enviarlas directamente por WhatsApp.
-        </p>
-      </div>
+            <p className="mt-5 text-zinc-300">
+              La clave no es solo comprar componentes, sino diseñar una solución
+              que encaje con el espacio, el presupuesto y el uso real.
+            </p>
+          </div>
 
-      <div className="rounded-[2rem] border border-green-400/20 bg-zinc-950 p-6">
-        <div className="grid gap-4">
-          {[
-            "Medidas aproximadas: ancho x fondo x alto",
-            "Fotos o vídeo del espacio",
-            "Uso previsto: casa, academia o negocio",
-            "Presupuesto aproximado si ya lo tienes claro",
-          ].map((item) => (
-            <div
-              key={item}
-              className="flex items-center gap-3 rounded-2xl bg-white/5 p-4 text-sm text-zinc-200 sm:text-base"
-            >
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-green-400" />
-              <span>{item}</span>
-            </div>
-          ))}
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {testimonials.map((item) => (
+              <TestimonialCard key={item.name} {...item} />
+            ))}
+          </div>
         </div>
+      </section>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() => {
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-              event: "click_whatsapp",
-              location: "contact_section",
-            });
-          }}
-          className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-400"
-        >
-          <FaWhatsapp className="mr-2 text-xl" />
-          Enviar información por WhatsApp
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
+      {/* CONTACTO RÁPIDO */}
+      <section className="border-y border-white/10 bg-green-500/10 px-4 py-14 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="font-semibold uppercase tracking-[0.25em] text-green-400">
+                Contacto rápido
+              </p>
 
+              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+                Envíanos fotos o medidas por WhatsApp y te orientamos
+              </h2>
+
+              <p className="mt-5 text-lg leading-8 text-zinc-300">
+                Para valorar un simulador de golf, lo más útil es conocer
+                ancho, fondo, altura y uso previsto. Si tienes fotos del
+                espacio, también puedes enviarlas directamente por WhatsApp.
+              </p>
+            </div>
+
+            <div className="rounded-[2rem] border border-green-400/20 bg-zinc-950 p-6">
+              <div className="grid gap-4">
+                {[
+                  "Medidas aproximadas: ancho x fondo x alto",
+                  "Fotos o vídeo del espacio",
+                  "Uso previsto: casa, academia o negocio",
+                  "Presupuesto aproximado si ya lo tienes claro",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 rounded-2xl bg-white/5 p-4 text-sm text-zinc-200 sm:text-base"
+                  >
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-green-400" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDataLayer("click_whatsapp", "contact_section")}
+                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-400"
+              >
+                <FaWhatsapp className="mr-2 text-xl" />
+                Enviar información por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FORMULARIO */}
       <section
@@ -481,22 +670,23 @@ ${form.message}`
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
-              Solicita tu estudio
+              Estudio gratuito de viabilidad
             </p>
 
             <h2 className="mt-3 text-4xl font-black md:text-5xl">
-              Cuéntanos tu proyecto de simulador
+              Te digo si tu sala es apta antes de que inviertas en material
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              Rellena estos datos básicos y te orientaremos sobre la mejor
-              solución para tu espacio, presupuesto y objetivo.
+              Rellena estos datos básicos y revisaremos si el espacio tiene
+              sentido para montar un simulador, qué rango de presupuesto puede
+              encajar y qué componentes deberías valorar.
             </p>
 
             <div className="mt-8 space-y-4 text-zinc-300">
-              <Benefit text="Respuesta personalizada" />
               <Benefit text="Revisión de medidas y viabilidad" />
-              <Benefit text="Opciones según presupuesto" />
+              <Benefit text="Recomendación según presupuesto" />
+              <Benefit text="Respuesta personalizada" />
             </div>
           </div>
 
@@ -573,6 +763,7 @@ ${form.message}`
                 name="dimensions"
                 value={form.dimensions}
                 onChange={handleChange}
+                required
                 placeholder="Medidas aproximadas: ancho x fondo x alto"
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
               />
@@ -605,9 +796,13 @@ ${form.message}`
               type="submit"
               className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-400"
             >
-              Enviar solicitud de presupuesto
+              Recibir estudio gratuito de viabilidad
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
+
+            <p className="mt-4 text-center text-xs text-zinc-400">
+              También puedes enviar fotos o medidas directamente por WhatsApp.
+            </p>
           </form>
         </div>
       </section>
@@ -651,8 +846,8 @@ ${form.message}`
               Dudas habituales antes de montar un simulador de golf
             </h2>
             <p className="mt-5 text-zinc-300">
-              Resolvemos las preguntas más importantes sobre espacio, presupuesto,
-              monitores de lanzamiento, proyectores e instalación.
+              Resolvemos las preguntas más importantes sobre espacio,
+              presupuesto, monitores de lanzamiento, proyectores e instalación.
             </p>
           </div>
 
@@ -685,7 +880,7 @@ ${form.message}`
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA FINAL */}
       <section
         id="presupuesto"
         className="border-t border-white/10 bg-emerald-400 text-zinc-950"
@@ -693,44 +888,39 @@ ${form.message}`
         <div className="mx-auto max-w-7xl px-6 py-16 lg:flex lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">
-              Solicita tu presupuesto o asesoramiento
+              ¿Quieres saber si tu espacio es válido?
             </h2>
             <p className="mt-3 max-w-2xl text-zinc-800">
-              Cuéntanos qué espacio tienes y qué tipo de simulador quieres
+              Cuéntanos qué medidas tienes y qué tipo de simulador quieres
               montar. Te orientaremos con la mejor solución.
             </p>
           </div>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:mt-0">
-  <a
-    href={WHATSAPP_URL}
-    target="_blank"
-    rel="noreferrer"
-    onClick={() => {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "click_whatsapp",
-        location: "final_cta",
-      });
-    }}
-    className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
-  >
-    <FaWhatsapp className="mr-2 text-xl" />
-    Consultar por WhatsApp
-  </a>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => pushDataLayer("click_whatsapp", "final_cta")}
+              className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
+            >
+              <FaWhatsapp className="mr-2 text-xl" />
+              Consultar por WhatsApp
+            </a>
 
-  <a
-    href={CALENDLY_URL}
-    target="_blank"
-    rel="noreferrer"
-    className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-semibold hover:bg-emerald-300"
-  >
-    <CalendarDays className="mr-2 h-5 w-5" />
-    Reservar llamada
-  </a>
-</div>
+            <a
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => pushDataLayer("click_calendly", "final_cta")}
+              className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-semibold hover:bg-emerald-300"
+            >
+              <CalendarDays className="mr-2 h-5 w-5" />
+              Reservar llamada
+            </a>
+          </div>
         </div>
-            </section>
+      </section>
 
       {/* FOOTER MARCA */}
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-12 text-center">
@@ -741,9 +931,7 @@ ${form.message}`
             className="mx-auto h-24 w-auto"
           />
 
-          <h3 className="mt-6 text-2xl font-bold text-white">
-            Golf en Casa
-          </h3>
+          <h3 className="mt-6 text-2xl font-bold text-white">Golf en Casa</h3>
 
           <p className="mt-3 text-zinc-400">
             Simuladores de Golf · Consultoría · Instalación · Formación
@@ -813,10 +1001,21 @@ ${form.message}`
     </main>
   );
 }
-function MiniStat({ label, value }) {
+
+function MiniStat({ label, value, highlighted = false }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-      <span className="block text-xs uppercase tracking-[0.2em] text-zinc-400">
+    <div
+      className={`rounded-2xl border px-4 py-3 ${
+        highlighted
+          ? "border-emerald-400/20 bg-emerald-400/10"
+          : "border-white/10 bg-white/5"
+      }`}
+    >
+      <span
+        className={`block text-xs uppercase tracking-[0.2em] ${
+          highlighted ? "text-emerald-300" : "text-zinc-400"
+        }`}
+      >
         {label}
       </span>
       <strong className="mt-1 block text-lg text-white">{value}</strong>
@@ -835,16 +1034,26 @@ function PriceCard({ title, price, text, featured = false }) {
     >
       <div
         className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl ${
-          featured ? "bg-zinc-950 text-emerald-300" : "bg-emerald-400/10 text-emerald-300"
+          featured
+            ? "bg-zinc-950 text-emerald-300"
+            : "bg-emerald-400/10 text-emerald-300"
         }`}
       >
         <Euro className="h-6 w-6" />
       </div>
       <h3 className="text-xl font-bold">{title}</h3>
-      <p className={`mt-3 text-2xl font-black ${featured ? "text-zinc-950" : "text-white"}`}>
+      <p
+        className={`mt-3 text-2xl font-black ${
+          featured ? "text-zinc-950" : "text-white"
+        }`}
+      >
         {price}
       </p>
-      <p className={`mt-4 text-sm leading-6 ${featured ? "text-zinc-800" : "text-zinc-300"}`}>
+      <p
+        className={`mt-4 text-sm leading-6 ${
+          featured ? "text-zinc-800" : "text-zinc-300"
+        }`}
+      >
         {text}
       </p>
     </article>
@@ -910,19 +1119,75 @@ function Step({ number, title, text }) {
   );
 }
 
+function TrustPoint({ icon, title, text }) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+        {React.cloneElement(icon, { className: "h-5 w-5" })}
+      </div>
+      <h3 className="font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-300">{text}</p>
+    </div>
+  );
+}
+
+function TechnologyBadge({ name, logo }) {
+  return (
+    <div className="flex h-24 w-56 shrink-0 items-center justify-center px-6 py-3">
+      <img
+        src={logo}
+        alt={name}
+        className="max-h-16 max-w-[180px] object-contain opacity-100 brightness-110 contrast-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.75)]"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+function TestimonialCard({ name, role, text }) {
+  return (
+    <article className="rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
+      <div className="flex items-center gap-1 text-emerald-400">
+        {[1, 2, 3, 4, 5].map((item) => (
+          <Star key={item} className="h-4 w-4 fill-current" />
+        ))}
+      </div>
+
+      <Quote className="mt-6 h-8 w-8 text-emerald-400/60" />
+
+      <p className="mt-4 leading-7 text-zinc-300">“{text}”</p>
+
+      <div className="mt-6 border-t border-white/10 pt-5">
+        <p className="font-bold text-white">{name}</p>
+        <p className="mt-1 text-sm text-zinc-400">{role}</p>
+      </div>
+    </article>
+  );
+}
+
 function ProjectCard({ title, location, before, after, description }) {
   return (
     <article className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-50 shadow-xl">
       <BeforeAfterSlider before={before} after={after} alt={title} />
 
       <div className="p-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
+        <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
+          <MapPin className="h-4 w-4" />
           {location}
         </p>
 
         <h3 className="mt-3 text-2xl font-black">{title}</h3>
 
         <p className="mt-4 leading-7 text-zinc-600">{description}</p>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+            <Camera className="h-3 w-3" />
+            Antes / después real
+          </span>
+          <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700">
+            Diseño a medida
+          </span>
+        </div>
       </div>
     </article>
   );
@@ -930,6 +1195,8 @@ function ProjectCard({ title, location, before, after, description }) {
 
 function BeforeAfterSlider({ before, after, alt }) {
   const [position, setPosition] = useState(50);
+
+  const safePosition = Math.min(Math.max(Number(position), 1), 99);
 
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200">
@@ -941,14 +1208,14 @@ function BeforeAfterSlider({ before, after, alt }) {
 
       <div
         className="absolute inset-0 overflow-hidden"
-        style={{ width: `${position}%` }}
+        style={{ width: `${safePosition}%` }}
       >
         <img
           src={after}
           alt={`${alt} después`}
           className="h-full w-full object-cover"
           style={{
-            width: `${100 / (position / 100)}%`,
+            width: `${100 / (safePosition / 100)}%`,
             maxWidth: "none",
           }}
         />
@@ -964,14 +1231,14 @@ function BeforeAfterSlider({ before, after, alt }) {
 
       <div
         className="absolute bottom-0 top-0 z-10 w-1 bg-white shadow-2xl"
-        style={{ left: `${position}%` }}
+        style={{ left: `${safePosition}%` }}
       />
 
       <input
         type="range"
-        min="0"
-        max="100"
-        value={position}
+        min="1"
+        max="99"
+        value={safePosition}
         onChange={(e) => setPosition(e.target.value)}
         className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
         aria-label="Comparador antes y después"
@@ -979,7 +1246,7 @@ function BeforeAfterSlider({ before, after, alt }) {
 
       <div
         className="pointer-events-none absolute top-1/2 z-30 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white bg-black/70 text-sm font-black text-white shadow-xl"
-        style={{ left: `${position}%` }}
+        style={{ left: `${safePosition}%` }}
       >
         ↔
       </div>
