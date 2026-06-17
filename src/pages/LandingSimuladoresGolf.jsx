@@ -92,11 +92,18 @@ export default function LandingSimuladoresGolf() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "form_submit",
-      form_name: "landing_estudio_viabilidad_simulador",
-    });
+   window.dataLayer = window.dataLayer || [];
+
+window.dataLayer.push({
+  event: "generate_lead",
+  form_name: "landing_estudio_viabilidad_simulador",
+  lead_type: "formulario_estudio_viabilidad",
+});
+
+window.dataLayer.push({
+  event: "form_submit",
+  form_name: "landing_estudio_viabilidad_simulador",
+});
 
     setTimeout(() => {
       const body = encodeURIComponent(
