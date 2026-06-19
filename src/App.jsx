@@ -10,8 +10,6 @@ import {
 } from "react-icons/fa";
 
 import CookieBanner from "./components/CookieBanner";
-import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
-
 
 
 const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
@@ -21,7 +19,7 @@ const email = 'info@golfencasa.net';
 const whatsappNumber = '34678107234';
 const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-const amazonStoreUrl = 'https://amzn.eu/d/0624cyZy';
+const amazonStoreUrl = 'https://amzn.eu/d/0ihONIw7';
 
 const services = [
   {
@@ -206,18 +204,11 @@ export default function GolfSimulatorLanding() {
   const mailtoHref = `mailto:${email}?subject=Solicitud de presupuesto simulador de golf&body=${encodeURIComponent(
     `Nombre: ${form.name}\nEmail: ${form.email}\nTeléfono: ${form.phone}\nTipo de espacio: ${form.space}\nPresupuesto estimado: ${form.budget}\n\nMensaje:\n${form.message}`
   )}`;
-  if (window.location.pathname === "/instalacion-simuladores-golf") {
-  return (
-    <div className="min-h-screen bg-zinc-950 p-10 text-white">
-      <h1 className="text-4xl font-bold text-emerald-400">
-        Landing funcionando
-      </h1>
-      <p className="mt-4">
-        Si ves esto, el problema está dentro del archivo LandingSimuladoresGolf.jsx.
-      </p>
-    </div>
-  );
-}
+  
+
+
+
+
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">

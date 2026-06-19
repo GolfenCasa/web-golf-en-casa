@@ -8,6 +8,7 @@ import AvisoLegal from './pages/AvisoLegal.jsx';
 import PoliticaPrivacidad from './pages/PoliticaPrivacidad.jsx';
 import PoliticaCookies from './pages/PoliticaCookies.jsx';
 import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
+import PrimeDayAmazonGolfEnCasa from "./pages/PrimeDayAmazonGolfEnCasa";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -21,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/aviso-legal" element={<AvisoLegal />} />
         <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
         <Route path="/politica-cookies" element={<PoliticaCookies />} />
+        <Route path="/prime-day-amazon" element={<PrimeDayAmazonGolfEnCasa />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
