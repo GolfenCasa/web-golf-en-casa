@@ -9,7 +9,7 @@ import {
   FaWhatsapp
 } from "react-icons/fa";
 
-import CookieBanner from "./components/CookieBanner";
+
 
 
 const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
@@ -990,7 +990,7 @@ export default function GolfSimulatorLanding() {
 
   </div>
       </footer>
-      <CookieBanner />
+      
     </div>
   );
 }
