@@ -162,7 +162,7 @@ ${form.message}`
             "https://www.golfencasa.net/despues_2.JPEG"
           ],
           description:
-            "Diseño, consultoría e instalación de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España.",
+            "Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España.",
           telephone: "+34678107234",
           email: "info@golfencasa.net",
           areaServed: {
@@ -182,7 +182,7 @@ ${form.message}`
           url: "https://www.golfencasa.net/instalacion-simuladores-golf",
           name: "Instalación de simuladores de golf en España",
           description:
-            "Servicio de diseño e instalación de simuladores de golf para casa, academias y negocios indoor en toda España.",
+            "Servicio de diseño e instalación llave en mano de simuladores de golf para casa, academias y negocios indoor en toda España.",
           primaryImageOfPage: {
             "@type": "ImageObject",
             url: "https://www.golfencasa.net/despues_1.JPEG"
@@ -230,7 +230,7 @@ ${form.message}`
               acceptedAnswer: {
                 "@type": "Answer",
                 text:
-                  "Una instalación básica puede partir de unos 3.000 euros, una intermedia suele estar entre 6.000 y 10.000 euros, y una premium puede superar los 10.000 euros."
+                  "El precio depende del espacio, el nivel de acabado y la tecnología elegida. Como orientación, una instalación sencilla puede partir de unos 3.000 euros, una intermedia suele estar entre 6.000 y 10.000 euros, y una premium puede superar los 10.000 euros."
               }
             },
             {
@@ -344,21 +344,17 @@ ${form.message}`
             </p>
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Descubre si tu espacio es apto para montar un simulador de golf
-              profesional
+              Convierte tu espacio en un simulador de golf profesional listo para jugar
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Te ayudamos a validar medidas, elegir tecnología y evitar errores
-              antes de comprar monitor, pantalla, proyector, estructura,
-              alfombra o software. Diseñamos e instalamos simuladores de golf a
-              medida para viviendas, academias y negocios indoor en toda España.
+              Diseñamos e instalamos simuladores de golf llave en mano para que puedas entrenar, jugar y disfrutar del golf en casa los 365 días del año. Validamos tu espacio, seleccionamos la tecnología adecuada y nos encargamos del proyecto completo.
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
-              <MiniStat label="Desde" value="3.000 €" highlighted />
-              <MiniStat label="Servicio" value="Toda España" />
-              <MiniStat label="Proyecto" value="Llave en mano" />
+              <MiniStat label="Servicio" value="Llave en mano" highlighted />
+              <MiniStat label="Cobertura" value="Toda España" />
+              <MiniStat label="Diseño" value="A medida" />
             </div>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -369,7 +365,7 @@ ${form.message}`
                 }
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300"
               >
-                Descubrir si mi espacio es apto
+Solicitar diseño personalizado
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
 
@@ -386,14 +382,13 @@ ${form.message}`
             </div>
 
             <p className="mt-4 text-sm text-zinc-400">
-              Revisión inicial gratuita. Puedes enviar medidas, fotos del
-              espacio o dudas sobre componentes.
+Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sobre componentes antes de invertir en material.
             </p>
 
             <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
-              <Benefit text="Viabilidad del espacio" />
-              <Benefit text="Diseño a medida" />
-              <Benefit text="Presupuesto claro" />
+              <Benefit text="No vendemos kits estándar" />
+              <Benefit text="Tecnología adaptada a tu espacio" />
+              <Benefit text="Instalación profesional" />
             </div>
           </div>
 
@@ -437,22 +432,19 @@ ${form.message}`
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              Ayudo a golfistas, academias y negocios a diseñar simuladores de
-              golf realistas, seguros y adaptados al espacio disponible. Mi
-              objetivo es que no compres componentes incompatibles ni descubras
-              demasiado tarde que la sala, el proyector o el monitor no encajan.
+              Soy ingeniero, creador de contenido especializado en simuladores de golf y responsable directo de cada proyecto de Golf en Casa. Mi objetivo no es venderte un monitor concreto, sino diseñar la solución que mejor encaje con tu espacio, presupuesto y forma de jugar.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <TrustPoint
                 icon={<UserCheck />}
-                title="Asesoramiento personalizado"
-                text="Reviso tu caso antes de recomendar material o presupuesto."
+                title="Diseño independiente"
+                text="Seleccionamos la tecnología que mejor encaja, no un kit cerrado."
               />
               <TrustPoint
                 icon={<ShieldCheck />}
-                title="Menos errores de compra"
-                text="Validamos espacio, tecnología y configuración antes de invertir."
+                title="Proyecto completo"
+                text="Te acompaño desde la idea inicial hasta la instalación final."
               />
             </div>
 
@@ -484,6 +476,59 @@ ${form.message}`
                 Reservar llamada
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* POR QUÉ GOLF EN CASA */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Por qué Golf en Casa
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              No vendemos cajas: diseñamos tu simulador ideal
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              Un simulador de golf no es solo comprar un monitor de lanzamiento. Para que funcione bien hay que combinar medidas, seguridad, pantalla, proyector, alfombra, software, iluminación y experiencia de juego.
+            </p>
+            <p className="mt-4 text-lg leading-8 text-zinc-300">
+              Por eso cada proyecto se diseña desde cero según el espacio, el presupuesto y el uso real: vivienda, academia, club o negocio indoor.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AdvantageCard
+              icon={<Ruler />}
+              title="Aprovechamos tu espacio"
+              text="Analizamos altura, ancho, fondo y zona de golpeo antes de decidir componentes."
+            />
+            <AdvantageCard
+              icon={<Monitor />}
+              title="Tecnología compatible"
+              text="Monitor, proyector, pantalla y software pensados para funcionar juntos."
+            />
+            <AdvantageCard
+              icon={<Wrench />}
+              title="Instalación llave en mano"
+              text="Nos ocupamos del montaje, configuración y pruebas para dejarlo listo para jugar."
+            />
+            <AdvantageCard
+              icon={<Trophy />}
+              title="Experiencia realista"
+              text="Diseñamos la sala pensando en entrenar, jugar y disfrutar durante años."
+            />
+            <AdvantageCard
+              icon={<ShieldCheck />}
+              title="Menos riesgo"
+              text="Evitamos compras incompatibles, errores de medida y soluciones poco seguras."
+            />
+            <AdvantageCard
+              icon={<MessageCircle />}
+              title="Soporte cercano"
+              text="Tienes una persona de referencia antes, durante y después del proyecto."
+            />
           </div>
         </div>
       </section>
@@ -522,6 +567,23 @@ ${form.message}`
               after="/despues_2.JPEG"
               description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
             />
+          </div>
+
+          <div className="mt-12 rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-sm">
+            <p className="font-semibold uppercase tracking-[0.2em] text-emerald-600">
+              Zonas donde ya trabajamos
+            </p>
+            <h3 className="mt-3 text-2xl font-black">
+              Instalaciones y proyectos en varias provincias de España
+            </h3>
+            <p className="mt-3 leading-7 text-zinc-600">
+              Realizamos proyectos a medida para clientes particulares, academias y negocios indoor. Podemos desplazarnos y estudiar instalaciones en toda España.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {["Sevilla", "Cádiz", "Jerez", "Sotogrande", "Málaga", "Marbella", "Madrid", "Toda España"].map((city) => (
+                <CityPill key={city} city={city} />
+              ))}
+            </div>
           </div>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -627,7 +689,7 @@ ${form.message}`
       <section className="border-y border-white/10 bg-white/[0.03]">
         <div className="mx-auto max-w-7xl px-6 py-20">
           <h2 className="text-3xl font-bold sm:text-4xl">
-            Nos adaptamos al tipo de proyecto
+Simuladores para casa, academias y negocios
           </h2>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -675,9 +737,9 @@ ${form.message}`
 
           <div className="grid gap-5 md:grid-cols-3">
             <PriceCard
-              title="Básico"
+              title="Inicial"
               price="Desde 3.000 €"
-              text="Para empezar a practicar en casa con una configuración sencilla y escalable."
+              text="Configuraciones sencillas para empezar a practicar, siempre sujetas a medidas y componentes."
             />
             <PriceCard
               featured
@@ -688,7 +750,7 @@ ${form.message}`
             <PriceCard
               title="Premium"
               price="10.000 €+"
-              text="Instalaciones llave en mano con mayor acabado, precisión y experiencia."
+              text="Instalaciones llave en mano con mayor acabado, precisión, integración y experiencia."
             />
           </div>
         </div>
@@ -726,12 +788,11 @@ ${form.message}`
             </p>
 
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              Clientes que ya han recibido asesoramiento para su simulador
+Clientes que ya han confiado en Golf en Casa
             </h2>
 
             <p className="mt-5 text-zinc-300">
-              La clave no es solo comprar componentes, sino diseñar una solución
-              que encaje con el espacio, el presupuesto y el uso real.
+              La clave no es solo comprar componentes, sino diseñar e instalar una solución que encaje con el espacio, el presupuesto y el uso real.
             </p>
           </div>
 
@@ -823,6 +884,15 @@ ${form.message}`
               <Benefit text="Revisión de medidas y viabilidad" />
               <Benefit text="Recomendación según presupuesto" />
               <Benefit text="Respuesta personalizada" />
+            </div>
+
+            <div className="mt-8 rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-6">
+              <h3 className="text-xl font-bold text-white">¿Qué ocurre después?</h3>
+              <div className="mt-5 space-y-4">
+                <NextStep number="1" text="Reviso tus medidas, fotos y objetivo del proyecto." />
+                <NextStep number="2" text="Te indico si el espacio es viable y qué opciones encajan." />
+                <NextStep number="3" text="Si tiene sentido, preparamos una propuesta personalizada." />
+              </div>
             </div>
           </div>
 
@@ -1024,11 +1094,10 @@ ${form.message}`
         <div className="mx-auto max-w-7xl px-6 py-16 lg:flex lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">
-              ¿Quieres saber si tu espacio es válido?
+¿Quieres diseñar tu simulador de golf ideal?
             </h2>
             <p className="mt-3 max-w-2xl text-zinc-800">
-              Cuéntanos qué medidas tienes y qué tipo de simulador quieres
-              montar. Te orientaremos con la mejor solución.
+              Cuéntanos qué medidas tienes y qué tipo de experiencia quieres crear. Te orientaremos con una solución realista, segura y adaptada a tu presupuesto.
             </p>
           </div>
 
@@ -1041,7 +1110,7 @@ ${form.message}`
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
             >
               <FaWhatsapp className="mr-2 text-xl" />
-              Consultar por WhatsApp
+Enviar medidas por WhatsApp
             </a>
 
             <a
@@ -1135,6 +1204,38 @@ ${form.message}`
         </div>
       </footer>
     </main>
+  );
+}
+
+function AdvantageCard({ icon, title, text }) {
+  return (
+    <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
+      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+        {React.cloneElement(icon, { className: "h-6 w-6" })}
+      </div>
+      <h3 className="text-lg font-bold text-white">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-zinc-300">{text}</p>
+    </article>
+  );
+}
+
+function CityPill({ city }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-800 shadow-sm">
+      <MapPin className="h-4 w-4 text-emerald-600" />
+      {city}
+    </span>
+  );
+}
+
+function NextStep({ number, text }) {
+  return (
+    <div className="flex gap-3 text-sm leading-6 text-emerald-50">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-400 font-black text-zinc-950">
+        {number}
+      </span>
+      <span>{text}</span>
+    </div>
   );
 }
 
