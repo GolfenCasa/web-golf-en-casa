@@ -8,6 +8,7 @@ import {
   FaTiktok,
   FaWhatsapp
 } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 
 
@@ -208,10 +209,46 @@ export default function GolfSimulatorLanding() {
 
 
 
-
-
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+<Helmet>
+      <title>Golf en Casa | Simuladores de golf y consultoría</title>
+      <meta
+        name="description"
+        content="Diseño, consultoría e instalación de simuladores de golf para casa, academias y negocios indoor. Te ayudamos a elegir monitor, pantalla, proyector, software y componentes."
+      />
+
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://www.golfencasa.net/#organization",
+              name: "Golf en Casa",
+              url: "https://www.golfencasa.net",
+              logo: "https://www.golfencasa.net/logo.png",
+              sameAs: [
+                "https://youtube.com/@Golf_en_Casa",
+                "https://instagram.com/golf.en.casa/",
+                "https://www.facebook.com/GolfenCasaSimuladores/",
+                "https://www.tiktok.com/@golf_en_casa",
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.golfencasa.net/#website",
+              url: "https://www.golfencasa.net",
+              name: "Golf en Casa",
+              publisher: {
+                "@id": "https://www.golfencasa.net/#organization",
+              },
+            },
+          ],
+        })}
+      </script>
+    </Helmet>
+
         <a
       href={whatsappUrl}
       target="_blank"

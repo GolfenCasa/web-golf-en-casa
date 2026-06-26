@@ -27,6 +27,7 @@ import {
   FaTiktok,
   FaWhatsapp,
 } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 const WHATSAPP_URL =
   "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestra%20web%20y%20quiero%20saber%20si%20mi%20espacio%20es%20apto%20para%20montar%20un%20simulador%20de%20golf.%20Mis%20medidas%20aproximadas%20son:%20";
@@ -125,6 +126,128 @@ ${form.message}`
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
+      <Helmet>
+  <title>Instalación de simuladores de golf en España | Golf en Casa</title>
+  <meta
+    name="description"
+    content="Diseño e instalación de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España."
+  />
+
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://www.golfencasa.net/#organization",
+          name: "Golf en Casa",
+          url: "https://www.golfencasa.net",
+          logo: "https://www.golfencasa.net/logo.png",
+          sameAs: [
+            "https://youtube.com/@Golf_en_Casa",
+            "https://instagram.com/golf.en.casa/",
+            "https://www.facebook.com/GolfenCasaSimuladores/",
+            "https://www.tiktok.com/@golf_en_casa"
+          ]
+        },
+        {
+          "@type": "HomeAndConstructionBusiness",
+          "@id": "https://www.golfencasa.net/#business",
+          name: "Golf en Casa",
+          url: "https://www.golfencasa.net",
+          logo: "https://www.golfencasa.net/logo.png",
+          image: [
+            "https://www.golfencasa.net/francisco-golf-en-casa.png",
+            "https://www.golfencasa.net/despues_1.JPEG",
+            "https://www.golfencasa.net/despues_2.JPEG"
+          ],
+          description:
+            "Diseño, consultoría e instalación de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España.",
+          telephone: "+34678107234",
+          email: "info@golfencasa.net",
+          areaServed: {
+            "@type": "Country",
+            name: "España"
+          },
+          priceRange: "€€€",
+          founder: {
+            "@type": "Person",
+            name: "Francisco Menacho"
+          }
+        },
+        {
+          "@type": "WebPage",
+          "@id":
+            "https://www.golfencasa.net/instalacion-simuladores-golf/#webpage",
+          url: "https://www.golfencasa.net/instalacion-simuladores-golf",
+          name: "Instalación de simuladores de golf en España",
+          description:
+            "Servicio de diseño e instalación de simuladores de golf para casa, academias y negocios indoor en toda España.",
+          primaryImageOfPage: {
+            "@type": "ImageObject",
+            url: "https://www.golfencasa.net/despues_1.JPEG"
+          }
+        },
+        {
+          "@type": "Service",
+          "@id":
+            "https://www.golfencasa.net/instalacion-simuladores-golf/#service",
+          name: "Diseño e instalación de simuladores de golf",
+          provider: {
+            "@id": "https://www.golfencasa.net/#business"
+          },
+          areaServed: {
+            "@type": "Country",
+            name: "España"
+          },
+          serviceType: "Instalación de simuladores de golf",
+          description:
+            "Diseño del espacio, selección de tecnología, pantalla de impacto, proyector, monitor de lanzamiento, estructura, alfombra, software e instalación completa de simuladores de golf.",
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "EUR",
+            price: "3000",
+            availability: "https://schema.org/InStock",
+            url: "https://www.golfencasa.net/instalacion-simuladores-golf"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://www.golfencasa.net/instalacion-simuladores-golf/#faq",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "¿Qué altura mínima necesito para un simulador de golf?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text:
+                  "Depende de tu estatura, swing y palo más largo. Antes de comprar material conviene revisar altura, ancho, fondo, zona de bola y seguridad."
+              }
+            },
+            {
+              "@type": "Question",
+              name: "¿Cuánto cuesta un simulador de golf en casa?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text:
+                  "Una instalación básica puede partir de unos 3.000 euros, una intermedia suele estar entre 6.000 y 10.000 euros, y una premium puede superar los 10.000 euros."
+              }
+            },
+            {
+              "@type": "Question",
+              name: "¿Instaláis simuladores de golf en toda España?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text:
+                  "Sí. Golf en Casa ofrece consultoría, diseño, selección de componentes e instalación completa de simuladores de golf según la ubicación y el tipo de proyecto."
+              }
+            }
+          ]
+        }
+      ]
+    })}
+  </script>
+</Helmet>
       {/* WHATSAPP FLOTANTE */}
       <a
         href={WHATSAPP_URL}
