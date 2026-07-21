@@ -360,7 +360,7 @@ ${form.message}`
             <div className="mt-5 flex flex-wrap gap-3 text-sm text-zinc-300">
               <TrustBadge icon={<ShieldCheck />} text="Diseño independiente" />
               <TrustBadge icon={<UserCheck />} text="Trato directo con el responsable del proyecto" />
-              <TrustBadge icon={<Wrench />} text="Instalación, configuración y soporte" />
+              <TrustBadge icon={<Wrench />} text="Instalación, formación y soporte continuo" />
             </div>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -1094,8 +1094,68 @@ Descubre si tu espacio es apto antes de invertir en material
           <Step
             number="04"
             title="Formación y soporte"
-            text="Te explicamos el funcionamiento y seguimos disponibles para ajustes y evolución futura."
+            text="Te explicamos el funcionamiento y puedes continuar acompañado con soporte y mantenimiento opcional."
           />
+        </div>
+      </section>
+
+      {/* GOLF EN CASA CARE */}
+      <section className="border-y border-white/10 bg-white/[0.03]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+              Después de la instalación
+            </p>
+
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Tu simulador seguirá acompañado con Golf en Casa CARE
+            </h2>
+
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              La instalación es solo el comienzo. Con nuestro servicio opcional CARE
+              podrás contar con mantenimiento, asistencia y soporte para conservar el
+              sistema actualizado, optimizado y listo para jugar.
+            </p>
+
+            <p className="mt-4 text-sm leading-6 text-zinc-400">
+              CARE se contrata de forma independiente y se adapta al tipo de instalación,
+              equipamiento y nivel de asistencia que necesites.
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-6 shadow-2xl">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <CarePoint
+                icon={<MessageCircle />}
+                title="Asistencia técnica"
+                text="Ayuda para resolver incidencias, dudas de uso y ajustes del sistema."
+              />
+              <CarePoint
+                icon={<Monitor />}
+                title="Optimización y actualizaciones"
+                text="Revisión del software, configuración y rendimiento del simulador."
+              />
+              <CarePoint
+                icon={<Wrench />}
+                title="Mantenimiento preventivo"
+                text="Comprobaciones periódicas para detectar problemas antes de que afecten al uso."
+              />
+              <CarePoint
+                icon={<ShieldCheck />}
+                title="Soporte después de la entrega"
+                text="Una persona de referencia para acompañarte durante la vida útil del proyecto."
+              />
+            </div>
+
+            <a
+              href="/care"
+              onClick={() => pushDataLayer("click_care", "care_section")}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
+            >
+              Conoce Golf en Casa CARE
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -1294,6 +1354,18 @@ function NextStep({ number, text }) {
       </span>
       <span>{text}</span>
     </div>
+  );
+}
+
+function CarePoint({ icon, title, text }) {
+  return (
+    <article className="rounded-2xl border border-white/10 bg-zinc-950/70 p-5">
+      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+        {React.cloneElement(icon, { className: "h-5 w-5" })}
+      </div>
+      <h3 className="mt-4 font-bold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-300">{text}</p>
+    </article>
   );
 }
 

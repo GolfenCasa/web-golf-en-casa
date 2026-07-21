@@ -10,6 +10,7 @@ import PoliticaPrivacidad from "./pages/PoliticaPrivacidad.jsx";
 import PoliticaCookies from "./pages/PoliticaCookies.jsx";
 import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
 import PrimeDayAmazonGolfEnCasa from "./pages/PrimeDayAmazonGolfEnCasa";
+import GolfEnCasaCARE from "./pages/GolfEnCasaCARE";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -31,6 +32,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             path="/prime-day-amazon"
             element={<PrimeDayAmazonGolfEnCasa />}
           />
+          <Route
+    path="/care"
+    element={<GolfEnCasaCARE />}
+/>
         </Routes>
       </BrowserRouter>
     </HelmetProvider>
