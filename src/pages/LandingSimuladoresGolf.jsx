@@ -352,9 +352,15 @@ ${form.message}`
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
-              <MiniStat label="Servicio" value="Llave en mano" highlighted />
+              <MiniStat label="Proyectos reales" value="Écija y Jerez" highlighted />
               <MiniStat label="Cobertura" value="Toda España" />
-              <MiniStat label="Diseño" value="A medida" />
+              <MiniStat label="Servicio" value="Llave en mano" />
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3 text-sm text-zinc-300">
+              <TrustBadge icon={<ShieldCheck />} text="Diseño independiente" />
+              <TrustBadge icon={<UserCheck />} text="Trato directo con el responsable del proyecto" />
+              <TrustBadge icon={<Wrench />} text="Instalación, configuración y soporte" />
             </div>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -365,7 +371,7 @@ ${form.message}`
                 }
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300"
               >
-Solicitar diseño personalizado
+Descubre si tu espacio es apto
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
 
@@ -382,7 +388,7 @@ Solicitar diseño personalizado
             </div>
 
             <p className="mt-4 text-sm text-zinc-400">
-Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sobre componentes antes de invertir en material.
+Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo del proyecto antes de que inviertas en material.
             </p>
 
             <div className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
@@ -407,6 +413,47 @@ Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sob
               </video>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* VIABILIDAD DEL ESPACIO */}
+      <section className="border-b border-white/10 bg-emerald-400 text-zinc-950">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-950/70">
+              La primera duda, resuelta
+            </p>
+            <h2 className="mt-3 text-3xl font-black sm:text-4xl">
+              ¿Tu espacio es apto para un simulador de golf?
+            </h2>
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-zinc-800">
+              Revisamos gratuitamente altura, ancho, fondo, zona de swing, distancia a pantalla y
+              tipo de instalación. Puedes enviarnos medidas y fotos aunque todavía no tengas claro
+              qué monitor, proyector o presupuesto necesitas.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              {["Garaje", "Sótano", "Habitación", "Buhardilla", "Academia", "Negocio indoor"].map(
+                (space) => (
+                  <span
+                    key={space}
+                    className="rounded-full border border-zinc-950/15 bg-white/50 px-4 py-2 text-sm font-bold"
+                  >
+                    {space}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+
+          <a
+            href="#formulario"
+            onClick={() => pushDataLayer("click_solicitar_presupuesto", "viability_section")}
+            className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-7 py-4 font-bold text-white shadow-2xl transition hover:bg-zinc-800"
+          >
+            Descubre si tu espacio es apto
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </a>
         </div>
       </section>
 
@@ -438,13 +485,23 @@ Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sob
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <TrustPoint
                 icon={<UserCheck />}
-                title="Diseño independiente"
-                text="Seleccionamos la tecnología que mejor encaja, no un kit cerrado."
+                title="Responsable único del proyecto"
+                text="Hablas directamente conmigo desde la primera revisión hasta la entrega final."
               />
               <TrustPoint
                 icon={<ShieldCheck />}
-                title="Proyecto completo"
-                text="Te acompaño desde la idea inicial hasta la instalación final."
+                title="Diseño independiente"
+                text="Seleccionamos la tecnología que mejor encaja, sin obligarte a comprar un kit cerrado."
+              />
+              <TrustPoint
+                icon={<Wrench />}
+                title="Instalación y configuración"
+                text="Montamos, ajustamos y probamos el sistema para dejarlo listo para jugar."
+              />
+              <TrustPoint
+                icon={<MessageCircle />}
+                title="Soporte después de la entrega"
+                text="Seguimos disponibles para ayudarte con dudas, ajustes y evolución del simulador."
               />
             </div>
 
@@ -459,7 +516,7 @@ Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sob
                 }
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
               >
-                Solicitar estudio de viabilidad
+                Descubre si tu espacio es apto
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
 
@@ -608,7 +665,7 @@ Revisión inicial gratuita. Puedes enviar medidas, fotos del espacio o dudas sob
               }
               className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-zinc-100"
             >
-              Solicitar estudio gratuito
+              Descubre si tu espacio es apto
               <ArrowRight className="ml-2 h-5 w-5" />
             </a>
           </div>
@@ -763,7 +820,7 @@ Simuladores para casa, academias y negocios
             }
             className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-semibold text-zinc-950 transition hover:bg-emerald-300"
           >
-            Calcular mi presupuesto
+            Descubre si tu espacio es apto
             <ArrowRight className="ml-2 h-5 w-5" />
           </a>
           <a
@@ -792,7 +849,7 @@ Clientes que ya han confiado en Golf en Casa
             </h2>
 
             <p className="mt-5 text-zinc-300">
-              La clave no es solo comprar componentes, sino diseñar e instalar una solución que encaje con el espacio, el presupuesto y el uso real.
+Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología y presupuesto antes de poner en marcha su simulador.
             </p>
           </div>
 
@@ -871,19 +928,20 @@ Clientes que ya han confiado en Golf en Casa
             </p>
 
             <h2 className="mt-3 text-4xl font-black md:text-5xl">
-              Te digo si tu sala es apta antes de que inviertas en material
+Descubre si tu espacio es apto antes de invertir en material
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              Rellena estos datos básicos y revisaremos si el espacio tiene
-              sentido para montar un simulador, qué rango de presupuesto puede
-              encajar y qué componentes deberías valorar.
+              Rellena estos datos básicos y realizaremos una primera revisión técnica gratuita.
+              Analizaremos la viabilidad del espacio, los posibles condicionantes, el rango de
+              inversión y la tecnología que mejor puede encajar.
             </p>
 
             <div className="mt-8 space-y-4 text-zinc-300">
-              <Benefit text="Revisión de medidas y viabilidad" />
-              <Benefit text="Recomendación según presupuesto" />
-              <Benefit text="Respuesta personalizada" />
+              <Benefit text="Revisión de altura, ancho, fondo y zona de swing" />
+              <Benefit text="Orientación de presupuesto y nivel de acabado" />
+              <Benefit text="Recomendación inicial de tecnología compatible" />
+              <Benefit text="Respuesta personalizada, sin compromiso" />
             </div>
 
             <div className="mt-8 rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-6">
@@ -1002,7 +1060,7 @@ Clientes que ya han confiado en Golf en Casa
               type="submit"
               className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-400"
             >
-              Recibir estudio gratuito de viabilidad
+              Solicitar estudio gratuito
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
 
@@ -1020,23 +1078,23 @@ Clientes que ya han confiado en Golf en Casa
         <div className="mt-10 grid gap-6 md:grid-cols-4">
           <Step
             number="01"
-            title="Analizamos tu espacio"
-            text="Medidas, altura, ubicación de bola, pantalla y zona de swing."
+            title="Estudio de viabilidad"
+            text="Revisamos medidas, fotos, zona de swing, seguridad y objetivo del proyecto."
           />
           <Step
             number="02"
-            title="Diseñamos la solución"
-            text="Distribución, estructura, pantalla, proyector, monitor y software."
+            title="Diseño personalizado"
+            text="Definimos distribución, estructura, pantalla, proyector, monitor, software y acabados."
           />
           <Step
             number="03"
-            title="Presupuesto claro"
-            text="Te damos opciones según objetivo, espacio y presupuesto disponible."
+            title="Instalación y puesta en marcha"
+            text="Montamos, configuramos y probamos todos los elementos para dejarlo listo para jugar."
           />
           <Step
             number="04"
-            title="Instalación y ajuste"
-            text="Montaje, configuración y pruebas para dejarlo listo para jugar."
+            title="Formación y soporte"
+            text="Te explicamos el funcionamiento y seguimos disponibles para ajustes y evolución futura."
           />
         </div>
       </section>
@@ -1094,10 +1152,10 @@ Clientes que ya han confiado en Golf en Casa
         <div className="mx-auto max-w-7xl px-6 py-16 lg:flex lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">
-¿Quieres diseñar tu simulador de golf ideal?
+¿Quieres saber si tu espacio es apto?
             </h2>
             <p className="mt-3 max-w-2xl text-zinc-800">
-              Cuéntanos qué medidas tienes y qué tipo de experiencia quieres crear. Te orientaremos con una solución realista, segura y adaptada a tu presupuesto.
+              Envíanos las medidas o unas fotos del espacio. Te daremos una primera orientación gratuita sobre viabilidad, presupuesto y siguientes pasos.
             </p>
           </div>
 
@@ -1234,6 +1292,15 @@ function NextStep({ number, text }) {
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-400 font-black text-zinc-950">
         {number}
       </span>
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function TrustBadge({ icon, text }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
+      {React.cloneElement(icon, { className: "h-4 w-4 text-emerald-400" })}
       <span>{text}</span>
     </div>
   );
