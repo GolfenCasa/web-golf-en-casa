@@ -18,6 +18,10 @@ import {
   MapPin,
   Quote,
   Camera,
+  TreePine,
+  Expand,
+  Sparkles,
+  Layers3,
 } from "lucide-react";
 
 import {
@@ -34,6 +38,8 @@ const WHATSAPP_URL =
 
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
+const GOLF_STUDIO_WHATSAPP_URL =
+  "https://wa.me/34678107234?text=Hola,%20he%20visto%20la%20opci%C3%B3n%20Golf%20Studio%20y%20quiero%20estudiar%20la%20instalaci%C3%B3n%20de%20una%20caseta%20con%20simulador%20de%20golf%20en%20mi%20jard%C3%ADn.%20La%20parcela%20est%C3%A1%20en:%20";
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -130,7 +136,7 @@ ${form.message}`
   <title>Instalación de simuladores de golf en España | Golf en Casa</title>
   <meta
     name="description"
-    content="Diseño e instalación de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España."
+    content="Diseño e instalación de simuladores de golf a medida para viviendas, jardines, academias y negocios indoor en toda España. Descubre Golf Studio: un espacio independiente para tu simulador."
   />
   <link
     rel="canonical"
@@ -142,7 +148,7 @@ ${form.message}`
   />
   <meta
     property="og:description"
-    content="Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España."
+    content="Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, jardines, academias y negocios indoor en toda España, incluida la solución Golf Studio."
   />
   <meta
     property="og:type"
@@ -186,7 +192,7 @@ ${form.message}`
             "https://www.golfencasa.net/despues_2.webp"
           ],
           description:
-            "Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España.",
+            "Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, jardines, academias y negocios indoor en toda España, incluida la solución Golf Studio.",
           telephone: "+34678107234",
           email: "info@golfencasa.net",
           areaServed: {
@@ -206,7 +212,7 @@ ${form.message}`
           url: "https://www.golfencasa.net/instalacion-simuladores-golf",
           name: "Instalación de simuladores de golf en España",
           description:
-            "Servicio de diseño e instalación llave en mano de simuladores de golf para casa, academias y negocios indoor en toda España.",
+            "Servicio de diseño e instalación llave en mano de simuladores de golf para viviendas, jardines, academias y negocios indoor en toda España.",
           primaryImageOfPage: {
             "@type": "ImageObject",
             url: "https://www.golfencasa.net/despues_1.webp"
@@ -226,7 +232,7 @@ ${form.message}`
           },
           serviceType: "Instalación de simuladores de golf",
           description:
-            "Diseño del espacio, selección de tecnología, pantalla de impacto, proyector, monitor de lanzamiento, estructura, alfombra, software e instalación completa de simuladores de golf.",
+            "Diseño del espacio, selección de tecnología, pantalla de impacto, proyector, monitor de lanzamiento, estructura, alfombra, software e instalación completa de simuladores de golf, incluyendo estudios independientes en jardines.",
           offers: {
             "@type": "Offer",
             priceCurrency: "EUR",
@@ -264,6 +270,15 @@ ${form.message}`
                 "@type": "Answer",
                 text:
                   "Sí. Golf en Casa ofrece consultoría, diseño, selección de componentes e instalación completa de simuladores de golf según la ubicación y el tipo de proyecto."
+              }
+            },
+            {
+              "@type": "Question",
+              name: "¿Puedo instalar un simulador de golf en una caseta en el jardín?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text:
+                  "Sí. Con Golf Studio estudiamos la parcela, las dimensiones necesarias, el aislamiento, la climatización, la instalación eléctrica y la integración completa del simulador en un espacio independiente. La viabilidad final depende también de la normativa urbanística aplicable."
               }
             }
           ]
@@ -368,11 +383,11 @@ ${form.message}`
             </p>
 
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Convierte tu espacio en un simulador de golf profesional listo para jugar
+              Convierte tu vivienda o jardín en un simulador de golf profesional listo para jugar
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Diseñamos e instalamos simuladores de golf llave en mano para que puedas entrenar, jugar y disfrutar del golf en casa los 365 días del año. Validamos tu espacio, seleccionamos la tecnología adecuada y nos encargamos del proyecto completo.
+              Diseñamos e instalamos simuladores de golf llave en mano en viviendas, jardines y espacios profesionales. Si no dispones de una habitación adecuada, Golf Studio permite crear un espacio independiente en tu parcela, diseñado alrededor del simulador.
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
@@ -469,7 +484,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              {["Garaje", "Sótano", "Habitación", "Buhardilla", "Academia", "Negocio indoor"].map(
+              {["Garaje", "Sótano", "Habitación", "Buhardilla", "Jardín / parcela", "Academia", "Negocio indoor"].map(
                 (space) => (
                   <span
                     key={space}
@@ -490,6 +505,127 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
             Descubre si tu espacio es apto
             <ArrowRight className="ml-2 h-5 w-5" />
           </a>
+        </div>
+      </section>
+
+      {/* GOLF STUDIO */}
+      <section
+        id="golf-studio"
+        className="relative overflow-hidden border-b border-white/10 bg-zinc-900"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "900px" }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.18),transparent_32%),radial-gradient(circle_at_85%_75%,rgba(34,197,94,0.10),transparent_30%)]" />
+
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-sm font-bold text-emerald-300">
+              <Sparkles className="h-4 w-4" />
+              Nueva solución: Golf Studio
+            </p>
+
+            <h2 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">
+              ¿No tienes espacio dentro de casa? Créalo en tu jardín.
+            </h2>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
+              Golf Studio es un espacio independiente diseñado específicamente para albergar un simulador de golf. Estudiamos la parcela, definimos las dimensiones y coordinamos la caseta, las instalaciones y el equipamiento para entregarte una solución completa y lista para jugar.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <StudioFeature
+                icon={<TreePine />}
+                title="Aprovecha tu jardín"
+                text="Convierte una parte de la parcela en una sala de golf sin ocupar ninguna estancia de la vivienda."
+              />
+              <StudioFeature
+                icon={<Expand />}
+                title="Diseñado alrededor del swing"
+                text="Definimos ancho, fondo y altura pensando desde el inicio en seguridad, comodidad y tipo de jugador."
+              />
+              <StudioFeature
+                icon={<Layers3 />}
+                title="Proyecto integral"
+                text="Caseta, aislamiento, climatización, electricidad, iluminación y simulador coordinados como un único proyecto."
+              />
+              <StudioFeature
+                icon={<ShieldCheck />}
+                title="Uso durante todo el año"
+                text="Planteamos un espacio protegido y confortable para entrenar, jugar y recibir invitados en cualquier temporada."
+              />
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#formulario"
+                onClick={() => pushDataLayer("click_golf_studio", "golf_studio_section")}
+                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
+              >
+                Solicitar estudio de mi parcela
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+
+              <a
+                href={GOLF_STUDIO_WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDataLayer("click_whatsapp", "golf_studio_section")}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
+              >
+                <FaWhatsapp className="mr-2 text-xl" />
+                Enviar fotos del jardín
+              </a>
+            </div>
+
+            <p className="mt-4 text-xs leading-5 text-zinc-500">
+              La solución se presupuesta de forma personalizada. La viabilidad de la construcción está sujeta a las características de la parcela y a la normativa urbanística municipal aplicable.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-6 rounded-[3rem] bg-emerald-400/10 blur-3xl" />
+
+            <figure className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-zinc-950 p-3 shadow-2xl sm:p-4">
+              <picture>
+                <source
+                  media="(max-width: 639px)"
+                  srcSet="/images/golf-studio-480.webp"
+                  type="image/webp"
+                />
+                <source
+                  media="(max-width: 1023px)"
+                  srcSet="/images/golf-studio-768.webp"
+                  type="image/webp"
+                />
+                <source
+                  media="(max-width: 1439px)"
+                  srcSet="/images/golf-studio-1280.webp"
+                  type="image/webp"
+                />
+                <img
+                  src="/images/golf-studio-1536.webp"
+                  srcSet="/images/golf-studio-480.webp 480w, /images/golf-studio-768.webp 768w, /images/golf-studio-1280.webp 1280w, /images/golf-studio-1536.webp 1536w"
+                  sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(100vw - 64px), 46vw"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                  alt="Golf Studio de madera instalado en un jardín, con puertas correderas de cristal y un simulador de golf en funcionamiento"
+                  className="aspect-[3/2] h-auto w-full rounded-[1.75rem] border border-white/10 object-cover"
+                />
+              </picture>
+
+              <figcaption className="sr-only">
+                Ejemplo conceptual de Golf Studio: una caseta independiente en el jardín diseñada para integrar un simulador de golf.
+              </figcaption>
+
+              <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+                <StudioStat value="A medida" label="Diseño" />
+                <StudioStat value="Integral" label="Proyecto" />
+                <StudioStat value="365 días" label="Uso" />
+              </div>
+            </figure>
+          </div>
         </div>
       </section>
 
@@ -592,7 +728,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               Un simulador de golf no es solo comprar un monitor de lanzamiento. Para que funcione bien hay que combinar medidas, seguridad, pantalla, proyector, alfombra, software, iluminación y experiencia de juego.
             </p>
             <p className="mt-4 text-lg leading-8 text-zinc-300">
-              Por eso cada proyecto se diseña desde cero según el espacio, el presupuesto y el uso real: vivienda, academia, club o negocio indoor.
+              Por eso cada proyecto se diseña desde cero según el espacio, el presupuesto y el uso real: vivienda, Golf Studio en jardín, academia, club o negocio indoor.
             </p>
           </div>
 
@@ -787,14 +923,19 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       <section className="border-y border-white/10 bg-white/[0.03]">
         <div className="mx-auto max-w-7xl px-6 py-20">
           <h2 className="text-3xl font-bold sm:text-4xl">
-Simuladores para casa, academias y negocios
+Simuladores para viviendas, jardines, academias y negocios
           </h2>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <Service
               icon={<Home />}
               title="Viviendas particulares"
               text="Habitaciones, garajes, sótanos o espacios polivalentes para entrenar y jugar desde casa."
+            />
+            <Service
+              icon={<TreePine />}
+              title="Golf Studio en jardín"
+              text="Espacios independientes diseñados para integrar una caseta y un simulador completo en tu parcela."
             />
             <Service
               icon={<Building2 />}
@@ -927,7 +1068,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
                 {[
                   "Medidas aproximadas: ancho x fondo x alto",
                   "Fotos o vídeo del espacio",
-                  "Uso previsto: casa, academia o negocio",
+                  "Uso previsto: vivienda, Golf Studio, academia o negocio",
                   "Presupuesto aproximado si ya lo tienes claro",
                 ].map((item) => (
                   <div
@@ -1078,6 +1219,7 @@ Descubre si tu espacio es apto antes de invertir en material
               >
                 <option value="">Tipo de instalación</option>
                 <option>Vivienda particular</option>
+                <option>Golf Studio en jardín</option>
                 <option>Academia / club</option>
                 <option>Negocio indoor</option>
                 <option>Otro</option>
@@ -1113,7 +1255,7 @@ Descubre si tu espacio es apto antes de invertir en material
                 value={form.dimensions}
                 onChange={handleChange}
                 required
-                placeholder="Medidas aproximadas: ancho x fondo x alto"
+                placeholder="Medidas del espacio o parcela: ancho x fondo x alto"
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
               />
 
@@ -1261,7 +1403,7 @@ Descubre si tu espacio es apto antes de invertir en material
             </h2>
             <p className="mt-5 text-zinc-300">
               Resolvemos las preguntas más importantes sobre espacio,
-              presupuesto, monitores de lanzamiento, proyectores e instalación.
+              presupuesto, jardines, monitores de lanzamiento, proyectores e instalación.
             </p>
           </div>
 
@@ -1283,6 +1425,10 @@ Descubre si tu espacio es apto antes de invertir en material
               answer="Sí, siempre que el espacio permita un swing seguro, una distancia adecuada a la pantalla y una configuración correcta del proyector y monitor."
             />
             <FAQItem
+              question="¿Y si no tengo espacio dentro de casa?"
+              answer="Podemos estudiar un Golf Studio: una caseta o construcción auxiliar en el jardín diseñada específicamente para albergar el simulador. Analizamos parcela, medidas, aislamiento, climatización, electricidad y normativa municipal antes de preparar la propuesta."
+            />
+            <FAQItem
               question="¿Qué monitor de lanzamiento me conviene?"
               answer="Depende del presupuesto, si jugarán diestros y zurdos, el espacio disponible, el software que quieras usar y el nivel de precisión que busques."
             />
@@ -1302,10 +1448,10 @@ Descubre si tu espacio es apto antes de invertir en material
         <div className="mx-auto max-w-7xl px-6 py-16 lg:flex lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">
-¿Quieres saber si tu espacio es apto?
+¿Quieres saber si tu vivienda o jardín es apto?
             </h2>
             <p className="mt-3 max-w-2xl text-zinc-800">
-              Envíanos las medidas o unas fotos del espacio. Te daremos una primera orientación gratuita sobre viabilidad, presupuesto y siguientes pasos.
+              Envíanos las medidas o unas fotos de la habitación, garaje o parcela. Te daremos una primera orientación gratuita sobre viabilidad, presupuesto y siguientes pasos.
             </p>
           </div>
 
@@ -1489,6 +1635,27 @@ function MiniStat({ label, value, highlighted = false }) {
         {label}
       </span>
       <strong className="mt-1 block text-lg text-white">{value}</strong>
+    </div>
+  );
+}
+
+function StudioFeature({ icon, title, text }) {
+  return (
+    <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+        {React.cloneElement(icon, { className: "h-5 w-5" })}
+      </div>
+      <h3 className="font-bold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-300">{text}</p>
+    </article>
+  );
+}
+
+function StudioStat({ value, label }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-4">
+      <strong className="block text-sm text-white sm:text-base">{value}</strong>
+      <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-zinc-500">{label}</span>
     </div>
   );
 }
