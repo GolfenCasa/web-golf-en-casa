@@ -20,6 +20,7 @@ const PrimeDayAmazonGolfEnCasa = lazy(() =>
 const GolfEnCasaCARE = lazy(() =>
   import("./pages/GolfEnCasaCARE")
 );
+const LinkManager = lazy(() => import("./pages/LinkManager.jsx"));
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -46,6 +47,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     path="/care"
     element={<GolfEnCasaCARE />}
 />
+          <Route path="/admin/enlaces" element={<LinkManager />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

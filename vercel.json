@@ -1,7 +1,13 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/((?!favicon.ico|favicon.png|robots.txt|sitemap.xml|assets/).*)",
+      "source": "/:slug",
+      "has": [{ "type": "host", "value": "go.golfencasa.net" }],
+      "destination": "/api/redirect?slug=:slug"
+    },
+    {
+      "source": "/((?!api/|favicon.ico|favicon.png|robots.txt|sitemap.xml|assets/).*)",
       "destination": "/"
     }
   ]
