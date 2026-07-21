@@ -43,10 +43,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             path="/prime-day-amazon"
             element={<PrimeDayAmazonGolfEnCasa />}
           />
-          <Route
-    path="/care"
-    element={<GolfEnCasaCARE />}
-/>
+          <Route path="/care" element={<GolfEnCasaCARE />} />
           <Route path="/admin/enlaces" element={<LinkManager />} />
           </Routes>
         </Suspense>

@@ -1,60 +1,86 @@
-import { cleanSlug, isAuthorized, isValidHttpUrl, readLinks, writeLinks } from './_lib/linkStore.js';
+import crypto from 'node:crypto';
+import { isAuthenticated } from './_lib/auth.js';
+import { normalizeSlug, publicLink, readStore, writeStore } from './_lib/store.js';
 
-const json = (data, status = 200) => Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
+function unauthorized() {
+  return Response.json({ error: 'No autorizado' }, { status: 401 });
+}
+
+function sanitizeLink(body, previous = {}) {
+  const slug = normalizeSlug(body.slug);
+  if (!slug) throw new Error('El alias es obligatorio');
+  const destination = String(body.destination || '').trim();
+  const url = new URL(destination);
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('URL no válida');
+  const now = new Date().toISOString();
+  return {
+    id: previous.id || crypto.randomUUID(),
+    name: String(body.name || slug).trim().slice(0, 100),
+    slug,
+    destination: url.toString(),
+    folder: String(body.folder || 'Marketing').trim().slice(0, 50),
+    notes: String(body.notes || '').trim().slice(0, 500),
+    active: body.active !== false,
+    clicks: Number(previous.clicks || 0),
+    lastClickAt: previous.lastClickAt || null,
+    createdAt: previous.createdAt || now,
+    updatedAt: now,
+    publicUrl: publicLink(slug),
+  };
+}
 
 export async function GET(request) {
-  if (!isAuthorized(request)) return json({ error: 'No autorizado' }, 401);
-  return json({ links: await readLinks() });
+  if (!isAuthenticated(request)) return unauthorized();
+  const store = await readStore();
+  return Response.json(store);
 }
 
 export async function POST(request) {
-  if (!isAuthorized(request)) return json({ error: 'No autorizado' }, 401);
-  const body = await request.json().catch(() => ({}));
-  const slug = cleanSlug(body.slug);
-  if (!slug) return json({ error: 'El alias es obligatorio' }, 400);
-  if (!isValidHttpUrl(body.destination)) return json({ error: 'La URL de destino no es válida' }, 400);
-
-  const links = await readLinks();
-  if (links[slug]) return json({ error: 'Ese alias ya existe' }, 409);
-  links[slug] = {
-    destination: body.destination,
-    active: body.active !== false,
-    label: String(body.label || slug).trim(),
-    clicks: 0,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  await writeLinks(links);
-  return json({ links }, 201);
+  if (!isAuthenticated(request)) return unauthorized();
+  try {
+    const body = await request.json();
+    const store = await readStore();
+    const link = sanitizeLink(body);
+    if (store.links.some((item) => item.slug === link.slug)) {
+      return Response.json({ error: 'Ese alias ya existe' }, { status: 409 });
+    }
+    store.links.unshift(link);
+    store.history.unshift({ id: crypto.randomUUID(), action: 'created', linkId: link.id, name: link.name, at: link.createdAt });
+    await writeStore(store);
+    return Response.json(link, { status: 201 });
+  } catch (error) {
+    return Response.json({ error: error.message || 'No se pudo crear' }, { status: 400 });
+  }
 }
 
 export async function PUT(request) {
-  if (!isAuthorized(request)) return json({ error: 'No autorizado' }, 401);
-  const body = await request.json().catch(() => ({}));
-  const slug = cleanSlug(body.slug);
-  if (!slug) return json({ error: 'El alias es obligatorio' }, 400);
-  if (!isValidHttpUrl(body.destination)) return json({ error: 'La URL de destino no es válida' }, 400);
-
-  const links = await readLinks();
-  if (!links[slug]) return json({ error: 'Enlace no encontrado' }, 404);
-  links[slug] = {
-    ...links[slug],
-    destination: body.destination,
-    active: body.active !== false,
-    label: String(body.label || slug).trim(),
-    updatedAt: new Date().toISOString(),
-  };
-  await writeLinks(links);
-  return json({ links });
+  if (!isAuthenticated(request)) return unauthorized();
+  try {
+    const body = await request.json();
+    const store = await readStore();
+    const index = store.links.findIndex((item) => item.id === body.id);
+    if (index < 0) return Response.json({ error: 'Enlace no encontrado' }, { status: 404 });
+    const link = sanitizeLink(body, store.links[index]);
+    if (store.links.some((item, i) => i !== index && item.slug === link.slug)) {
+      return Response.json({ error: 'Ese alias ya existe' }, { status: 409 });
+    }
+    store.links[index] = link;
+    store.history.unshift({ id: crypto.randomUUID(), action: 'updated', linkId: link.id, name: link.name, at: link.updatedAt });
+    await writeStore(store);
+    return Response.json(link);
+  } catch (error) {
+    return Response.json({ error: error.message || 'No se pudo actualizar' }, { status: 400 });
+  }
 }
 
 export async function DELETE(request) {
-  if (!isAuthorized(request)) return json({ error: 'No autorizado' }, 401);
-  const url = new URL(request.url);
-  const slug = cleanSlug(url.searchParams.get('slug'));
-  const links = await readLinks();
-  if (!links[slug]) return json({ error: 'Enlace no encontrado' }, 404);
-  delete links[slug];
-  await writeLinks(links);
-  return json({ links });
+  if (!isAuthenticated(request)) return unauthorized();
+  const id = new URL(request.url).searchParams.get('id');
+  const store = await readStore();
+  const link = store.links.find((item) => item.id === id);
+  if (!link) return Response.json({ error: 'Enlace no encontrado' }, { status: 404 });
+  store.links = store.links.filter((item) => item.id !== id);
+  store.history.unshift({ id: crypto.randomUUID(), action: 'deleted', linkId: link.id, name: link.name, at: new Date().toISOString() });
+  await writeStore(store);
+  return Response.json({ ok: true });
 }
