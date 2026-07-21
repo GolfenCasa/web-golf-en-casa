@@ -1,15 +1,19 @@
 import QRCode from 'qrcode';
 
-const GREEN = '#086b2d';
-const DARK = '#071a16';
+const GREEN = '#08752f';
+const DARK = '#041914';
 const WHITE = '#ffffff';
 const SIZE = 1600;
-const QR_X = 180;
-const QR_Y = 90;
-const QR_SIZE = 1240;
-const CTA_Y = 1380;
-const CTA_H = 130;
-const LOGO_SIZE = 360;
+const FRAME = 24;
+const QR_X = 112;
+const QR_Y = 72;
+const QR_SIZE = 1376;
+const CTA_X = 66;
+const CTA_Y = 1402;
+const CTA_W = 1468;
+const CTA_H = 128;
+const LOGO_W = 470;
+const LOGO_H = 445;
 
 function roundedRect(ctx, x, y, w, h, r) {
   const radius = Math.min(r, w / 2, h / 2);
@@ -28,13 +32,13 @@ function isFinderCell(row, col, count) {
 
 function drawFinderCanvas(ctx, x, y, module) {
   const outer = module * 7;
-  roundedRect(ctx, x, y, outer, outer, module * 1.2);
+  roundedRect(ctx, x, y, outer, outer, module * 1.15);
   ctx.fillStyle = GREEN;
   ctx.fill();
-  roundedRect(ctx, x + module, y + module, module * 5, module * 5, module * 0.75);
+  roundedRect(ctx, x + module, y + module, module * 5, module * 5, module * 0.72);
   ctx.fillStyle = WHITE;
   ctx.fill();
-  roundedRect(ctx, x + module * 2, y + module * 2, module * 3, module * 3, module * 0.55);
+  roundedRect(ctx, x + module * 2, y + module * 2, module * 3, module * 3, module * 0.5);
   ctx.fillStyle = DARK;
   ctx.fill();
 }
@@ -55,13 +59,52 @@ function drawContained(ctx, image, x, y, w, h) {
   ctx.drawImage(image, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
 }
 
+function getGeometry(qr) {
+  const count = qr.modules.size;
+  const quiet = 1;
+  const module = QR_SIZE / (count + quiet * 2);
+  return {
+    count,
+    quiet,
+    module,
+    offsetX: QR_X + quiet * module,
+    offsetY: QR_Y + quiet * module,
+  };
+}
+
+function drawPhoneIcon(ctx) {
+  const centerY = CTA_Y + CTA_H / 2;
+  ctx.beginPath();
+  ctx.arc(153, centerY, 49, 0, Math.PI * 2);
+  ctx.fillStyle = WHITE;
+  ctx.fill();
+  ctx.strokeStyle = GREEN;
+  ctx.lineWidth = 7;
+  roundedRect(ctx, 135, centerY - 39, 36, 76, 7);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(153, centerY + 27, 4, 0, Math.PI * 2);
+  ctx.fillStyle = GREEN;
+  ctx.fill();
+}
+
+function drawLogoPanelCanvas(ctx, logo) {
+  const cx = SIZE / 2;
+  const cy = 760;
+  const panelW = LOGO_W + 34;
+  const panelH = LOGO_H + 34;
+  roundedRect(ctx, cx - panelW / 2, cy - panelH / 2, panelW, panelH, 245);
+  ctx.fillStyle = WHITE;
+  ctx.fill();
+  ctx.lineWidth = 9;
+  ctx.strokeStyle = GREEN;
+  ctx.stroke();
+  drawContained(ctx, logo, cx - LOGO_W / 2, cy - LOGO_H / 2, LOGO_W, LOGO_H);
+}
+
 export async function createBrandedQrPng(url, { logoUrl = '/brand/logo-qr.png' } = {}) {
   const qr = QRCode.create(url, { errorCorrectionLevel: 'H' });
-  const count = qr.modules.size;
-  const quiet = 3;
-  const module = QR_SIZE / (count + quiet * 2);
-  const offsetX = QR_X + quiet * module;
-  const offsetY = QR_Y + quiet * module;
+  const { count, module, offsetX, offsetY } = getGeometry(qr);
   const canvas = document.createElement('canvas');
   canvas.width = SIZE;
   canvas.height = SIZE;
@@ -69,9 +112,9 @@ export async function createBrandedQrPng(url, { logoUrl = '/brand/logo-qr.png' }
 
   ctx.fillStyle = WHITE;
   ctx.fillRect(0, 0, SIZE, SIZE);
-  roundedRect(ctx, 30, 30, SIZE - 60, SIZE - 60, 48);
+  roundedRect(ctx, FRAME, FRAME, SIZE - FRAME * 2, SIZE - FRAME * 2, 52);
   ctx.strokeStyle = GREEN;
-  ctx.lineWidth = 22;
+  ctx.lineWidth = 18;
   ctx.stroke();
 
   for (let row = 0; row < count; row += 1) {
@@ -79,7 +122,7 @@ export async function createBrandedQrPng(url, { logoUrl = '/brand/logo-qr.png' }
       if (!qr.modules.get(row, col) || isFinderCell(row, col, count)) continue;
       const x = offsetX + col * module;
       const y = offsetY + row * module;
-      roundedRect(ctx, x + module * 0.14, y + module * 0.14, module * 0.72, module * 0.72, module * 0.18);
+      roundedRect(ctx, x + module * 0.12, y + module * 0.12, module * 0.76, module * 0.76, module * 0.2);
       ctx.fillStyle = DARK;
       ctx.fill();
     }
@@ -89,45 +132,20 @@ export async function createBrandedQrPng(url, { logoUrl = '/brand/logo-qr.png' }
   drawFinderCanvas(ctx, offsetX + (count - 7) * module, offsetY, module);
   drawFinderCanvas(ctx, offsetX, offsetY + (count - 7) * module, module);
 
-  const cx = SIZE / 2;
-  const cy = 735;
-  ctx.beginPath();
-  ctx.arc(cx, cy, LOGO_SIZE / 2 + 22, 0, Math.PI * 2);
-  ctx.fillStyle = WHITE;
-  ctx.fill();
-  ctx.lineWidth = 10;
-  ctx.strokeStyle = GREEN;
-  ctx.stroke();
   const logo = await loadImage(logoUrl);
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, LOGO_SIZE / 2 - 8, 0, Math.PI * 2);
-  ctx.clip();
-  drawContained(ctx, logo, cx - LOGO_SIZE / 2, cy - LOGO_SIZE / 2, LOGO_SIZE, LOGO_SIZE);
-  ctx.restore();
+  drawLogoPanelCanvas(ctx, logo);
 
-  roundedRect(ctx, 75, CTA_Y, SIZE - 150, CTA_H, 54);
+  roundedRect(ctx, CTA_X, CTA_Y, CTA_W, CTA_H, 58);
   ctx.fillStyle = GREEN;
   ctx.fill();
-  ctx.beginPath();
-  ctx.arc(165, CTA_Y + CTA_H / 2, 50, 0, Math.PI * 2);
-  ctx.fillStyle = WHITE;
-  ctx.fill();
-  ctx.strokeStyle = GREEN;
-  ctx.lineWidth = 8;
-  roundedRect(ctx, 145, CTA_Y + 34, 40, 76, 7);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(165, CTA_Y + 99, 4, 0, Math.PI * 2);
-  ctx.fillStyle = GREEN;
-  ctx.fill();
+  drawPhoneIcon(ctx);
 
   ctx.fillStyle = WHITE;
   ctx.textAlign = 'left';
   ctx.font = '700 66px Arial, sans-serif';
-  ctx.fillText('ESCANEA Y DESCUBRE', 245, CTA_Y + 68);
+  ctx.fillText('ESCANEA Y DESCUBRE', 225, CTA_Y + 67);
   ctx.font = '600 28px Arial, sans-serif';
-  ctx.fillText('CÓMO MONTAR TU SIMULADOR DE GOLF EN CASA', 245, CTA_Y + 112);
+  ctx.fillText('CÓMO MONTAR TU SIMULADOR DE GOLF EN CASA', 225, CTA_Y + 108);
 
   return canvas.toDataURL('image/png');
 }
@@ -144,49 +162,47 @@ async function imageAsDataUrl(url) {
 }
 
 function esc(value) {
-  return String(value).replace(/[&<>\"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
+  return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
 }
 
 export async function createBrandedQrSvg(url, { logoUrl = '/brand/logo-qr.png' } = {}) {
   const qr = QRCode.create(url, { errorCorrectionLevel: 'H' });
-  const count = qr.modules.size;
-  const quiet = 3;
-  const module = QR_SIZE / (count + quiet * 2);
-  const offsetX = QR_X + quiet * module;
-  const offsetY = QR_Y + quiet * module;
+  const { count, module, offsetX, offsetY } = getGeometry(qr);
   const parts = [];
 
   for (let row = 0; row < count; row += 1) {
     for (let col = 0; col < count; col += 1) {
       if (!qr.modules.get(row, col) || isFinderCell(row, col, count)) continue;
-      const x = offsetX + col * module + module * 0.14;
-      const y = offsetY + row * module + module * 0.14;
-      parts.push(`<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${(module * 0.72).toFixed(2)}" height="${(module * 0.72).toFixed(2)}" rx="${(module * 0.18).toFixed(2)}" fill="${DARK}"/>`);
+      const x = offsetX + col * module + module * 0.12;
+      const y = offsetY + row * module + module * 0.12;
+      parts.push(`<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${(module * 0.76).toFixed(2)}" height="${(module * 0.76).toFixed(2)}" rx="${(module * 0.2).toFixed(2)}" fill="${DARK}"/>`);
     }
   }
 
-  const finder = (x, y) => `<rect x="${x}" y="${y}" width="${module * 7}" height="${module * 7}" rx="${module * 1.2}" fill="${GREEN}"/><rect x="${x + module}" y="${y + module}" width="${module * 5}" height="${module * 5}" rx="${module * .75}" fill="#fff"/><rect x="${x + module * 2}" y="${y + module * 2}" width="${module * 3}" height="${module * 3}" rx="${module * .55}" fill="${DARK}"/>`;
+  const finder = (x, y) => `<rect x="${x}" y="${y}" width="${module * 7}" height="${module * 7}" rx="${module * 1.15}" fill="${GREEN}"/><rect x="${x + module}" y="${y + module}" width="${module * 5}" height="${module * 5}" rx="${module * .72}" fill="#fff"/><rect x="${x + module * 2}" y="${y + module * 2}" width="${module * 3}" height="${module * 3}" rx="${module * .5}" fill="${DARK}"/>`;
   const logoData = await imageAsDataUrl(logoUrl);
   const cx = SIZE / 2;
-  const cy = 735;
-  const logoX = cx - LOGO_SIZE / 2;
-  const logoY = cy - LOGO_SIZE / 2;
+  const cy = 760;
+  const panelW = LOGO_W + 34;
+  const panelH = LOGO_H + 34;
+  const logoX = cx - LOGO_W / 2;
+  const logoY = cy - LOGO_H / 2;
+  const centerY = CTA_Y + CTA_H / 2;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}">
-  <rect width="1600" height="1600" fill="#fff"/>
-  <rect x="30" y="30" width="1540" height="1540" rx="48" fill="none" stroke="${GREEN}" stroke-width="22"/>
+  <rect width="${SIZE}" height="${SIZE}" fill="#fff"/>
+  <rect x="${FRAME}" y="${FRAME}" width="${SIZE - FRAME * 2}" height="${SIZE - FRAME * 2}" rx="52" fill="none" stroke="${GREEN}" stroke-width="18"/>
   ${parts.join('')}
   ${finder(offsetX, offsetY)}
   ${finder(offsetX + (count - 7) * module, offsetY)}
   ${finder(offsetX, offsetY + (count - 7) * module)}
-  <circle cx="${cx}" cy="${cy}" r="${LOGO_SIZE / 2 + 22}" fill="#fff" stroke="${GREEN}" stroke-width="10"/>
-  <clipPath id="logoClip"><circle cx="${cx}" cy="${cy}" r="${LOGO_SIZE / 2 - 8}"/></clipPath>
-  <image href="${esc(logoData)}" x="${logoX}" y="${logoY}" width="${LOGO_SIZE}" height="${LOGO_SIZE}" preserveAspectRatio="xMidYMid meet" clip-path="url(#logoClip)"/>
-  <rect x="75" y="${CTA_Y}" width="1450" height="${CTA_H}" rx="54" fill="${GREEN}"/>
-  <circle cx="165" cy="${CTA_Y + CTA_H / 2}" r="50" fill="#fff"/>
-  <rect x="145" y="${CTA_Y + 34}" width="40" height="76" rx="7" fill="none" stroke="${GREEN}" stroke-width="8"/>
-  <circle cx="165" cy="${CTA_Y + 99}" r="4" fill="${GREEN}"/>
-  <text x="245" y="${CTA_Y + 68}" fill="#fff" font-family="Arial, sans-serif" font-size="66" font-weight="700">ESCANEA Y DESCUBRE</text>
-  <text x="245" y="${CTA_Y + 112}" fill="#fff" font-family="Arial, sans-serif" font-size="28" font-weight="600">CÓMO MONTAR TU SIMULADOR DE GOLF EN CASA</text>
+  <rect x="${cx - panelW / 2}" y="${cy - panelH / 2}" width="${panelW}" height="${panelH}" rx="245" fill="#fff" stroke="${GREEN}" stroke-width="9"/>
+  <image href="${esc(logoData)}" x="${logoX}" y="${logoY}" width="${LOGO_W}" height="${LOGO_H}" preserveAspectRatio="xMidYMid meet"/>
+  <rect x="${CTA_X}" y="${CTA_Y}" width="${CTA_W}" height="${CTA_H}" rx="58" fill="${GREEN}"/>
+  <circle cx="153" cy="${centerY}" r="49" fill="#fff"/>
+  <rect x="135" y="${centerY - 39}" width="36" height="76" rx="7" fill="none" stroke="${GREEN}" stroke-width="7"/>
+  <circle cx="153" cy="${centerY + 27}" r="4" fill="${GREEN}"/>
+  <text x="225" y="${CTA_Y + 67}" fill="#fff" font-family="Arial, sans-serif" font-size="66" font-weight="700">ESCANEA Y DESCUBRE</text>
+  <text x="225" y="${CTA_Y + 108}" fill="#fff" font-family="Arial, sans-serif" font-size="28" font-weight="600">CÓMO MONTAR TU SIMULADOR DE GOLF EN CASA</text>
 </svg>`;
 }

@@ -1,8 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createBrandedQrPng, createBrandedQrSvg } from '../utils-branded-qr.js';
-import { Copy, Download, Edit3, Eye, ExternalLink, FolderOpen, History, Link2, LogOut, Plus, QrCode, Search, Trash2, X } from 'lucide-react';
+import {
+  Activity, BarChart3, Check, CircleHelp, Copy, Download, Edit3, Eye, FolderOpen,
+  Gauge, History, Home, Link2, LogOut, Menu, Plus, QrCode, Search, Settings,
+  Trash2, X
+} from 'lucide-react';
 
-const emptyForm = { id: '', name: '', slug: '', destination: 'https://www.golfencasa.net/instalacion-simuladores-golf', folder: 'Marketing', notes: '', active: true };
+const emptyForm = {
+  id: '',
+  name: '',
+  slug: '',
+  destination: 'https://www.golfencasa.net/instalacion-simuladores-golf',
+  folder: 'Marketing',
+  notes: '',
+  active: true,
+};
 
 export default function LinkManager() {
   const [authenticated, setAuthenticated] = useState(null);
@@ -16,6 +28,7 @@ export default function LinkManager() {
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState(null);
   const [previewBusy, setPreviewBusy] = useState(false);
+  const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => { checkAuth(); }, []);
 
@@ -29,16 +42,22 @@ export default function LinkManager() {
   async function login(event) {
     event.preventDefault();
     setBusy(true);
-    const res = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
+    const res = await fetch('/api/auth', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }),
+    });
     const json = await res.json();
     setBusy(false);
     if (!res.ok) return setMessage(json.error || 'No se pudo acceder');
-    setAuthenticated(true); setPassword(''); setMessage(''); loadData();
+    setAuthenticated(true);
+    setPassword('');
+    setMessage('');
+    loadData();
   }
 
   async function logout() {
     await fetch('/api/auth', { method: 'DELETE' });
-    setAuthenticated(false); setData({ links: [], history: [] });
+    setAuthenticated(false);
+    setData({ links: [], history: [] });
   }
 
   async function loadData() {
@@ -47,15 +66,32 @@ export default function LinkManager() {
     setData(await res.json());
   }
 
-  function openCreate() { setForm(emptyForm); setShowEditor(true); setMessage(''); }
-  function openEdit(link) { setForm({ ...link }); setShowEditor(true); setMessage(''); }
+  function openCreate() {
+    setForm(emptyForm);
+    setShowEditor(true);
+    setMessage('');
+  }
+
+  function openEdit(link) {
+    setForm({ ...link });
+    setShowEditor(true);
+    setMessage('');
+  }
 
   async function save(event) {
-    event.preventDefault(); setBusy(true); setMessage('');
-    const res = await fetch('/api/links', { method: form.id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
-    const json = await res.json(); setBusy(false);
+    event.preventDefault();
+    setBusy(true);
+    setMessage('');
+    const res = await fetch('/api/links', {
+      method: form.id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    const json = await res.json();
+    setBusy(false);
     if (!res.ok) return setMessage(json.error || 'No se pudo guardar');
-    setShowEditor(false); await loadData();
+    setShowEditor(false);
+    await loadData();
   }
 
   async function remove(link) {
@@ -67,7 +103,8 @@ export default function LinkManager() {
 
   async function copy(text) {
     await navigator.clipboard.writeText(text);
-    setMessage('Enlace copiado'); window.setTimeout(() => setMessage(''), 1800);
+    setMessage('Enlace copiado');
+    window.setTimeout(() => setMessage(''), 1800);
   }
 
   async function downloadQr(link, type = 'png') {
@@ -78,7 +115,10 @@ export default function LinkManager() {
         downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), `${link.slug}-qr-corporativo.svg`);
       } else {
         const dataUrl = await createBrandedQrPng(link.publicUrl);
-        const a = document.createElement('a'); a.href = dataUrl; a.download = `${link.slug}-qr-corporativo.png`; a.click();
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = `${link.slug}-qr-corporativo.png`;
+        a.click();
       }
       setMessage(`QR ${type.toUpperCase()} descargado`);
       window.setTimeout(() => setMessage(''), 1800);
@@ -104,7 +144,12 @@ export default function LinkManager() {
   }
 
   function downloadBlob(blob, name) {
-    const href = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = href; a.download = name; a.click(); URL.revokeObjectURL(href);
+    const href = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(href);
   }
 
   const folders = useMemo(() => ['Todos', ...new Set(data.links.map((l) => l.folder).filter(Boolean))], [data.links]);
@@ -118,45 +163,145 @@ export default function LinkManager() {
   if (!authenticated) return <Login password={password} setPassword={setPassword} onSubmit={login} busy={busy} message={message} />;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="border-b border-white/10 bg-slate-950/95 px-5 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <div><p className="text-sm text-emerald-400">GOLF EN CASA</p><h1 className="text-xl font-semibold">Gestor de enlaces y QR</h1></div>
-          <button onClick={logout} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-3 py-2 text-sm hover:bg-white/5"><LogOut size={17}/>Salir</button>
+    <div className="min-h-screen bg-[#020817] text-slate-100">
+      <header className="fixed inset-x-0 top-0 z-40 h-20 border-b border-white/10 bg-[#020817]/95 backdrop-blur">
+        <div className="flex h-full items-center justify-between px-5 lg:px-7">
+          <div className="flex items-center gap-3">
+            <button className="rounded-xl p-2 text-slate-300 hover:bg-white/5 lg:hidden" onClick={() => setMobileNav(true)}><Menu /></button>
+            <div><p className="text-sm font-medium tracking-wide text-emerald-400">GOLF EN CASA</p><h1 className="text-xl font-semibold">Gestor de enlaces y QR</h1></div>
+          </div>
+          <button onClick={logout} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-sm hover:bg-white/5"><LogOut size={17}/>Salir</button>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl space-y-6 px-5 py-7">
-        <section className="grid gap-4 sm:grid-cols-3">
-          <Metric label="Enlaces" value={data.links.length} icon={<Link2/>}/><Metric label="Escaneos/clics" value={totalClicks} icon={<QrCode/>}/><Metric label="Activos" value={data.links.filter(l=>l.active).length} icon={<ExternalLink/>}/>
-        </section>
-        <section className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-3 sm:flex-row">
-              <label className="relative flex-1"><Search className="absolute left-3 top-3 text-slate-500" size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar enlace…" className="w-full rounded-xl border border-white/10 bg-slate-900 py-2.5 pl-10 pr-3 outline-none focus:border-emerald-500"/></label>
-              <select value={folder} onChange={e=>setFolder(e.target.value)} className="rounded-xl border border-white/10 bg-slate-900 px-3 py-2.5">{folders.map(f=><option key={f}>{f}</option>)}</select>
+
+      <Sidebar open={mobileNav} onClose={() => setMobileNav(false)} />
+
+      <main className="min-h-screen px-5 pb-10 pt-28 lg:ml-52 lg:px-7">
+        <div className="mx-auto max-w-[1320px] space-y-6">
+          <section className="grid gap-4 md:grid-cols-3">
+            <Metric label="Enlaces" value={data.links.length} icon={<Link2/>}/>
+            <Metric label="Escaneos/clics" value={totalClicks} icon={<QrCode/>}/>
+            <Metric label="Activos" value={data.links.filter((l) => l.active).length} icon={<Gauge/>}/>
+          </section>
+
+          <section className="rounded-2xl border border-white/10 bg-[#0a1122] p-4">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+              <label className="relative flex-1">
+                <Search className="absolute left-4 top-3.5 text-slate-500" size={20}/>
+                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar enlace…" className="w-full rounded-xl border border-white/10 bg-[#0d172b] py-3 pl-12 pr-4 outline-none focus:border-emerald-500"/>
+              </label>
+              <select value={folder} onChange={(e) => setFolder(e.target.value)} className="rounded-xl border border-white/10 bg-[#0d172b] px-4 py-3">{folders.map((f) => <option key={f}>{f}</option>)}</select>
+              <button onClick={openCreate} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-400"><Plus size={19}/>Nuevo enlace</button>
             </div>
-            <button onClick={openCreate} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 font-medium text-slate-950 hover:bg-emerald-400"><Plus size={18}/>Nuevo enlace</button>
-          </div>
-          {message && <p className="mt-3 text-sm text-emerald-300">{message}</p>}
-        </section>
-        <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035]">
-          <div className="overflow-x-auto"><table className="w-full min-w-[940px] text-left"><thead className="border-b border-white/10 text-sm text-slate-400"><tr><th className="p-4">Enlace</th><th className="p-4">Destino</th><th className="p-4">Carpeta</th><th className="p-4">Clics</th><th className="p-4">Estado</th><th className="p-4 text-right">Acciones</th></tr></thead>
-          <tbody>{filtered.map(link=><tr key={link.id} className="border-b border-white/5 last:border-0"><td className="p-4"><p className="font-medium">{link.name}</p><button onClick={()=>copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-4"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-4"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-4 font-medium">{link.clicks || 0}</td><td className="p-4"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active?'bg-emerald-500/15 text-emerald-300':'bg-amber-500/15 text-amber-300'}`}>{link.active?'Activo':'Pausado'}</span></td><td className="p-4"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={()=>previewQr(link)}><Eye/></IconButton><IconButton title="Copiar" onClick={()=>copy(link.publicUrl)}><Copy/></IconButton><IconButton title="QR PNG corporativo" onClick={()=>downloadQr(link,'png')}><Download/></IconButton><IconButton title="QR SVG corporativo" onClick={()=>downloadQr(link,'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={()=>openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={()=>remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody></table></div>
-          {!filtered.length && <div className="p-10 text-center text-slate-400">No hay enlaces que coincidan.</div>}
-        </section>
-        <section className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"><div className="mb-4 flex items-center gap-2"><History size={19} className="text-emerald-400"/><h2 className="font-medium">Actividad reciente</h2></div><div className="space-y-2 text-sm">{data.history.slice(0,8).map(h=><div key={h.id} className="flex justify-between gap-4 border-b border-white/5 py-2 last:border-0"><span><b>{h.name}</b> · {h.action==='created'?'creado':h.action==='updated'?'actualizado':'eliminado'}</span><time className="text-slate-500">{new Date(h.at).toLocaleString('es-ES')}</time></div>)}{!data.history.length&&<p className="text-slate-500">Todavía no hay actividad.</p>}</div></section>
+            {message && <p className="mt-3 text-sm text-emerald-300">{message}</p>}
+          </section>
+
+          <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0a1122]">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[960px] text-left">
+                <thead className="border-b border-white/10 text-sm text-slate-400"><tr><th className="p-5">Enlace</th><th className="p-5">Destino</th><th className="p-5">Carpeta</th><th className="p-5">Clics</th><th className="p-5">Estado</th><th className="p-5 text-right">Acciones</th></tr></thead>
+                <tbody>{filtered.map((link) => <tr key={link.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.018]"><td className="p-5"><p className="font-medium">{link.name}</p><button onClick={() => copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-5"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-5"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-5 font-medium">{link.clicks || 0}</td><td className="p-5"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'}`}>{link.active ? 'Activo' : 'Pausado'}</span></td><td className="p-5"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={() => previewQr(link)}><Eye/></IconButton><IconButton title="Copiar enlace" onClick={() => copy(link.publicUrl)}><Copy/></IconButton><IconButton title="Descargar PNG" onClick={() => downloadQr(link, 'png')}><Download/></IconButton><IconButton title="Descargar SVG" onClick={() => downloadQr(link, 'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={() => openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={() => remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody>
+              </table>
+            </div>
+            {!filtered.length && <div className="p-14 text-center text-slate-400">No hay enlaces que coincidan.</div>}
+          </section>
+
+          <section className="rounded-2xl border border-white/10 bg-[#0a1122] p-6">
+            <div className="mb-4 flex items-center gap-2"><History size={19} className="text-emerald-400"/><h2 className="font-medium">Actividad reciente</h2></div>
+            <div className="space-y-2 text-sm">{data.history.slice(0, 8).map((h) => <div key={h.id} className="flex justify-between gap-4 border-b border-white/5 py-2 last:border-0"><span><b>{h.name}</b> · {h.action === 'created' ? 'creado' : h.action === 'updated' ? 'actualizado' : 'eliminado'}</span><time className="text-slate-500">{new Date(h.at).toLocaleString('es-ES')}</time></div>)}{!data.history.length && <p className="text-slate-500">Todavía no hay actividad.</p>}</div>
+          </section>
+
+          <section className="rounded-2xl border border-white/10 bg-[#0a1122] p-6">
+            <div className="mb-3 flex items-center gap-2"><CircleHelp size={19} className="text-emerald-400"/><h2 className="font-medium">Consejos para impresión</h2></div>
+            <ul className="space-y-1 text-sm text-slate-400"><li>• Usa el formato SVG para impresión profesional a cualquier tamaño.</li><li>• Tamaño mínimo recomendado: 6–7 cm de ancho.</li><li>• Prueba siempre la legibilidad antes de imprimir grandes cantidades.</li></ul>
+          </section>
+        </div>
       </main>
-      {showEditor && <Editor form={form} setForm={setForm} onClose={()=>setShowEditor(false)} onSave={save} busy={busy} message={message}/>}
-      {preview && <QrPreview preview={preview} busy={previewBusy} onClose={()=>setPreview(null)} onDownload={downloadQr}/>} 
+
+      {showEditor && <Editor form={form} setForm={setForm} onClose={() => setShowEditor(false)} onSave={save} busy={busy} message={message}/>} 
+      {preview && <QrPreview preview={preview} busy={previewBusy} onClose={() => setPreview(null)} onDownload={downloadQr}/>} 
     </div>
   );
 }
 
-function Login({password,setPassword,onSubmit,busy,message}) { return <Centered><form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-7"><p className="text-sm text-emerald-400">GOLF EN CASA</p><h1 className="mt-1 text-2xl font-semibold">Acceso al gestor</h1><p className="mt-2 text-sm text-slate-400">Administra los enlaces de tus QR dinámicos.</p><label className="mt-6 block text-sm">Contraseña<input autoFocus type="password" value={password} onChange={e=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-3 outline-none focus:border-emerald-500"/></label>{message&&<p className="mt-3 text-sm text-red-300">{message}</p>}<button disabled={busy} className="mt-5 w-full rounded-xl bg-emerald-500 py-3 font-medium text-slate-950 disabled:opacity-60">{busy?'Accediendo…':'Entrar'}</button></form></Centered> }
-function Centered({children}) { return <div className="flex min-h-screen items-center justify-center bg-slate-950 p-5 text-white">{children}</div> }
-function Metric({label,value,icon}) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"><div className="flex items-center justify-between text-slate-400"><span>{label}</span><span className="text-emerald-400">{icon}</span></div><p className="mt-3 text-3xl font-semibold">{value}</p></div> }
-function IconButton({children,title,onClick,danger}) { return <button title={title} onClick={onClick} className={`rounded-lg p-2 hover:bg-white/10 [&_svg]:h-4 [&_svg]:w-4 ${danger?'text-red-300':'text-slate-300'}`}>{children}</button> }
-function Editor({form,setForm,onClose,onSave,busy,message}) { const update=(key,value)=>setForm(prev=>({...prev,[key]:value})); return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"><form onSubmit={onSave} className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-slate-950 p-6 text-white"><div className="flex items-center justify-between"><h2 className="text-xl font-semibold">{form.id?'Editar enlace':'Nuevo enlace'}</h2><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 grid gap-4 sm:grid-cols-2"><Field label="Nombre"><input required value={form.name} onChange={e=>update('name',e.target.value)}/></Field><Field label="Alias"><input required value={form.slug} onChange={e=>update('slug',e.target.value)} placeholder="camiseta"/></Field><Field label="Carpeta"><input value={form.folder} onChange={e=>update('folder',e.target.value)}/></Field><label className="flex items-center gap-3 pt-7"><input type="checkbox" checked={form.active} onChange={e=>update('active',e.target.checked)} className="h-5 w-5"/>Enlace activo</label></div><Field label="URL de destino" full><input required type="url" value={form.destination} onChange={e=>update('destination',e.target.value)}/></Field><Field label="Notas" full><textarea rows="3" value={form.notes} onChange={e=>update('notes',e.target.value)}/></Field><div className="mt-3 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">URL pública: https://go.golfencasa.net/{form.slug || 'alias'}</div>{message&&<p className="mt-3 text-sm text-red-300">{message}</p>}<div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="rounded-xl border border-white/15 px-4 py-2.5">Cancelar</button><button disabled={busy} className="rounded-xl bg-emerald-500 px-5 py-2.5 font-medium text-slate-950 disabled:opacity-60">{busy?'Guardando…':'Guardar'}</button></div></form></div> }
-function Field({label,children,full}) { return <label className={`mt-4 block text-sm ${full?'':' '}`}><span className="text-slate-300">{label}</span><div className="mt-2 [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-white/10 [&_input]:bg-slate-900 [&_input]:px-3 [&_input]:py-2.5 [&_input]:outline-none [&_textarea]:w-full [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-white/10 [&_textarea]:bg-slate-900 [&_textarea]:px-3 [&_textarea]:py-2.5 [&_textarea]:outline-none">{children}</div></label> }
+function Sidebar({ open, onClose }) {
+  const items = [
+    [Home, 'Dashboard'], [Link2, 'Enlaces'], [FolderOpen, 'Carpetas'], [BarChart3, 'Estadísticas'], [Activity, 'Actividad'], [Settings, 'Ajustes'],
+  ];
+  return <>
+    {open && <button aria-label="Cerrar menú" className="fixed inset-0 z-40 bg-black/70 lg:hidden" onClick={onClose}/>} 
+    <aside className={`fixed bottom-0 left-0 top-20 z-50 w-52 border-r border-white/10 bg-[#030a18] p-3 transition-transform lg:z-30 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+      <nav className="space-y-1">{items.map(([Icon, label], index) => <button key={label} onClick={onClose} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm ${index === 1 ? 'bg-white/[0.07] text-white' : 'text-slate-400 hover:bg-white/[0.04] hover:text-white'}`}><Icon size={18} className={index === 1 ? 'text-emerald-400' : ''}/>{label}</button>)}</nav>
+      <div className="absolute bottom-4 left-3 right-3 rounded-xl border border-white/10 bg-white/[0.035] p-3"><div className="flex items-center gap-2 text-sm"><CircleHelp size={17}/><b>Ayuda</b></div><p className="mt-2 text-xs text-slate-500">Cómo funciona el gestor</p></div>
+    </aside>
+  </>;
+}
 
-function QrPreview({preview,busy,onClose,onDownload}) { return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"><div className="max-h-[94vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-slate-950 p-5 text-white"><div className="flex items-center justify-between gap-3"><div><p className="text-sm text-emerald-400">QR CORPORATIVO</p><h2 className="text-xl font-semibold">{preview.link.name}</h2></div><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 flex min-h-[360px] items-center justify-center rounded-2xl bg-white p-3">{busy||!preview.dataUrl?<p className="text-slate-700">Generando vista previa…</p>:<img src={preview.dataUrl} alt={`QR dinámico ${preview.link.name}`} className="h-auto w-full max-w-[540px]"/>}</div><p className="mt-3 break-all text-sm text-slate-400">{preview.link.publicUrl}</p><div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button type="button" onClick={()=>onDownload(preview.link,'svg')} className="rounded-xl border border-white/15 px-4 py-2.5">Descargar SVG</button><button type="button" onClick={()=>onDownload(preview.link,'png')} className="rounded-xl bg-emerald-500 px-4 py-2.5 font-medium text-slate-950">Descargar PNG</button></div><p className="mt-4 text-xs text-slate-500">Antes de imprimir, prueba el QR con varios móviles y desde el tamaño real de impresión.</p></div></div> }
+function Login({ password, setPassword, onSubmit, busy, message }) {
+  return <Centered><form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-7"><p className="text-sm text-emerald-400">GOLF EN CASA</p><h1 className="mt-1 text-2xl font-semibold">Acceso al gestor</h1><p className="mt-2 text-sm text-slate-400">Administra los enlaces de tus QR dinámicos.</p><label className="mt-6 block text-sm">Contraseña<input autoFocus type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-3 outline-none focus:border-emerald-500"/></label>{message && <p className="mt-3 text-sm text-red-300">{message}</p>}<button disabled={busy} className="mt-5 w-full rounded-xl bg-emerald-500 py-3 font-medium text-slate-950 disabled:opacity-60">{busy ? 'Accediendo…' : 'Entrar'}</button></form></Centered>;
+}
+function Centered({ children }) { return <div className="flex min-h-screen items-center justify-center bg-[#020817] p-5 text-white">{children}</div>; }
+function Metric({ label, value, icon }) { return <div className="rounded-2xl border border-white/10 bg-[#0a1122] p-6"><div className="flex items-center justify-between text-slate-400"><span>{label}</span><span className="text-emerald-400 [&_svg]:h-7 [&_svg]:w-7">{icon}</span></div><p className="mt-4 text-4xl font-semibold">{value}</p></div>; }
+function IconButton({ children, title, onClick, danger }) { return <button title={title} onClick={onClick} className={`rounded-lg p-2 hover:bg-white/10 [&_svg]:h-4 [&_svg]:w-4 ${danger ? 'text-red-400' : 'text-slate-300'}`}>{children}</button>; }
+
+function Editor({ form, setForm, onClose, onSave, busy, message }) {
+  const [qrData, setQrData] = useState('');
+  const [qrBusy, setQrBusy] = useState(false);
+  const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  const publicUrl = `https://go.golfencasa.net/${form.slug || 'alias'}`;
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      setQrBusy(true);
+      try {
+        const dataUrl = await createBrandedQrPng(publicUrl);
+        if (!cancelled) setQrData(dataUrl);
+      } finally {
+        if (!cancelled) setQrBusy(false);
+      }
+    }, 180);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [publicUrl]);
+
+  return <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/80 p-4 backdrop-blur-sm">
+    <div className="flex min-h-full items-center justify-center py-6">
+      <form onSubmit={onSave} className="w-full max-w-[1020px] overflow-hidden rounded-3xl border border-white/10 bg-[#0a1324] text-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5"><h2 className="text-xl font-semibold">{form.id ? 'Editar enlace' : 'Nuevo enlace'}</h2><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div>
+        <div className="grid gap-7 p-6 lg:grid-cols-[1fr_380px]">
+          <div>
+            <Field label="Nombre (opcional)"><input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="QR camiseta corporativa"/></Field>
+            <Field label="Alias *"><input required value={form.slug} onChange={(e) => update('slug', slugify(e.target.value))} placeholder="camiseta"/></Field>
+            <p className="-mt-1 break-all text-sm text-emerald-400">{publicUrl}</p>
+            <Field label="Carpeta"><select value={form.folder} onChange={(e) => update('folder', e.target.value)}><option>Marketing</option><option>Clientes</option><option>Eventos</option><option>Redes sociales</option><option>Otros</option></select></Field>
+            <Field label="URL de destino *"><input required type="url" value={form.destination} onChange={(e) => update('destination', e.target.value)}/></Field>
+            <Field label="Descripción (opcional)"><textarea rows="4" value={form.notes} onChange={(e) => update('notes', e.target.value)} placeholder="Describe para qué se utilizará este QR."/></Field>
+            <label className="mt-6 flex items-center gap-3"><button type="button" onClick={() => update('active', !form.active)} className={`relative h-7 w-12 rounded-full transition ${form.active ? 'bg-emerald-500' : 'bg-slate-700'}`}><span className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${form.active ? 'left-6' : 'left-1'}`}/></button><span>Activo</span></label>
+            <p className="mt-5 text-xs leading-5 text-slate-500">Puedes cambiar el destino del enlace en cualquier momento. El QR seguirá funcionando.</p>
+          </div>
+          <div>
+            <p className="mb-3 font-medium">Vista previa del QR</p>
+            <div className="rounded-2xl bg-white p-2">{qrBusy || !qrData ? <div className="flex aspect-square items-center justify-center text-slate-600">Generando vista previa…</div> : <img src={qrData} alt="Vista previa del QR corporativo" className="h-auto w-full rounded-xl"/>}</div>
+            <div className="mt-4 rounded-xl border border-white/10 bg-[#08101f] p-4 text-sm text-slate-400">
+              {['Corrección de errores: Nivel H (30%)', 'Formato: PNG (1600×1600 px) y SVG vectorial', 'Color: Verde Golf en Casa', 'Logo: Centro integrado', 'Marco y franja inferior incluidos'].map((item) => <p key={item} className="mb-2 flex items-start gap-2 last:mb-0"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>{item}</p>)}
+            </div>
+          </div>
+        </div>
+        {message && <p className="px-6 pb-2 text-sm text-red-300">{message}</p>}
+        <div className="flex justify-end gap-3 border-t border-white/10 px-6 py-5"><button type="button" onClick={onClose} className="rounded-xl border border-white/15 px-5 py-2.5">Cancelar</button><button disabled={busy} className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 font-semibold text-slate-950 disabled:opacity-60"><Check size={18}/>{busy ? 'Guardando…' : form.id ? 'Guardar cambios' : 'Crear enlace'}</button></div>
+      </form>
+    </div>
+  </div>;
+}
+
+function Field({ label, children }) {
+  return <label className="mb-5 block text-sm"><span className="text-slate-300">{label}</span><div className="mt-2 [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-white/10 [&_input]:bg-[#0d172b] [&_input]:px-3 [&_input]:py-3 [&_input]:outline-none [&_input]:focus:border-emerald-500 [&_select]:w-full [&_select]:rounded-xl [&_select]:border [&_select]:border-white/10 [&_select]:bg-[#0d172b] [&_select]:px-3 [&_select]:py-3 [&_textarea]:w-full [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-white/10 [&_textarea]:bg-[#0d172b] [&_textarea]:px-3 [&_textarea]:py-3 [&_textarea]:outline-none [&_textarea]:focus:border-emerald-500">{children}</div></label>;
+}
+
+function QrPreview({ preview, busy, onClose, onDownload }) {
+  return <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"><div className="max-h-[94vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-[#071020] p-5 text-white"><div className="flex items-center justify-between gap-3"><div><p className="text-sm text-emerald-400">QR CORPORATIVO</p><h2 className="text-xl font-semibold">{preview.link.name}</h2></div><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 flex min-h-[360px] items-center justify-center rounded-2xl bg-white p-3">{busy || !preview.dataUrl ? <p className="text-slate-700">Generando vista previa…</p> : <img src={preview.dataUrl} alt={`QR dinámico ${preview.link.name}`} className="h-auto w-full max-w-[540px]"/>}</div><p className="mt-3 break-all text-sm text-slate-400">{preview.link.publicUrl}</p><div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button type="button" onClick={() => onDownload(preview.link, 'svg')} className="rounded-xl border border-white/15 px-4 py-2.5">Descargar SVG</button><button type="button" onClick={() => onDownload(preview.link, 'png')} className="rounded-xl bg-emerald-500 px-4 py-2.5 font-medium text-slate-950">Descargar PNG</button></div></div></div>;
+}
+
+function slugify(value) {
+  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
