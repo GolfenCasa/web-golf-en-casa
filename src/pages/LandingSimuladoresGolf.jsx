@@ -132,6 +132,30 @@ ${form.message}`
     name="description"
     content="Diseño e instalación de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España."
   />
+  <link
+    rel="canonical"
+    href="https://www.golfencasa.net/instalacion-simuladores-golf"
+  />
+  <meta
+    property="og:title"
+    content="Instalación de simuladores de golf en España | Golf en Casa"
+  />
+  <meta
+    property="og:description"
+    content="Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España."
+  />
+  <meta
+    property="og:type"
+    content="website"
+  />
+  <meta
+    property="og:url"
+    content="https://www.golfencasa.net/instalacion-simuladores-golf"
+  />
+  <meta
+    property="og:image"
+    content="https://www.golfencasa.net/despues_1.webp"
+  />
 
   <script type="application/ld+json">
     {JSON.stringify({
@@ -255,7 +279,7 @@ ${form.message}`
         rel="noreferrer"
         aria-label="Contactar por WhatsApp"
         onClick={() => pushDataLayer("click_whatsapp", "floating_button")}
-        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
+        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-500"
       >
         <FaWhatsapp />
       </a>
@@ -263,8 +287,8 @@ ${form.message}`
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
-          <a href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Golf en Casa" className="h-16 w-auto" />
+          <a href="/" aria-label="Ir a la página principal de Golf en Casa" className="flex items-center gap-3">
+            <img src="/logo.png" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
 
             <div>
               <p className="text-sm font-semibold tracking-wide">
@@ -324,7 +348,7 @@ ${form.message}`
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_whatsapp", "header")}
-              className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-400"
+              className="inline-flex items-center justify-center rounded-2xl bg-green-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-500"
             >
               <FaWhatsapp className="mr-2 text-lg" />
               WhatsApp
@@ -412,6 +436,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
   width="720"
   height="1280"
   aria-label="Vídeo promocional de una instalación de simulador de golf"
+  aria-describedby="video-description"
 >
   <source
     src="/video_promocion3-optimized.mp4"
@@ -419,6 +444,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
   />
   Tu navegador no soporta vídeo HTML5.
               </video>
+              <p id="video-description" className="sr-only">
+                Recorrido visual por una instalación de simulador de golf realizada por Golf en Casa.
+              </p>
             </div>
           </div>
         </div>
@@ -483,7 +511,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           </div>
 
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Te acompaño en el proyecto
             </p>
 
@@ -554,7 +582,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Por qué Golf en Casa
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
@@ -662,7 +690,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_whatsapp", "projects_section")}
-              className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-4 font-bold text-white transition hover:bg-green-400"
+              className="inline-flex items-center justify-center rounded-2xl bg-green-600 px-6 py-4 font-bold text-white transition hover:bg-green-500"
             >
               <FaWhatsapp className="mr-2 text-xl" />
               Quiero algo parecido en mi espacio
@@ -688,7 +716,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       {/* CARRUSEL TECNOLOGÍAS */}
       <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10">
         <div className="mx-auto max-w-7xl px-6">
-          <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-500">
+          <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-400">
             Trabajamos con las principales marcas del sector
           </p>
         </div>
@@ -705,7 +733,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           </div>
         </div>
 
-        <p className="mx-auto mt-6 max-w-4xl px-6 text-center text-xs leading-5 text-zinc-500">
+        <p className="mx-auto mt-6 max-w-4xl px-6 text-center text-xs leading-5 text-zinc-400">
           Marcas mencionadas como tecnologías compatibles o habituales en
           proyectos de simuladores. Golf en Casa no representa oficialmente a
           estas marcas salvo indicación expresa.
@@ -786,7 +814,7 @@ Simuladores para casa, academias y negocios
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Presupuesto orientativo
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
@@ -853,7 +881,7 @@ Simuladores para casa, academias y negocios
       <section className="border-y border-white/10 bg-white/[0.03] px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Opiniones
             </p>
 
@@ -875,11 +903,11 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       </section>
 
       {/* CONTACTO RÁPIDO */}
-      <section className="border-y border-white/10 bg-green-500/10 px-4 py-14 text-white sm:px-6 lg:px-8">
+      <section className="border-y border-white/10 bg-green-600/10 px-4 py-14 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="font-semibold uppercase tracking-[0.25em] text-green-400">
+              <p className="font-semibold uppercase tracking-[0.25em] text-green-300">
                 Contacto rápido
               </p>
 
@@ -906,7 +934,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
                     key={item}
                     className="flex items-center gap-3 rounded-2xl bg-white/5 p-4 text-sm text-zinc-200 sm:text-base"
                   >
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-green-400" />
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-green-300" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -919,7 +947,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
                 onClick={() =>
                   pushDataLayer("click_whatsapp", "contact_section")
                 }
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-500 px-6 py-4 text-base font-bold text-white transition hover:bg-green-400"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-600 px-6 py-4 text-base font-bold text-white transition hover:bg-green-500"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
                 Enviar información por WhatsApp
@@ -936,7 +964,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       >
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Estudio gratuito de viabilidad
             </p>
 
@@ -972,8 +1000,15 @@ Descubre si tu espacio es apto antes de invertir en material
             className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-2xl"
           >
             <div className="grid gap-4 md:grid-cols-2">
+              <label htmlFor="name" className="sr-only">
+                Nombre
+              </label>
               <input
+                id="name"
                 name="name"
+                type="text"
+                autoComplete="name"
+                aria-label="Nombre"
                 value={form.name}
                 onChange={handleChange}
                 required
@@ -981,9 +1016,15 @@ Descubre si tu espacio es apto antes de invertir en material
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
               />
 
+              <label htmlFor="email" className="sr-only">
+                Correo electrónico
+              </label>
               <input
+                id="email"
                 name="email"
                 type="email"
+                autoComplete="email"
+                aria-label="Correo electrónico"
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -991,8 +1032,16 @@ Descubre si tu espacio es apto antes de invertir en material
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
               />
 
+              <label htmlFor="phone" className="sr-only">
+                Teléfono
+              </label>
               <input
+                id="phone"
                 name="phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label="Teléfono"
                 value={form.phone}
                 onChange={handleChange}
                 required
@@ -1000,16 +1049,28 @@ Descubre si tu espacio es apto antes de invertir en material
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
               />
 
+              <label htmlFor="city" className="sr-only">
+                Ciudad o provincia
+              </label>
               <input
+                id="city"
                 name="city"
+                type="text"
+                autoComplete="address-level2"
+                aria-label="Ciudad o provincia"
                 value={form.city}
                 onChange={handleChange}
                 placeholder="Ciudad / provincia"
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
               />
 
+              <label htmlFor="projectType" className="sr-only">
+                Tipo de instalación
+              </label>
               <select
+                id="projectType"
                 name="projectType"
+                aria-label="Tipo de instalación"
                 value={form.projectType}
                 onChange={handleChange}
                 required
@@ -1022,8 +1083,13 @@ Descubre si tu espacio es apto antes de invertir en material
                 <option>Otro</option>
               </select>
 
+              <label htmlFor="budget" className="sr-only">
+                Presupuesto aproximado
+              </label>
               <select
+                id="budget"
                 name="budget"
+                aria-label="Presupuesto aproximado"
                 value={form.budget}
                 onChange={handleChange}
                 required
@@ -1036,8 +1102,14 @@ Descubre si tu espacio es apto antes de invertir en material
                 <option>Más de 20.000 €</option>
               </select>
 
+              <label htmlFor="dimensions" className="sr-only">
+                Medidas aproximadas del espacio
+              </label>
               <input
+                id="dimensions"
                 name="dimensions"
+                type="text"
+                aria-label="Medidas aproximadas del espacio"
                 value={form.dimensions}
                 onChange={handleChange}
                 required
@@ -1045,8 +1117,13 @@ Descubre si tu espacio es apto antes de invertir en material
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
               />
 
+              <label htmlFor="message" className="sr-only">
+                Información adicional sobre el proyecto
+              </label>
               <textarea
+                id="message"
                 name="message"
+                aria-label="Información adicional sobre el proyecto"
                 value={form.message}
                 onChange={handleChange}
                 rows="5"
@@ -1055,13 +1132,13 @@ Descubre si tu espacio es apto antes de invertir en material
               />
             </div>
 
-            <label className="mt-4 flex items-start gap-3 text-sm text-zinc-300">
-              <input type="checkbox" required className="mt-1" />
+            <label htmlFor="privacyConsent" className="mt-4 flex items-start gap-3 text-sm text-zinc-300">
+              <input id="privacyConsent" name="privacyConsent" type="checkbox" required className="mt-1" />
               <span>
                 He leído y acepto la{" "}
                 <a
                   href="/politica-privacidad"
-                  className="text-emerald-400 underline"
+                  className="text-emerald-300 underline"
                 >
                   Política de Privacidad
                 </a>
@@ -1116,7 +1193,7 @@ Descubre si tu espacio es apto antes de invertir en material
       <section className="border-y border-white/10 bg-white/[0.03]">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Después de la instalación
             </p>
 
@@ -1176,7 +1253,7 @@ Descubre si tu espacio es apto antes de invertir en material
       <section className="border-t border-white/10 bg-white/[0.03]">
         <div className="mx-auto max-w-7xl px-6 py-20">
           <div className="max-w-3xl">
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
               Preguntas frecuentes
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
@@ -1264,6 +1341,10 @@ Enviar medidas por WhatsApp
           <img
             src="/logo.png"
             alt="Golf en Casa"
+            width="96"
+            height="96"
+            loading="lazy"
+            decoding="async"
             className="mx-auto h-24 w-auto"
           />
 
@@ -1329,7 +1410,7 @@ Enviar medidas por WhatsApp
             </a>
           </div>
 
-          <p className="mt-8 text-sm text-zinc-500">
+          <p className="mt-8 text-sm text-zinc-400">
             © 2026 Golf en Casa. Todos los derechos reservados.
           </p>
         </div>
@@ -1385,7 +1466,7 @@ function CarePoint({ icon, title, text }) {
 function TrustBadge({ icon, text }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2">
-      {React.cloneElement(icon, { className: "h-4 w-4 text-emerald-400" })}
+      {React.cloneElement(icon, { className: "h-4 w-4 text-emerald-300" })}
       <span>{text}</span>
     </div>
   );
@@ -1468,7 +1549,7 @@ function FAQItem({ question, answer }) {
 function Benefit({ text }) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-      <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+      <CheckCircle2 className="h-5 w-5 text-emerald-300" />
       <span>{text}</span>
     </div>
   );
@@ -1540,13 +1621,13 @@ function TechnologyBadge({ name, logo }) {
 function TestimonialCard({ name, role, text }) {
   return (
     <article className="rounded-[2rem] border border-white/10 bg-zinc-950 p-6 shadow-2xl">
-      <div className="flex items-center gap-1 text-emerald-400">
+      <div className="flex items-center gap-1 text-emerald-300">
         {[1, 2, 3, 4, 5].map((item) => (
           <Star key={item} className="h-4 w-4 fill-current" />
         ))}
       </div>
 
-      <Quote className="mt-6 h-8 w-8 text-emerald-400/60" />
+      <Quote className="mt-6 h-8 w-8 text-emerald-300/60" />
 
       <p className="mt-4 leading-7 text-zinc-300">“{text}”</p>
 
