@@ -157,9 +157,9 @@ ${form.message}`
           url: "https://www.golfencasa.net",
           logo: "https://www.golfencasa.net/logo.png",
           image: [
-            "https://www.golfencasa.net/francisco-golf-en-casa.png",
-            "https://www.golfencasa.net/despues_1.JPEG",
-            "https://www.golfencasa.net/despues_2.JPEG"
+            "https://www.golfencasa.net/francisco-golf-en-casa.webp",
+            "https://www.golfencasa.net/despues_1.webp",
+            "https://www.golfencasa.net/despues_2.webp"
           ],
           description:
             "Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, academias y negocios indoor en toda España.",
@@ -185,7 +185,7 @@ ${form.message}`
             "Servicio de diseño e instalación llave en mano de simuladores de golf para casa, academias y negocios indoor en toda España.",
           primaryImageOfPage: {
             "@type": "ImageObject",
-            url: "https://www.golfencasa.net/despues_1.JPEG"
+            url: "https://www.golfencasa.net/despues_1.webp"
           }
         },
         {
@@ -401,15 +401,23 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           <div className="mt-12 flex justify-center lg:mt-0 lg:w-[42%]">
             <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl">
               <video
-                className="w-full rounded-[1.5rem] border border-white/10 shadow-2xl"
-                controls
-                autoPlay
-                muted
-                loop
-                playsInline
-              >
-                <source src="/video_promocion3.mp4" type="video/mp4" />
-                Tu navegador no soporta vídeo HTML5.
+                className="aspect-[9/16] w-full rounded-[1.5rem] border border-white/10 bg-black object-cover shadow-2xl"
+  controls
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="metadata"
+  poster="/video_promocion3-poster.webp"
+  width="720"
+  height="1280"
+  aria-label="Vídeo promocional de una instalación de simulador de golf"
+>
+  <source
+    src="/video_promocion3-optimized.mp4"
+    type="video/mp4"
+  />
+  Tu navegador no soporta vídeo HTML5.
               </video>
             </div>
           </div>
@@ -463,9 +471,14 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-400/10 blur-2xl" />
             <img
-              src="/francisco-golf-en-casa.png"
+              src="/francisco-golf-en-casa.webp"
+              width="768"
+              height="1024"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               alt="Francisco Menacho, fundador de Golf en Casa"
-              className="relative w-full max-w-md rounded-[2rem] border border-white/10 object-cover shadow-2xl"
+              className="relative h-auto w-full rounded-[2rem] object-cover shadow-2xl"
             />
           </div>
 
@@ -613,15 +626,15 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               title="Simulador de golf en vivienda particular"
               location="Écija, Sevilla"
               before="/antes_1.jpg"
-              after="/despues_1.JPEG"
+              after="/despues_1.webp"
               description="Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación."
             />
 
             <ProjectCard
               title="Simulador de golf personalizado"
               location="Jerez, Cádiz"
-              before="/antes_2.JPEG"
-              after="/despues_2.JPEG"
+              before="/antes_2.webp"
+              after="/despues_2.webp"
               description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
             />
           </div>
@@ -1513,8 +1526,12 @@ function TechnologyBadge({ name, logo }) {
       <img
         src={logo}
         alt={name}
+        width="180"
+        height="64"
         className="max-h-16 max-w-[180px] object-contain opacity-100 brightness-110 contrast-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.75)]"
         loading="lazy"
+        decoding="async"
+        fetchPriority="low"
       />
     </div>
   );
@@ -1579,6 +1596,11 @@ function BeforeAfterSlider({ before, after, alt }) {
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200">
       <img
         src={before}
+        width="1600"
+        height="1200"
+        loading="lazy"
+        decoding="async"
+        fetchPriority="low"
         alt={`${alt} antes`}
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -1589,6 +1611,11 @@ function BeforeAfterSlider({ before, after, alt }) {
       >
         <img
           src={after}
+          width="1600"
+          height="1200"
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
           alt={`${alt} después`}
           className="h-full w-full object-cover"
           style={{

@@ -1,22 +1,32 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
 
 import GolfSimulatorLanding from "./App.jsx";
-import AvisoLegal from "./pages/AvisoLegal.jsx";
-import PoliticaPrivacidad from "./pages/PoliticaPrivacidad.jsx";
-import PoliticaCookies from "./pages/PoliticaCookies.jsx";
 import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf";
-import PrimeDayAmazonGolfEnCasa from "./pages/PrimeDayAmazonGolfEnCasa";
-import GolfEnCasaCARE from "./pages/GolfEnCasaCARE";
+
+const AvisoLegal = lazy(() => import("./pages/AvisoLegal.jsx"));
+const PoliticaPrivacidad = lazy(() =>
+  import("./pages/PoliticaPrivacidad.jsx")
+);
+const PoliticaCookies = lazy(() =>
+  import("./pages/PoliticaCookies.jsx")
+);
+const PrimeDayAmazonGolfEnCasa = lazy(() =>
+  import("./pages/PrimeDayAmazonGolfEnCasa")
+);
+const GolfEnCasaCARE = lazy(() =>
+  import("./pages/GolfEnCasaCARE")
+);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
           <Route path="/" element={<GolfSimulatorLanding />} />
           <Route
             path="/instalacion-simuladores-golf"
@@ -36,8 +46,25 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     path="/care"
     element={<GolfEnCasaCARE />}
 />
-        </Routes>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </HelmetProvider>
   </React.StrictMode>
 );
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
+      <div className="text-center">
+        <div
+          className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-emerald-400 border-t-transparent"
+          aria-hidden="true"
+        />
+        <p className="mt-4 text-sm text-zinc-400" role="status">
+          Cargando...
+        </p>
+      </div>
+    </div>
+  );
+}
