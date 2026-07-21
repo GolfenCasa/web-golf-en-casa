@@ -247,6 +247,7 @@ export default function GolfSimulatorLanding() {
           ],
         })}
       </script>
+        <link rel="canonical" href="https://www.golfencasa.net/" />
     </Helmet>
 
         <a

@@ -166,7 +166,7 @@ ${form.message}`
           "@id": "https://www.golfencasa.net/#organization",
           name: "Golf en Casa",
           url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo.png",
+          logo: "https://www.golfencasa.net/logo.webp",
           sameAs: [
             "https://youtube.com/@Golf_en_Casa",
             "https://instagram.com/golf.en.casa/",
@@ -179,7 +179,7 @@ ${form.message}`
           "@id": "https://www.golfencasa.net/#business",
           name: "Golf en Casa",
           url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo.png",
+          logo: "https://www.golfencasa.net/logo.webp",
           image: [
             "https://www.golfencasa.net/francisco-golf-en-casa.webp",
             "https://www.golfencasa.net/despues_1.webp",
@@ -279,7 +279,7 @@ ${form.message}`
         rel="noreferrer"
         aria-label="Contactar por WhatsApp"
         onClick={() => pushDataLayer("click_whatsapp", "floating_button")}
-        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-500"
+        className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-600"
       >
         <FaWhatsapp />
       </a>
@@ -287,8 +287,8 @@ ${form.message}`
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
-          <a href="/" aria-label="Ir a la página principal de Golf en Casa" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
+          <a href="/" className="flex items-center gap-3">
+            <img src="/logo.webp" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
 
             <div>
               <p className="text-sm font-semibold tracking-wide">
@@ -348,7 +348,7 @@ ${form.message}`
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_whatsapp", "header")}
-              className="inline-flex items-center justify-center rounded-2xl bg-green-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-500"
+              className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-lg" />
               WhatsApp
@@ -456,7 +456,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       <section className="border-b border-white/10 bg-emerald-400 text-zinc-950">
         <div className="mx-auto grid max-w-7xl gap-8 px-6 py-14 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-950/70">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-950">
               La primera duda, resuelta
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
@@ -635,7 +635,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
-            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-600">
+            <p className="font-semibold uppercase tracking-[0.25em] text-emerald-700">
               Instalaciones reales
             </p>
 
@@ -668,7 +668,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           </div>
 
           <div className="mt-12 rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 shadow-sm">
-            <p className="font-semibold uppercase tracking-[0.2em] text-emerald-600">
+            <p className="font-semibold uppercase tracking-[0.2em] text-emerald-700">
               Zonas donde ya trabajamos
             </p>
             <h3 className="mt-3 text-2xl font-black">
@@ -690,7 +690,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_whatsapp", "projects_section")}
-              className="inline-flex items-center justify-center rounded-2xl bg-green-600 px-6 py-4 font-bold text-white transition hover:bg-green-500"
+              className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-xl" />
               Quiero algo parecido en mi espacio
@@ -903,7 +903,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       </section>
 
       {/* CONTACTO RÁPIDO */}
-      <section className="border-y border-white/10 bg-green-600/10 px-4 py-14 text-white sm:px-6 lg:px-8">
+      <section className="border-y border-white/10 bg-green-700/10 px-4 py-14 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
@@ -947,7 +947,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
                 onClick={() =>
                   pushDataLayer("click_whatsapp", "contact_section")
                 }
-                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-600 px-6 py-4 text-base font-bold text-white transition hover:bg-green-500"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
                 Enviar información por WhatsApp
@@ -1339,7 +1339,7 @@ Enviar medidas por WhatsApp
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-12 text-center">
         <div className="mx-auto max-w-7xl">
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="Golf en Casa"
             width="96"
             height="96"
@@ -1434,7 +1434,7 @@ function AdvantageCard({ icon, title, text }) {
 function CityPill({ city }) {
   return (
     <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-800 shadow-sm">
-      <MapPin className="h-4 w-4 text-emerald-600" />
+      <MapPin className="h-4 w-4 text-emerald-700" />
       {city}
     </span>
   );
@@ -1645,7 +1645,7 @@ function ProjectCard({ title, location, before, after, description }) {
       <BeforeAfterSlider before={before} after={after} alt={title} />
 
       <div className="p-6">
-        <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
+        <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
           <MapPin className="h-4 w-4" />
           {location}
         </p>
