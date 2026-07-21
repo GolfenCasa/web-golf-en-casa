@@ -3,11 +3,10 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
+import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf.jsx";
 
 const GolfSimulatorLanding = lazy(() => import("./App.jsx"));
-const LandingSimuladoresGolf = lazy(() =>
-  import("./pages/LandingSimuladoresGolf.jsx")
-);
+
 const AvisoLegal = lazy(() => import("./pages/AvisoLegal.jsx"));
 const PoliticaPrivacidad = lazy(() =>
   import("./pages/PoliticaPrivacidad.jsx")
