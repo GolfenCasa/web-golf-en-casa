@@ -478,12 +478,15 @@ export default function GolfSimulatorLanding() {
   <video
     className="w-full max-w-[280px] rounded-[2rem] border border-white/10 shadow-2xl sm:max-w-[340px] md:max-w-[380px] lg:max-w-[420px]"
     controls
-    autoPlay
     muted
     loop
     playsInline
+    preload="none"
+    poster="/video_promocion3-poster.webp"
+    width="406"
+    height="720"
   >
-    <source src="/video_promocion3.mp4" type="video/mp4" />
+    <source src="/video_promocion3-optimized.mp4" type="video/mp4" />
     Tu navegador no soporta vídeo HTML5.
   </video>
 

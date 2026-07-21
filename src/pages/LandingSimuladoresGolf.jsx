@@ -439,29 +439,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
 
           <div className="mt-12 flex justify-center lg:mt-0 lg:w-[42%]">
             <div className="w-full max-w-[420px] rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl">
-              <video
-                className="aspect-[9/16] w-full rounded-[1.5rem] border border-white/10 bg-black object-cover shadow-2xl"
-  controls
-  autoPlay
-  muted
-  loop
-  playsInline
-  preload="metadata"
-  poster="/video_promocion3-poster.webp"
-  width="720"
-  height="1280"
-  aria-label="Vídeo promocional de una instalación de simulador de golf"
-  aria-describedby="video-description"
->
-  <source
-    src="/video_promocion3-optimized.mp4"
-    type="video/mp4"
-  />
-  Tu navegador no soporta vídeo HTML5.
-              </video>
-              <p id="video-description" className="sr-only">
-                Recorrido visual por una instalación de simulador de golf realizada por Golf en Casa.
-              </p>
+              <HeroVideo />
             </div>
           </div>
         </div>
@@ -1615,6 +1593,60 @@ function TrustBadge({ icon, text }) {
       {React.cloneElement(icon, { className: "h-4 w-4 text-emerald-300" })}
       <span>{text}</span>
     </div>
+  );
+}
+
+function HeroVideo() {
+  const [activated, setActivated] = useState(false);
+
+  if (!activated) {
+    return (
+      <button
+        type="button"
+        onClick={() => setActivated(true)}
+        className="group relative block aspect-[9/16] w-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-black shadow-2xl"
+        aria-label="Reproducir vídeo de una instalación de simulador de golf"
+      >
+        <img
+          src="/video_promocion3-poster.webp"
+          width="406"
+          height="720"
+          alt="Vista previa de una instalación de simulador de golf realizada por Golf en Casa"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          className="h-full w-full object-cover"
+        />
+        <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-black/65 text-2xl text-white shadow-2xl backdrop-blur transition group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-zinc-950">
+            ▶
+          </span>
+        </span>
+        <span className="absolute inset-x-4 bottom-4 rounded-xl bg-black/60 px-4 py-3 text-left text-sm font-semibold text-white backdrop-blur">
+          Ver una instalación real
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <video
+      className="aspect-[9/16] w-full rounded-[1.5rem] border border-white/10 bg-black object-cover shadow-2xl"
+      controls
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      poster="/video_promocion3-poster.webp"
+      width="406"
+      height="720"
+      aria-label="Vídeo promocional de una instalación de simulador de golf"
+    >
+      <source src="/video_promocion3-optimized.mp4" type="video/mp4" />
+      Tu navegador no soporta vídeo HTML5.
+    </video>
   );
 }
 
