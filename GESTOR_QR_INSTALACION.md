@@ -53,3 +53,26 @@ Mantén `go.golfencasa.net` añadido al mismo proyecto y configura en SiteGround
 ## 5. Blob anterior
 
 El Blob privado creado previamente ya no se usa. Puedes eliminarlo desde Vercel para evitar confusión; actualmente está vacío, por lo que no hay datos que migrar.
+
+## QR corporativo integrado
+
+La versión final genera un QR dinámico corporativo desde cada enlace guardado:
+
+- Vista previa antes de descargar.
+- PNG de 1600 × 1600 px para uso digital e impresión ordinaria.
+- SVG vectorial para camisetas, cartelería y gran formato.
+- Verde corporativo, módulos redondeados, logotipo central y llamada a la acción.
+- Corrección de errores H.
+
+Flujo de uso:
+
+1. Entra en `/admin/enlaces`.
+2. Pulsa **Nuevo enlace**.
+3. Introduce nombre, alias y URL de destino.
+4. Guarda el enlace.
+5. Usa el icono del ojo para revisar el QR.
+6. Descarga PNG o SVG desde las acciones.
+
+El QR codifica siempre la URL corta `https://go.golfencasa.net/alias`. Puedes cambiar después el destino desde el panel sin volver a imprimirlo.
+
+Antes de mandar una tirada a imprenta, prueba una muestra física con varios móviles. Para camisetas se recomienda SVG y un ancho mínimo aproximado de 6–7 cm.

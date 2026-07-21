@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import QRCode from 'qrcode';
-import { Copy, Download, Edit3, ExternalLink, FolderOpen, History, Link2, LogOut, Plus, QrCode, Search, Trash2, X } from 'lucide-react';
+import { createBrandedQrPng, createBrandedQrSvg } from '../utils-branded-qr.js';
+import { Copy, Download, Edit3, Eye, ExternalLink, FolderOpen, History, Link2, LogOut, Plus, QrCode, Search, Trash2, X } from 'lucide-react';
 
 const emptyForm = { id: '', name: '', slug: '', destination: 'https://www.golfencasa.net/instalacion-simuladores-golf', folder: 'Marketing', notes: '', active: true };
 
@@ -14,6 +14,8 @@ export default function LinkManager() {
   const [folder, setFolder] = useState('Todos');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [previewBusy, setPreviewBusy] = useState(false);
 
   useEffect(() => { checkAuth(); }, []);
 
@@ -69,13 +71,36 @@ export default function LinkManager() {
   }
 
   async function downloadQr(link, type = 'png') {
-    if (type === 'svg') {
-      const svg = await QRCode.toString(link.publicUrl, { type: 'svg', errorCorrectionLevel: 'H', margin: 3, color: { dark: '#071a16', light: '#ffffff' } });
-      downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), `${link.slug}-qr.svg`);
-      return;
+    try {
+      setMessage('Generando QR corporativo…');
+      if (type === 'svg') {
+        const svg = await createBrandedQrSvg(link.publicUrl);
+        downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), `${link.slug}-qr-corporativo.svg`);
+      } else {
+        const dataUrl = await createBrandedQrPng(link.publicUrl);
+        const a = document.createElement('a'); a.href = dataUrl; a.download = `${link.slug}-qr-corporativo.png`; a.click();
+      }
+      setMessage(`QR ${type.toUpperCase()} descargado`);
+      window.setTimeout(() => setMessage(''), 1800);
+    } catch (error) {
+      console.error(error);
+      setMessage('No se pudo generar el QR corporativo');
     }
-    const dataUrl = await QRCode.toDataURL(link.publicUrl, { width: 1600, errorCorrectionLevel: 'H', margin: 4, color: { dark: '#071a16', light: '#ffffff' } });
-    const a = document.createElement('a'); a.href = dataUrl; a.download = `${link.slug}-qr.png`; a.click();
+  }
+
+  async function previewQr(link) {
+    setPreviewBusy(true);
+    setPreview({ link, dataUrl: null });
+    try {
+      const dataUrl = await createBrandedQrPng(link.publicUrl);
+      setPreview({ link, dataUrl });
+    } catch (error) {
+      console.error(error);
+      setPreview(null);
+      setMessage('No se pudo generar la vista previa');
+    } finally {
+      setPreviewBusy(false);
+    }
   }
 
   function downloadBlob(blob, name) {
@@ -116,12 +141,13 @@ export default function LinkManager() {
         </section>
         <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035]">
           <div className="overflow-x-auto"><table className="w-full min-w-[940px] text-left"><thead className="border-b border-white/10 text-sm text-slate-400"><tr><th className="p-4">Enlace</th><th className="p-4">Destino</th><th className="p-4">Carpeta</th><th className="p-4">Clics</th><th className="p-4">Estado</th><th className="p-4 text-right">Acciones</th></tr></thead>
-          <tbody>{filtered.map(link=><tr key={link.id} className="border-b border-white/5 last:border-0"><td className="p-4"><p className="font-medium">{link.name}</p><button onClick={()=>copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-4"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-4"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-4 font-medium">{link.clicks || 0}</td><td className="p-4"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active?'bg-emerald-500/15 text-emerald-300':'bg-amber-500/15 text-amber-300'}`}>{link.active?'Activo':'Pausado'}</span></td><td className="p-4"><div className="flex justify-end gap-1"><IconButton title="Copiar" onClick={()=>copy(link.publicUrl)}><Copy/></IconButton><IconButton title="QR PNG" onClick={()=>downloadQr(link,'png')}><Download/></IconButton><IconButton title="QR SVG" onClick={()=>downloadQr(link,'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={()=>openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={()=>remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody></table></div>
+          <tbody>{filtered.map(link=><tr key={link.id} className="border-b border-white/5 last:border-0"><td className="p-4"><p className="font-medium">{link.name}</p><button onClick={()=>copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-4"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-4"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-4 font-medium">{link.clicks || 0}</td><td className="p-4"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active?'bg-emerald-500/15 text-emerald-300':'bg-amber-500/15 text-amber-300'}`}>{link.active?'Activo':'Pausado'}</span></td><td className="p-4"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={()=>previewQr(link)}><Eye/></IconButton><IconButton title="Copiar" onClick={()=>copy(link.publicUrl)}><Copy/></IconButton><IconButton title="QR PNG corporativo" onClick={()=>downloadQr(link,'png')}><Download/></IconButton><IconButton title="QR SVG corporativo" onClick={()=>downloadQr(link,'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={()=>openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={()=>remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody></table></div>
           {!filtered.length && <div className="p-10 text-center text-slate-400">No hay enlaces que coincidan.</div>}
         </section>
         <section className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"><div className="mb-4 flex items-center gap-2"><History size={19} className="text-emerald-400"/><h2 className="font-medium">Actividad reciente</h2></div><div className="space-y-2 text-sm">{data.history.slice(0,8).map(h=><div key={h.id} className="flex justify-between gap-4 border-b border-white/5 py-2 last:border-0"><span><b>{h.name}</b> · {h.action==='created'?'creado':h.action==='updated'?'actualizado':'eliminado'}</span><time className="text-slate-500">{new Date(h.at).toLocaleString('es-ES')}</time></div>)}{!data.history.length&&<p className="text-slate-500">Todavía no hay actividad.</p>}</div></section>
       </main>
-      {showEditor && <Editor form={form} setForm={setForm} onClose={()=>setShowEditor(false)} onSave={save} busy={busy} message={message}/>} 
+      {showEditor && <Editor form={form} setForm={setForm} onClose={()=>setShowEditor(false)} onSave={save} busy={busy} message={message}/>}
+      {preview && <QrPreview preview={preview} busy={previewBusy} onClose={()=>setPreview(null)} onDownload={downloadQr}/>} 
     </div>
   );
 }
@@ -132,3 +158,5 @@ function Metric({label,value,icon}) { return <div className="rounded-2xl border 
 function IconButton({children,title,onClick,danger}) { return <button title={title} onClick={onClick} className={`rounded-lg p-2 hover:bg-white/10 [&_svg]:h-4 [&_svg]:w-4 ${danger?'text-red-300':'text-slate-300'}`}>{children}</button> }
 function Editor({form,setForm,onClose,onSave,busy,message}) { const update=(key,value)=>setForm(prev=>({...prev,[key]:value})); return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"><form onSubmit={onSave} className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-slate-950 p-6 text-white"><div className="flex items-center justify-between"><h2 className="text-xl font-semibold">{form.id?'Editar enlace':'Nuevo enlace'}</h2><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 grid gap-4 sm:grid-cols-2"><Field label="Nombre"><input required value={form.name} onChange={e=>update('name',e.target.value)}/></Field><Field label="Alias"><input required value={form.slug} onChange={e=>update('slug',e.target.value)} placeholder="camiseta"/></Field><Field label="Carpeta"><input value={form.folder} onChange={e=>update('folder',e.target.value)}/></Field><label className="flex items-center gap-3 pt-7"><input type="checkbox" checked={form.active} onChange={e=>update('active',e.target.checked)} className="h-5 w-5"/>Enlace activo</label></div><Field label="URL de destino" full><input required type="url" value={form.destination} onChange={e=>update('destination',e.target.value)}/></Field><Field label="Notas" full><textarea rows="3" value={form.notes} onChange={e=>update('notes',e.target.value)}/></Field><div className="mt-3 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">URL pública: https://go.golfencasa.net/{form.slug || 'alias'}</div>{message&&<p className="mt-3 text-sm text-red-300">{message}</p>}<div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="rounded-xl border border-white/15 px-4 py-2.5">Cancelar</button><button disabled={busy} className="rounded-xl bg-emerald-500 px-5 py-2.5 font-medium text-slate-950 disabled:opacity-60">{busy?'Guardando…':'Guardar'}</button></div></form></div> }
 function Field({label,children,full}) { return <label className={`mt-4 block text-sm ${full?'':' '}`}><span className="text-slate-300">{label}</span><div className="mt-2 [&_input]:w-full [&_input]:rounded-xl [&_input]:border [&_input]:border-white/10 [&_input]:bg-slate-900 [&_input]:px-3 [&_input]:py-2.5 [&_input]:outline-none [&_textarea]:w-full [&_textarea]:rounded-xl [&_textarea]:border [&_textarea]:border-white/10 [&_textarea]:bg-slate-900 [&_textarea]:px-3 [&_textarea]:py-2.5 [&_textarea]:outline-none">{children}</div></label> }
+
+function QrPreview({preview,busy,onClose,onDownload}) { return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"><div className="max-h-[94vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-slate-950 p-5 text-white"><div className="flex items-center justify-between gap-3"><div><p className="text-sm text-emerald-400">QR CORPORATIVO</p><h2 className="text-xl font-semibold">{preview.link.name}</h2></div><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 flex min-h-[360px] items-center justify-center rounded-2xl bg-white p-3">{busy||!preview.dataUrl?<p className="text-slate-700">Generando vista previa…</p>:<img src={preview.dataUrl} alt={`QR dinámico ${preview.link.name}`} className="h-auto w-full max-w-[540px]"/>}</div><p className="mt-3 break-all text-sm text-slate-400">{preview.link.publicUrl}</p><div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button type="button" onClick={()=>onDownload(preview.link,'svg')} className="rounded-xl border border-white/15 px-4 py-2.5">Descargar SVG</button><button type="button" onClick={()=>onDownload(preview.link,'png')} className="rounded-xl bg-emerald-500 px-4 py-2.5 font-medium text-slate-950">Descargar PNG</button></div><p className="mt-4 text-xs text-slate-500">Antes de imprimir, prueba el QR con varios móviles y desde el tamaño real de impresión.</p></div></div> }
