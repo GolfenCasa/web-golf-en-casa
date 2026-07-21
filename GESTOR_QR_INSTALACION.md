@@ -1,49 +1,55 @@
-# Gestor de enlaces y QR — instalación
+# Gestor de enlaces dinámicos — instalación con Upstash Redis
 
-## 1. Dependencias
+> Nota: Vercel KV ya no está disponible para proyectos nuevos. Su sustituto es Upstash Redis desde Vercel Marketplace.
 
-El proyecto ya incluye `qrcode` y `@vercel/blob` en `package.json` y `package-lock.json`.
+## 1. Instalar Upstash Redis en Vercel
+
+1. Abre tu proyecto en Vercel.
+2. Ve a **Storage** o **Marketplace**.
+3. Busca **Upstash for Redis**.
+4. Instala la integración y vincúlala al proyecto `web-golf-en-casa`.
+5. Crea una base de datos en una región europea próxima (por ejemplo, París/Frankfurt, según disponibilidad).
+6. Selecciona el plan gratuito para empezar.
+7. Comprueba que Vercel haya creado variables como `KV_REST_API_URL` y `KV_REST_API_TOKEN`, o sus equivalentes `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`.
+
+El SDK usa `Redis.fromEnv()` y detecta las variables proporcionadas por la integración.
+
+## 2. Contraseña del panel
+
+En **Settings → Environment Variables**, crea:
+
+- `LINK_ADMIN_PASSWORD`: una contraseña larga y única.
+
+Aplícala a Production y Preview. Después haz un nuevo despliegue.
+
+## 3. Instalación local
+
+Elimina el `package-lock.json` anterior si contiene URLs internas y ejecuta:
 
 ```powershell
+npm config set registry https://registry.npmjs.org/
+Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item package-lock.json -Force -ErrorAction SilentlyContinue
 npm install
 npm run build
 ```
 
-## 2. Vercel Blob
+Para trabajar localmente con la base de datos conectada:
 
-Crea un Blob Store **Private**, con región París, y conéctalo al proyecto para Production y Preview.
+```powershell
+npm install -g vercel
+vercel link
+vercel env pull .env.local
+npm run dev
+```
 
-La conexión debe crear `BLOB_STORE_ID` y `BLOB_WEBHOOK_PUBLIC_KEY`. Vercel usa OIDC automáticamente en producción. Puedes marcar también “Add a read-write token…” para facilitar pruebas locales.
+## 4. Dominios y rutas
 
-## 3. Contraseña
+- Panel: `https://www.golfencasa.net/admin/enlaces`
+- Enlaces públicos: `https://go.golfencasa.net/<alias>`
 
-En Vercel > Settings > Environment Variables crea:
+Mantén `go.golfencasa.net` añadido al mismo proyecto y configura en SiteGround el CNAME exacto que indique Vercel.
 
-`LINK_ADMIN_PASSWORD`
+## 5. Blob anterior
 
-Actívala para Production y Preview. Después haz un Redeploy.
-
-## 4. Subdominio
-
-Añade `go.golfencasa.net` al mismo proyecto de Vercel. En SiteGround crea el CNAME que Vercel te indique para el host `go`.
-
-## 5. Panel
-
-`https://www.golfencasa.net/admin/enlaces`
-
-Los enlaces creados tendrán esta forma:
-
-`https://go.golfencasa.net/camiseta`
-
-## 6. Funciones incluidas
-
-- Alta, edición, pausa y eliminación de enlaces.
-- Carpetas, búsqueda, notas y actividad reciente.
-- Contador básico de clics.
-- Descarga de QR en PNG y SVG.
-- Sesión administrativa mediante cookie HttpOnly firmada.
-- Redirección 302 para que el destino pueda cambiar sin reimprimir el QR.
-
-## Nota sobre estadísticas
-
-El contador está pensado para un volumen pequeño o medio. Si en el futuro hay muchos escaneos simultáneos, conviene mover las métricas a una base de datos transaccional o a un sistema de analítica dedicado.
+El Blob privado creado previamente ya no se usa. Puedes eliminarlo desde Vercel para evitar confusión; actualmente está vacío, por lo que no hay datos que migrar.

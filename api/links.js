@@ -1,6 +1,13 @@
 import crypto from 'node:crypto';
 import { isAuthenticated } from './_lib/auth.js';
-import { normalizeSlug, publicLink, readStore, writeStore } from './_lib/store.js';
+import {
+  createLink,
+  deleteLink,
+  normalizeSlug,
+  publicLink,
+  readStore,
+  updateLink,
+} from './_lib/store.js';
 
 function unauthorized() {
   return Response.json({ error: 'No autorizado' }, { status: 401 });
@@ -29,27 +36,24 @@ function sanitizeLink(body, previous = {}) {
   };
 }
 
+function history(action, link, at = new Date().toISOString()) {
+  return { id: crypto.randomUUID(), action, linkId: link.id, name: link.name, at };
+}
+
 export async function GET(request) {
   if (!isAuthenticated(request)) return unauthorized();
-  const store = await readStore();
-  return Response.json(store);
+  return Response.json(await readStore());
 }
 
 export async function POST(request) {
   if (!isAuthenticated(request)) return unauthorized();
   try {
-    const body = await request.json();
-    const store = await readStore();
-    const link = sanitizeLink(body);
-    if (store.links.some((item) => item.slug === link.slug)) {
-      return Response.json({ error: 'Ese alias ya existe' }, { status: 409 });
-    }
-    store.links.unshift(link);
-    store.history.unshift({ id: crypto.randomUUID(), action: 'created', linkId: link.id, name: link.name, at: link.createdAt });
-    await writeStore(store);
+    const link = sanitizeLink(await request.json());
+    await createLink(link, history('created', link, link.createdAt));
     return Response.json(link, { status: 201 });
   } catch (error) {
-    return Response.json({ error: error.message || 'No se pudo crear' }, { status: 400 });
+    const status = error.code === 'SLUG_EXISTS' ? 409 : 400;
+    return Response.json({ error: error.message || 'No se pudo crear' }, { status });
   }
 }
 
@@ -58,18 +62,14 @@ export async function PUT(request) {
   try {
     const body = await request.json();
     const store = await readStore();
-    const index = store.links.findIndex((item) => item.id === body.id);
-    if (index < 0) return Response.json({ error: 'Enlace no encontrado' }, { status: 404 });
-    const link = sanitizeLink(body, store.links[index]);
-    if (store.links.some((item, i) => i !== index && item.slug === link.slug)) {
-      return Response.json({ error: 'Ese alias ya existe' }, { status: 409 });
-    }
-    store.links[index] = link;
-    store.history.unshift({ id: crypto.randomUUID(), action: 'updated', linkId: link.id, name: link.name, at: link.updatedAt });
-    await writeStore(store);
+    const previous = store.links.find((item) => item.id === body.id);
+    if (!previous) return Response.json({ error: 'Enlace no encontrado' }, { status: 404 });
+    const link = sanitizeLink(body, previous);
+    await updateLink(previous, link, history('updated', link, link.updatedAt));
     return Response.json(link);
   } catch (error) {
-    return Response.json({ error: error.message || 'No se pudo actualizar' }, { status: 400 });
+    const status = error.code === 'SLUG_EXISTS' ? 409 : 400;
+    return Response.json({ error: error.message || 'No se pudo actualizar' }, { status });
   }
 }
 
@@ -79,8 +79,6 @@ export async function DELETE(request) {
   const store = await readStore();
   const link = store.links.find((item) => item.id === id);
   if (!link) return Response.json({ error: 'Enlace no encontrado' }, { status: 404 });
-  store.links = store.links.filter((item) => item.id !== id);
-  store.history.unshift({ id: crypto.randomUUID(), action: 'deleted', linkId: link.id, name: link.name, at: new Date().toISOString() });
-  await writeStore(store);
+  await deleteLink(link, history('deleted', link));
   return Response.json({ ok: true });
 }
