@@ -1,19 +1,59 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-T7PPSQWJ');</script>
-<!-- End Google Tag Manager -->
+    <!-- Google Tag Manager: carga diferida para no competir con el LCP -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+
+      (function (w, d, s, l, i) {
+        let loaded = false;
+
+        function loadGTM() {
+          if (loaded) return;
+          loaded = true;
+
+          w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js",
+          });
+
+          const firstScript = d.getElementsByTagName(s)[0];
+          const script = d.createElement(s);
+          const dataLayerParam = l !== "dataLayer" ? "&l=" + l : "";
+
+          script.async = true;
+          script.src =
+            "https://www.googletagmanager.com/gtm.js?id=" + i + dataLayerParam;
+          firstScript.parentNode.insertBefore(script, firstScript);
+        }
+
+        const interactionEvents = ["pointerdown", "touchstart", "keydown", "scroll"];
+
+        interactionEvents.forEach(function (eventName) {
+          w.addEventListener(eventName, loadGTM, {
+            once: true,
+            passive: true,
+          });
+        });
+
+        if ("requestIdleCallback" in w) {
+          w.requestIdleCallback(loadGTM, { timeout: 2000 });
+        } else {
+          w.addEventListener(
+            "load",
+            function () {
+              w.setTimeout(loadGTM, 1200);
+            },
+            { once: true }
+          );
+        }
+      })(window, document, "script", "dataLayer", "GTM-T7PPSQWJ");
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Conexiones anticipadas para servicios externos -->
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
-    <link rel="preconnect" href="https://www.google-analytics.com" />
     <link rel="dns-prefetch" href="//www.googletagmanager.com" />
     <link rel="dns-prefetch" href="//www.google-analytics.com" />
     <link rel="dns-prefetch" href="//connect.facebook.net" />

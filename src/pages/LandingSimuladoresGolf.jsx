@@ -608,7 +608,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* PRESENTACIÓN PERSONAL */}
-      <section className="border-b border-white/10 bg-white/[0.03]">
+      <section className="border-b border-white/10 bg-white/[0.03]"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-400/10 blur-2xl" />
@@ -693,7 +695,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* POR QUÉ GOLF EN CASA */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section className="mx-auto max-w-7xl px-6 py-20"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
@@ -746,7 +750,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* INSTALACIONES REALES */}
-      <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8">
+      <section className="bg-white px-4 py-20 text-zinc-950 sm:px-6 lg:px-8"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-700">
@@ -828,7 +834,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* CARRUSEL TECNOLOGÍAS */}
-      <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10">
+      <section className="overflow-hidden border-b border-white/10 bg-zinc-950 py-10"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto max-w-7xl px-6">
           <p className="text-center text-sm font-semibold uppercase tracking-[0.25em] text-zinc-400">
             Trabajamos con las principales marcas del sector
@@ -862,7 +870,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* PROBLEMAS */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section className="mx-auto max-w-7xl px-6 py-20"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="max-w-3xl">
           <h2 className="text-3xl font-bold sm:text-4xl">
             Montar un simulador parece sencillo… hasta que empiezan las dudas
@@ -898,7 +908,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
       </section>
 
       {/* SERVICIOS */}
-      <section className="border-y border-white/10 bg-white/[0.03]">
+      <section className="border-y border-white/10 bg-white/[0.03]"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto max-w-7xl px-6 py-20">
           <h2 className="text-3xl font-bold sm:text-4xl">
 Simuladores para viviendas, jardines, academias y negocios
@@ -930,7 +942,9 @@ Simuladores para viviendas, jardines, academias y negocios
       </section>
 
       {/* PRECIOS ORIENTATIVOS */}
-      <section className="mx-auto max-w-7xl px-6 py-20">
+      <section className="mx-auto max-w-7xl px-6 py-20"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
@@ -997,7 +1011,9 @@ Simuladores para viviendas, jardines, academias y negocios
       </section>
 
       {/* OPINIONES */}
-      <section className="border-y border-white/10 bg-white/[0.03] px-4 py-20 text-white sm:px-6 lg:px-8">
+      <section className="border-y border-white/10 bg-white/[0.03] px-4 py-20 text-white sm:px-6 lg:px-8"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
@@ -1022,7 +1038,9 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       </section>
 
       {/* CONTACTO RÁPIDO */}
-      <section className="border-y border-white/10 bg-green-700/10 px-4 py-14 text-white sm:px-6 lg:px-8">
+      <section className="border-y border-white/10 bg-green-700/10 px-4 py-14 text-white sm:px-6 lg:px-8"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+      >
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
@@ -1080,6 +1098,8 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       <section
         id="formulario"
         className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8"
+      
+        style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
       >
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
@@ -1612,9 +1632,9 @@ function HeroVideo() {
           width="406"
           height="720"
           alt="Vista previa de una instalación de simulador de golf realizada por Golf en Casa"
-          loading="eager"
+          loading="lazy"
           decoding="async"
-          fetchPriority="high"
+          fetchPriority="low"
           className="h-full w-full object-cover"
         />
         <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
