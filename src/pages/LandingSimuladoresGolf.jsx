@@ -954,8 +954,7 @@ Simuladores para viviendas, jardines, academias y negocios
               ¿Cuánto cuesta montar un simulador de golf?
             </h2>
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              El precio depende del monitor de lanzamiento, pantalla de impacto,
-              proyector, estructura, alfombra, software, iluminación y montaje.
+              Disponemos de soluciones para distintos presupuestos. Estas cifras son orientativas y cada proyecto se adapta al espacio, la tecnología elegida y el nivel de acabado que necesites.
             </p>
 
             <div className="mt-8 rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-6 text-sm leading-6 text-emerald-100">
@@ -968,13 +967,13 @@ Simuladores para viviendas, jardines, academias y negocios
 
           <div className="grid gap-5 md:grid-cols-3">
             <PriceCard
-              title="Inicial"
+              title="Esencial"
               price="Desde 3.000 €"
               text="Configuraciones sencillas para empezar a practicar, siempre sujetas a medidas y componentes."
             />
             <PriceCard
               featured
-              title="Intermedio"
+              title="Home"
               price="6.000 € - 10.000 €"
               text="La opción más habitual para viviendas, academias y uso frecuente."
             />
