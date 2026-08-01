@@ -132,8 +132,8 @@ export default function LandingSimuladoresGolfAds2() {
     window.dataLayer.push({
       event,
       location,
-      landing_version: "google_ads_v2",
-      traffic_source: "google_ads",
+      landing_version: "google_ads_search_v3",
+      traffic_source: "google_search_ads",
       ...extra,
     });
   };
@@ -149,14 +149,14 @@ export default function LandingSimuladoresGolfAds2() {
     if (!form.privacyConsent) return;
 
     pushDataLayer("generate_lead", "hero_form", {
-      form_name: "landing_google_ads_v2_estudio_viabilidad",
+      form_name: "landing_google_search_v3_estudio_viabilidad",
       lead_type: "formulario_estudio_viabilidad",
       project_type: form.projectType,
       budget_range: form.budget,
     });
 
     pushDataLayer("form_submit", "hero_form", {
-      form_name: "landing_google_ads_v2_estudio_viabilidad",
+      form_name: "landing_google_search_v3_estudio_viabilidad",
     });
 
     setSubmitted(true);
@@ -172,20 +172,20 @@ Medidas del espacio: ${form.dimensions}
 Mensaje:
 ${form.message || "Sin información adicional"}
 
-Origen: Landing Google Ads 2.0`);
+Origen: Landing Search Google Ads 3.0`);
 
     window.setTimeout(() => {
-      window.location.href = `mailto:${EMAIL}?subject=Solicitud de estudio gratuito - Landing Google Ads 2.0&body=${body}`;
+      window.location.href = `mailto:${EMAIL}?subject=Solicitud de estudio gratuito - Landing Search Google Ads&body=${body}`;
     }, 700);
   };
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <Helmet>
-        <title>Instalación de simuladores de golf | Estudio gratuito</title>
+        <title>Instalación de simuladores de golf en España | Estudio gratuito</title>
         <meta
           name="description"
-          content="Diseño e instalación llave en mano de simuladores de golf a medida en toda España. Solicita un estudio gratuito de viabilidad para tu vivienda, jardín, academia o negocio."
+          content="Diseño e instalación de simuladores de golf a medida en toda España. Comprueba gratuitamente la viabilidad de tu vivienda, garaje, jardín, academia o negocio."
         />
         <meta name="robots" content="noindex,follow" />
         <link
@@ -209,7 +209,7 @@ Origen: Landing Google Ads 2.0`);
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
           <a href="/" className="flex items-center gap-3" aria-label="Golf en Casa">
             <img
-              src="/logo.webp"
+              src="/logo-mail4.png"
               alt="Golf en Casa"
               width="56"
               height="56"
@@ -247,11 +247,11 @@ Origen: Landing Google Ads 2.0`);
             </p>
 
             <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
-              Convierte tu espacio en un simulador de golf profesional, sin comprar material a ciegas
+              Diseño e instalación de simuladores de golf a medida en toda España
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Analizamos tu vivienda, garaje, jardín, academia o negocio y diseñamos una solución llave en mano adaptada a tus medidas, presupuesto y forma de jugar.
+              Estudiamos tus medidas y diseñamos una solución llave en mano con pantalla, proyector, monitor de lanzamiento, software, protección e instalación adaptados a tu espacio y presupuesto.
             </p>
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -262,7 +262,7 @@ Origen: Landing Google Ads 2.0`);
 
             <div className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-300">
-                En menos de 48 h laborables tendrás una primera orientación
+                Primera orientación personalizada en menos de 48 h laborables
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <CompactBenefit text="Si el espacio es viable" />
@@ -278,7 +278,7 @@ Origen: Landing Google Ads 2.0`);
                 onClick={() => pushDataLayer("click_solicitar_presupuesto", "hero")}
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300"
               >
-                Comprobar mi espacio
+                Solicitar estudio gratuito
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a
@@ -294,7 +294,7 @@ Origen: Landing Google Ads 2.0`);
             </div>
 
             <p className="mt-4 text-sm text-zinc-400">
-              Sin compromiso · Trato directo con el responsable del proyecto · No vendemos kits cerrados
+              Sin compromiso · Instalación en toda España · Trato directo con el responsable del proyecto
             </p>
           </div>
 
@@ -358,7 +358,7 @@ Origen: Landing Google Ads 2.0`);
               onClick={() => pushDataLayer("click_solicitar_presupuesto", "projects")}
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-7 py-4 font-black text-white transition hover:bg-zinc-800"
             >
-              Estudiar mi espacio
+              Solicitar estudio gratuito
               <ArrowRight className="ml-2 h-5 w-5" />
             </a>
           </div>
@@ -575,7 +575,7 @@ Origen: Landing Google Ads 2.0`);
                 onClick={() => pushDataLayer("click_solicitar_presupuesto", "personal")}
                 className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 transition hover:bg-emerald-300"
               >
-                Revisar mi proyecto
+                Solicitar estudio gratuito
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a
@@ -634,7 +634,7 @@ Origen: Landing Google Ads 2.0`);
 
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-10 text-center">
         <img
-          src="/logo.webp"
+          src="/logo-mail4.png"
           alt="Golf en Casa"
           width="88"
           height="88"
@@ -686,6 +686,17 @@ function LeadForm({
           href={WHATSAPP_URL}
           target="_blank"
           rel="noreferrer"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({
+                event: "click_whatsapp",
+                location: "form_success",
+                landing_version: "google_ads_search_v3",
+                traffic_source: "google_search_ads",
+              });
+            }
+          }}
           className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-black transition hover:bg-green-600"
         >
           <FaWhatsapp className="mr-2 text-xl" />

@@ -227,7 +227,7 @@ export default function GolfSimulatorLanding() {
               "@id": "https://www.golfencasa.net/#organization",
               name: "Golf en Casa",
               url: "https://www.golfencasa.net",
-              logo: "https://www.golfencasa.net/logo.png",
+              logo: "https://www.golfencasa.net/logo-mail4.png",
               sameAs: [
                 "https://youtube.com/@Golf_en_Casa",
                 "https://instagram.com/golf.en.casa/",
@@ -348,7 +348,7 @@ export default function GolfSimulatorLanding() {
          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <a href="#inicio" className="flex items-center gap-3">
             <img
- src="/logo.png"
+ src="/logo-mail4.png"
     alt="Golf en Casa"
   className="h-20 w-auto"
 />
@@ -960,7 +960,7 @@ export default function GolfSimulatorLanding() {
           <div className="mx-auto max-w-7xl px-5 text-center">
 
     <img
-      src="/logo.png"
+      src="/logo-mail4.png"
       alt="Golf en Casa"
       className="mx-auto mt-4 h-24 w-auto"
     />

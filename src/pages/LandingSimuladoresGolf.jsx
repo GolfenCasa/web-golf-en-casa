@@ -172,7 +172,7 @@ ${form.message}`
           "@id": "https://www.golfencasa.net/#organization",
           name: "Golf en Casa",
           url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo.webp",
+          logo: "https://www.golfencasa.net/logo-mail4.png",
           sameAs: [
             "https://youtube.com/@Golf_en_Casa",
             "https://instagram.com/golf.en.casa/",
@@ -185,7 +185,7 @@ ${form.message}`
           "@id": "https://www.golfencasa.net/#business",
           name: "Golf en Casa",
           url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo.webp",
+          logo: "https://www.golfencasa.net/logo-mail4.png",
           image: [
             "https://www.golfencasa.net/francisco-golf-en-casa.webp",
             "https://www.golfencasa.net/despues_1.webp",
@@ -303,7 +303,7 @@ ${form.message}`
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo.webp" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
+            <img src="/logo-mail4.png" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
 
             <div>
               <p className="text-sm font-semibold tracking-wide">
@@ -1482,7 +1482,7 @@ Enviar medidas por WhatsApp
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-12 text-center">
         <div className="mx-auto max-w-7xl">
           <img
-            src="/logo.webp"
+            src="/logo-mail4.png"
             alt="Golf en Casa"
             width="96"
             height="96"
