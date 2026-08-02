@@ -10,6 +10,7 @@ import {
   Clock3,
   Euro,
   Expand,
+  Layers3,
   HelpCircle,
   Home,
   MapPin,
@@ -38,6 +39,8 @@ const WHATSAPP_URL =
   "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestro%20anuncio%20en%20Google%20y%20quiero%20saber%20si%20mi%20espacio%20es%20apto%20para%20montar%20un%20simulador%20de%20golf.%20Mis%20medidas%20aproximadas%20son:%20";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
+const GOLF_STUDIO_WHATSAPP_URL =
+  "https://wa.me/34678107234?text=Hola,%20he%20visto%20la%20opci%C3%B3n%20Golf%20Studio%20y%20quiero%20estudiar%20la%20instalaci%C3%B3n%20de%20una%20caseta%20con%20simulador%20de%20golf%20en%20mi%20jard%C3%ADn.%20La%20parcela%20est%C3%A1%20en:%20";
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -361,6 +364,127 @@ Origen: Landing Search Google Ads 3.0`);
               Solicitar estudio gratuito
               <ArrowRight className="ml-2 h-5 w-5" />
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* GOLF STUDIO */}
+      <section
+        id="golf-studio"
+        className="relative overflow-hidden border-b border-white/10 bg-zinc-900"
+        style={{ contentVisibility: "auto", containIntrinsicSize: "900px" }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.18),transparent_32%),radial-gradient(circle_at_85%_75%,rgba(34,197,94,0.10),transparent_30%)]" />
+
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-4 py-2 text-sm font-bold text-emerald-300">
+              <Sparkles className="h-4 w-4" />
+              Nueva solución: Golf Studio
+            </p>
+
+            <h2 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl">
+              ¿No tienes espacio dentro de casa? Créalo en tu jardín.
+            </h2>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
+              Golf Studio es un espacio independiente diseñado específicamente para albergar un simulador de golf. Estudiamos la parcela, definimos las dimensiones y coordinamos la caseta, las instalaciones y el equipamiento para entregarte una solución completa y lista para jugar.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <StudioFeature
+                icon={<TreePine />}
+                title="Aprovecha tu jardín"
+                text="Convierte una parte de la parcela en una sala de golf sin ocupar ninguna estancia de la vivienda."
+              />
+              <StudioFeature
+                icon={<Expand />}
+                title="Diseñado alrededor del swing"
+                text="Definimos ancho, fondo y altura pensando desde el inicio en seguridad, comodidad y tipo de jugador."
+              />
+              <StudioFeature
+                icon={<Layers3 />}
+                title="Proyecto integral"
+                text="Caseta, aislamiento, climatización, electricidad, iluminación y simulador coordinados como un único proyecto."
+              />
+              <StudioFeature
+                icon={<ShieldCheck />}
+                title="Uso durante todo el año"
+                text="Planteamos un espacio protegido y confortable para entrenar, jugar y recibir invitados en cualquier temporada."
+              />
+            </div>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="#estudio"
+                onClick={() => pushDataLayer("click_golf_studio", "golf_studio_section")}
+                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 transition hover:bg-emerald-300"
+              >
+                Solicitar estudio de mi parcela
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+
+              <a
+                href={GOLF_STUDIO_WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => pushDataLayer("click_whatsapp", "golf_studio_section")}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold text-white transition hover:bg-white/10"
+              >
+                <FaWhatsapp className="mr-2 text-xl" />
+                Enviar fotos del jardín
+              </a>
+            </div>
+
+            <p className="mt-4 text-xs leading-5 text-zinc-500">
+              La solución se presupuesta de forma personalizada. La viabilidad de la construcción está sujeta a las características de la parcela y a la normativa urbanística municipal aplicable.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-6 rounded-[3rem] bg-emerald-400/10 blur-3xl" />
+
+            <figure className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-zinc-950 p-3 shadow-2xl sm:p-4">
+              <picture>
+                <source
+                  media="(max-width: 639px)"
+                  srcSet="/images/golf-studio-480.webp"
+                  type="image/webp"
+                />
+                <source
+                  media="(max-width: 1023px)"
+                  srcSet="/images/golf-studio-768.webp"
+                  type="image/webp"
+                />
+                <source
+                  media="(max-width: 1439px)"
+                  srcSet="/images/golf-studio-1280.webp"
+                  type="image/webp"
+                />
+                <img
+                  src="/images/golf-studio-1536.webp"
+                  srcSet="/images/golf-studio-480.webp 480w, /images/golf-studio-768.webp 768w, /images/golf-studio-1280.webp 1280w, /images/golf-studio-1536.webp 1536w"
+                  sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 1023px) calc(100vw - 64px), 46vw"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                  alt="Golf Studio de madera instalado en un jardín, con puertas correderas de cristal y un simulador de golf en funcionamiento"
+                  className="aspect-[3/2] h-auto w-full rounded-[1.75rem] border border-white/10 object-cover"
+                />
+              </picture>
+
+              <figcaption className="sr-only">
+                Ejemplo conceptual de Golf Studio: una caseta independiente en el jardín diseñada para integrar un simulador de golf.
+              </figcaption>
+
+              <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+                <StudioStat value="A medida" label="Diseño" />
+                <StudioStat value="Integral" label="Proyecto" />
+                <StudioStat value="365 días" label="Uso" />
+              </div>
+            </figure>
           </div>
         </div>
       </section>
@@ -877,6 +1001,29 @@ function CompactBenefit({ text }) {
     <div className="flex items-center gap-2 text-sm text-zinc-300">
       <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-300" />
       {text}
+    </div>
+  );
+}
+
+function StudioFeature({ icon, title, text }) {
+  return (
+    <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-400/10 text-emerald-300">
+        {React.cloneElement(icon, { className: "h-5 w-5" })}
+      </div>
+      <h3 className="font-bold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-zinc-300">{text}</p>
+    </article>
+  );
+}
+
+function StudioStat({ value, label }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-4">
+      <strong className="block text-sm text-white sm:text-base">{value}</strong>
+      <span className="mt-1 block text-xs uppercase tracking-[0.18em] text-zinc-500">
+        {label}
+      </span>
     </div>
   );
 }
