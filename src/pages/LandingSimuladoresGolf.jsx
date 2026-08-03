@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Ruler,
@@ -33,13 +33,151 @@ import {
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 
-const WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestra%20web%20y%20quiero%20saber%20si%20mi%20espacio%20es%20apto%20para%20montar%20un%20simulador%20de%20golf.%20Mis%20medidas%20aproximadas%20son:%20";
-
+const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
-const GOLF_STUDIO_WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20he%20visto%20la%20opci%C3%B3n%20Golf%20Studio%20y%20quiero%20estudiar%20la%20instalaci%C3%B3n%20de%20una%20caseta%20con%20simulador%20de%20golf%20en%20mi%20jard%C3%ADn.%20La%20parcela%20est%C3%A1%20en:%20";
+const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_attribution_v1";
+
+const EMPTY_ATTRIBUTION = {
+  source: "direct",
+  medium: "none",
+  campaign: "",
+  content: "",
+  term: "",
+  gclid: "",
+  fbclid: "",
+  landingPage: "",
+  referrer: "",
+  capturedAt: "",
+};
+
+const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
+  const sourceValue = (source || "").toLowerCase();
+  const mediumValue = (medium || "").toLowerCase();
+  const referrerValue = (referrer || "").toLowerCase();
+
+  if (gclid || sourceValue === "google" && ["cpc", "ppc", "paid"].includes(mediumValue)) {
+    return "Google Ads";
+  }
+
+  if (
+    fbclid ||
+    ["facebook", "instagram", "meta", "fb", "ig"].includes(sourceValue) &&
+      ["cpc", "paid", "paid_social", "social_paid"].includes(mediumValue)
+  ) {
+    return "Meta Ads";
+  }
+
+  if (sourceValue === "youtube" || referrerValue.includes("youtube.com")) {
+    return "YouTube";
+  }
+
+  if (sourceValue === "google" || referrerValue.includes("google.")) {
+    return "Google orgánico";
+  }
+
+  if (sourceValue && sourceValue !== "direct") {
+    return sourceValue;
+  }
+
+  return "Acceso directo";
+};
+
+const readAttributionFromBrowser = () => {
+  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
+
+  const params = new URLSearchParams(window.location.search);
+  const referrer = document.referrer || "";
+  const detected = {
+    source: params.get("utm_source") || "",
+    medium: params.get("utm_medium") || "",
+    campaign: params.get("utm_campaign") || "",
+    content: params.get("utm_content") || "",
+    term: params.get("utm_term") || "",
+    gclid: params.get("gclid") || "",
+    fbclid: params.get("fbclid") || "",
+    landingPage: `${window.location.pathname}${window.location.search}`,
+    referrer,
+    capturedAt: new Date().toISOString(),
+  };
+
+  if (!detected.source) {
+    if (detected.gclid) {
+      detected.source = "google";
+      detected.medium = "cpc";
+    } else if (detected.fbclid) {
+      detected.source = "meta";
+      detected.medium = "paid_social";
+    } else if (referrer.includes("google.")) {
+      detected.source = "google";
+      detected.medium = "organic";
+    } else if (referrer.includes("facebook.com") || referrer.includes("instagram.com")) {
+      detected.source = "meta";
+      detected.medium = "referral";
+    } else if (referrer) {
+      try {
+        detected.source = new URL(referrer).hostname.replace(/^www\./, "");
+        detected.medium = "referral";
+      } catch {
+        detected.source = "referral";
+        detected.medium = "referral";
+      }
+    } else {
+      detected.source = "direct";
+      detected.medium = "none";
+    }
+  }
+
+  return detected;
+};
+
+const getStoredAttribution = () => {
+  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
+
+  try {
+    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
+  } catch {
+    return EMPTY_ATTRIBUTION;
+  }
+};
+
+const captureAttribution = () => {
+  const detected = readAttributionFromBrowser();
+  const stored = getStoredAttribution();
+  const hasCampaignData = Boolean(
+    detected.gclid ||
+      detected.fbclid ||
+      detected.campaign ||
+      detected.source !== "direct"
+  );
+
+  // Conservamos el primer origen conocido para atribuir el lead a su canal de captación.
+  const attribution = stored.capturedAt && !hasCampaignData ? stored : detected;
+
+  try {
+    window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution));
+  } catch {
+    // La medición continúa aunque el navegador bloquee localStorage.
+  }
+
+  return attribution;
+};
+
+const attributionEventData = (attribution) => ({
+  traffic_source: attribution.source || "direct",
+  traffic_medium: attribution.medium || "none",
+  traffic_campaign: attribution.campaign || "",
+  traffic_content: attribution.content || "",
+  traffic_term: attribution.term || "",
+  landing_page: attribution.landingPage || "",
+  source_label: classifyTrafficSource(attribution),
+  gclid_present: Boolean(attribution.gclid),
+  fbclid_present: Boolean(attribution.fbclid),
+});
+
+const buildWhatsAppUrl = ({ message }) =>
+  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -73,6 +211,7 @@ const testimonials = [
 ];
 
 export default function LandingSimuladoresGolf() {
+  const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -84,15 +223,53 @@ export default function LandingSimuladoresGolf() {
     message: "",
   });
 
+  useEffect(() => {
+    const captured = captureAttribution();
+    setAttribution(captured);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "attribution_captured",
+      ...attributionEventData(captured),
+    });
+  }, []);
+
+  const whatsappUrls = useMemo(
+    () => {
+      const whatsappMessage =
+        "Hola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son:";
+
+      return {
+        floating_button: buildWhatsAppUrl({ message: whatsappMessage }),
+        header: buildWhatsAppUrl({ message: whatsappMessage }),
+        hero: buildWhatsAppUrl({ message: whatsappMessage }),
+        golf_studio_section: buildWhatsAppUrl({ message: whatsappMessage }),
+        projects_section: buildWhatsAppUrl({ message: whatsappMessage }),
+        pricing: buildWhatsAppUrl({ message: whatsappMessage }),
+        contact_section: buildWhatsAppUrl({ message: whatsappMessage }),
+        final_cta: buildWhatsAppUrl({ message: whatsappMessage }),
+      };
+    },
+    [attribution]
+  );
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const pushDataLayer = (event, location) => {
+  const pushDataLayer = (event, location, extra = {}) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
+      ...attributionEventData(attribution),
+      ...extra,
+    });
+  };
+
+  const trackWhatsAppClick = (location) => {
+    pushDataLayer("click_whatsapp", location, {
+      whatsapp_message_variant: location,
     });
   };
 
@@ -105,11 +282,17 @@ window.dataLayer.push({
   event: "generate_lead",
   form_name: "landing_estudio_viabilidad_simulador",
   lead_type: "formulario_estudio_viabilidad",
+  project_type: form.projectType,
+  budget_range: form.budget,
+  ...attributionEventData(attribution),
 });
 
 window.dataLayer.push({
   event: "form_submit",
   form_name: "landing_estudio_viabilidad_simulador",
+  project_type: form.projectType,
+  budget_range: form.budget,
+  ...attributionEventData(attribution),
 });
 
     setTimeout(() => {
@@ -121,6 +304,15 @@ Ciudad / provincia: ${form.city}
 Tipo de instalación: ${form.projectType}
 Presupuesto aproximado: ${form.budget}
 Medidas del espacio: ${form.dimensions}
+
+Origen del lead: ${classifyTrafficSource(attribution)}
+Fuente / medio: ${attribution.source || "direct"} / ${attribution.medium || "none"}
+Campaña: ${attribution.campaign || "No disponible"}
+Contenido: ${attribution.content || "No disponible"}
+Término de búsqueda: ${attribution.term || "No disponible"}
+Landing de entrada: ${attribution.landingPage || "No disponible"}
+GCLID: ${attribution.gclid || "No disponible"}
+FBCLID: ${attribution.fbclid || "No disponible"}
 
 Mensaje:
 ${form.message}`
@@ -289,11 +481,11 @@ ${form.message}`
 </Helmet>
       {/* WHATSAPP FLOTANTE */}
       <a
-        href={WHATSAPP_URL}
+        href={whatsappUrls.floating_button}
         target="_blank"
         rel="noreferrer"
         aria-label="Contactar por WhatsApp"
-        onClick={() => pushDataLayer("click_whatsapp", "floating_button")}
+        onClick={() => trackWhatsAppClick("floating_button")}
         className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-600"
       >
         <FaWhatsapp />
@@ -359,10 +551,10 @@ ${form.message}`
             </div>
 
             <a
-              href={WHATSAPP_URL}
+              href={whatsappUrls.header}
               target="_blank"
               rel="noreferrer"
-              onClick={() => pushDataLayer("click_whatsapp", "header")}
+              onClick={() => trackWhatsAppClick("header")}
               className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-lg" />
@@ -415,10 +607,10 @@ Descubre si tu espacio es apto
               </a>
 
               <a
-                href={WHATSAPP_URL}
+                href={whatsappUrls.hero}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "hero")}
+                onClick={() => trackWhatsAppClick("hero")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -543,10 +735,10 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               </a>
 
               <a
-                href={GOLF_STUDIO_WHATSAPP_URL}
+                href={whatsappUrls.golf_studio_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "golf_studio_section")}
+                onClick={() => trackWhatsAppClick("golf_studio_section")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -806,10 +998,10 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <a
-              href={WHATSAPP_URL}
+              href={whatsappUrls.projects_section}
               target="_blank"
               rel="noreferrer"
-              onClick={() => pushDataLayer("click_whatsapp", "projects_section")}
+              onClick={() => trackWhatsAppClick("projects_section")}
               className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-xl" />
@@ -997,10 +1189,10 @@ Simuladores para viviendas, jardines, academias y negocios
             <ArrowRight className="ml-2 h-5 w-5" />
           </a>
           <a
-            href={WHATSAPP_URL}
+            href={whatsappUrls.pricing}
             target="_blank"
             rel="noreferrer"
-            onClick={() => pushDataLayer("click_whatsapp", "pricing")}
+            onClick={() => trackWhatsAppClick("pricing")}
             className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
           >
             <MessageCircle className="mr-2 h-5 w-5" />
@@ -1077,12 +1269,10 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
               </div>
 
               <a
-                href={WHATSAPP_URL}
+                href={whatsappUrls.contact_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() =>
-                  pushDataLayer("click_whatsapp", "contact_section")
-                }
+                onClick={() => trackWhatsAppClick("contact_section")}
                 className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -1454,7 +1644,7 @@ Descubre si tu espacio es apto antes de invertir en material
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:mt-0">
             <a
-              href={WHATSAPP_URL}
+              href={whatsappUrls.final_cta}
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_whatsapp", "final_cta")}
