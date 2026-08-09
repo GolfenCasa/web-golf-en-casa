@@ -176,6 +176,18 @@ const attributionEventData = (attribution) => ({
   fbclid_present: Boolean(attribution.fbclid),
 });
 
+const getWhatsAppReference = (attribution) => {
+  const sourceLabel = classifyTrafficSource(attribution);
+
+  if (sourceLabel === "Google Ads") return "GADS";
+  if (sourceLabel === "Meta Ads") return "META";
+  if (sourceLabel === "YouTube") return "YT";
+  if (sourceLabel === "Google orgánico") return "GORG";
+  if (sourceLabel === "Acceso directo") return "DIRECT";
+
+  return "WEB";
+};
+
 const buildWhatsAppUrl = ({ message }) =>
   `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 
@@ -220,6 +232,7 @@ export default function LandingSimuladoresGolf() {
     projectType: "",
     budget: "",
     dimensions: "",
+    sourceDeclared: "",
     message: "",
   });
 
@@ -236,8 +249,9 @@ export default function LandingSimuladoresGolf() {
 
   const whatsappUrls = useMemo(
     () => {
+      const whatsappReference = getWhatsAppReference(attribution);
       const whatsappMessage =
-        "Hola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son:";
+        `Ref: ${whatsappReference}\n\nHola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son: `;
 
       return {
         floating_button: buildWhatsAppUrl({ message: whatsappMessage }),
@@ -270,6 +284,7 @@ export default function LandingSimuladoresGolf() {
   const trackWhatsAppClick = (location) => {
     pushDataLayer("click_whatsapp", location, {
       whatsapp_message_variant: location,
+      whatsapp_reference: getWhatsAppReference(attribution),
     });
   };
 
@@ -284,6 +299,7 @@ window.dataLayer.push({
   lead_type: "formulario_estudio_viabilidad",
   project_type: form.projectType,
   budget_range: form.budget,
+  source_declared: form.sourceDeclared,
   ...attributionEventData(attribution),
 });
 
@@ -292,6 +308,7 @@ window.dataLayer.push({
   form_name: "landing_estudio_viabilidad_simulador",
   project_type: form.projectType,
   budget_range: form.budget,
+  source_declared: form.sourceDeclared,
   ...attributionEventData(attribution),
 });
 
@@ -304,8 +321,9 @@ Ciudad / provincia: ${form.city}
 Tipo de instalación: ${form.projectType}
 Presupuesto aproximado: ${form.budget}
 Medidas del espacio: ${form.dimensions}
+¿Cómo nos ha conocido?: ${form.sourceDeclared || "No indicado"}
 
-Origen del lead: ${classifyTrafficSource(attribution)}
+Origen técnico del lead: ${classifyTrafficSource(attribution)}
 Fuente / medio: ${attribution.source || "direct"} / ${attribution.medium || "none"}
 Campaña: ${attribution.campaign || "No disponible"}
 Contenido: ${attribution.content || "No disponible"}
@@ -1445,6 +1463,28 @@ Descubre si tu espacio es apto antes de invertir en material
                 placeholder="Medidas del espacio o parcela: ancho x fondo x alto"
                 className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
               />
+
+              <label htmlFor="sourceDeclared" className="sr-only">
+                ¿Cómo nos has conocido?
+              </label>
+              <select
+                id="sourceDeclared"
+                name="sourceDeclared"
+                aria-label="¿Cómo nos has conocido?"
+                value={form.sourceDeclared}
+                onChange={handleChange}
+                required
+                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
+              >
+                <option value="">¿Cómo nos has conocido?</option>
+                <option>Google</option>
+                <option>Instagram / Facebook</option>
+                <option>YouTube</option>
+                <option>Recomendación</option>
+                <option>Ya conocía Golf en Casa</option>
+                <option>Otro</option>
+                <option>No sabe / No recuerda</option>
+              </select>
 
               <label htmlFor="message" className="sr-only">
                 Información adicional sobre el proyecto
