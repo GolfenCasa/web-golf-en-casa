@@ -15,3 +15,8 @@
 - No se modifica la lógica existente de captura/persistencia de UTM, GCLID, FBCLID ni `localStorage`.
 - No se modifica la lógica del evento Meta Lead ni las etiquetas de GTM.
 - Calendly queda pendiente de la siguiente fase.
+
+## Fase Calendly
+- Los botones de Calendly de la landing heredan automáticamente `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` y `utm_term` de la atribución persistida.
+- No se añade GCLID/FBCLID a Calendly.
+- El evento `click_calendly` mantiene la medición existente en dataLayer.

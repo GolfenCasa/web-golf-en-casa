@@ -176,6 +176,24 @@ const attributionEventData = (attribution) => ({
   fbclid_present: Boolean(attribution.fbclid),
 });
 
+
+const buildCalendlyUrl = (attribution) => {
+  const url = new URL(CALENDLY_URL);
+  const params = {
+    utm_source: attribution.source,
+    utm_medium: attribution.medium,
+    utm_campaign: attribution.campaign,
+    utm_content: attribution.content,
+    utm_term: attribution.term,
+  };
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value && value !== "none") url.searchParams.set(key, value);
+  });
+
+  return url.toString();
+};
+
 const getWhatsAppReference = (attribution) => {
   const sourceLabel = classifyTrafficSource(attribution);
 
@@ -264,6 +282,11 @@ export default function LandingSimuladoresGolf() {
         final_cta: buildWhatsAppUrl({ message: whatsappMessage }),
       };
     },
+    [attribution]
+  );
+
+  const calendlyUrl = useMemo(
+    () => buildCalendlyUrl(attribution),
     [attribution]
   );
 
@@ -888,7 +911,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               </a>
 
               <a
-                href={CALENDLY_URL}
+                href={calendlyUrl}
                 target="_blank"
                 rel="noreferrer"
                 onClick={() =>
@@ -1695,7 +1718,7 @@ Enviar medidas por WhatsApp
             </a>
 
             <a
-              href={CALENDLY_URL}
+              href={calendlyUrl}
               target="_blank"
               rel="noreferrer"
               onClick={() => pushDataLayer("click_calendly", "final_cta")}
