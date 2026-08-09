@@ -6,3 +6,5 @@ dist/
 *.rar
 *.psd
 *.ai
+# Google Drive temporary files
+.tmp.driveupload/
