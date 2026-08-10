@@ -8,6 +8,10 @@ import LandingSimuladoresGolfAds2 from "./pages/LandingSimuladoresGolfAds2";
 
 const GolfSimulatorLanding = lazy(() => import("./App.jsx"));
 const LandingSignatureProjects = lazy(() => import("./pages/LandingSignatureProjects.jsx"));
+const LandingSignatureProjectsEN = lazy(() => import("./pages/LandingSignatureProjectsEN.jsx"));
+const PrivacyPolicyEN = lazy(() => import("./pages/PrivacyPolicyEN.jsx"));
+const CookiePolicyEN = lazy(() => import("./pages/CookiePolicyEN.jsx"));
+const LegalNoticeEN = lazy(() => import("./pages/LegalNoticeEN.jsx"));
 
 const AvisoLegal = lazy(() => import("./pages/AvisoLegal.jsx"));
 const PoliticaPrivacidad = lazy(() =>
@@ -43,6 +47,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   path="/signature"
   element={<LandingSignatureProjects />}
 />
+<Route
+  path="/en/signature"
+  element={<LandingSignatureProjectsEN />}
+/>
           <Route path="/aviso-legal" element={<AvisoLegal />} />
           <Route
             path="/politica-privacidad"
@@ -53,6 +61,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             path="/prime-day-amazon"
             element={<PrimeDayAmazonGolfEnCasa />}
           />
+          <Route path="/en/privacy-policy" element={<PrivacyPolicyEN />} />
+<Route path="/en/cookie-policy" element={<CookiePolicyEN />} />
+<Route path="/en/legal-notice" element={<LegalNoticeEN />} />
           <Route path="/care" element={<GolfEnCasaCARE />} />
           <Route path="/admin/enlaces" element={<LinkManager />} />
           </Routes>
