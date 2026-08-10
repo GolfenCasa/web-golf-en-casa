@@ -238,10 +238,10 @@ export default async function handler(request, response) {
             email: data.email,
             phone: data.phone || "",
             city: data.location || "",
-            projectType: isTechnical ? "Información técnica Signature" : data.projectType,
+            projectType: isTechnical ? "Colaboración / B2B" : data.projectType,
             budget: data.investment || "Sin definir",
             dimensions: data.dimensions || "",
-            sourceDeclared: "Signature Projects",
+            sourceDeclared: "",
             message: isTechnical
               ? [
                   data.company ? `Empresa / estudio: ${data.company}` : "",
