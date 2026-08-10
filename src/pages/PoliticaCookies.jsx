@@ -1,10 +1,22 @@
 export default function PoliticaCookies() {
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "/";
+    }
+  };
+
   return (
     <main className="min-h-screen bg-zinc-950 px-5 py-16 text-white">
       <div className="mx-auto max-w-4xl">
-        <a href="/" className="text-emerald-400 hover:text-emerald-300">
-          ← Volver a inicio
-        </a>
+        <button
+          type="button"
+          onClick={handleBack}
+          className="text-emerald-400 transition hover:text-emerald-300"
+        >
+          ← Volver
+        </button>
 
         <h1 className="mt-8 text-4xl font-black">Política de Cookies</h1>
 

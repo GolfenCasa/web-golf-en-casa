@@ -7,6 +7,7 @@ import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf.jsx";
 import LandingSimuladoresGolfAds2 from "./pages/LandingSimuladoresGolfAds2";
 
 const GolfSimulatorLanding = lazy(() => import("./App.jsx"));
+const LandingSignatureProjects = lazy(() => import("./pages/LandingSignatureProjects.jsx"));
 
 const AvisoLegal = lazy(() => import("./pages/AvisoLegal.jsx"));
 const PoliticaPrivacidad = lazy(() =>
@@ -38,6 +39,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             path="/estudio-simulador-golf"
             element={<LandingSimuladoresGolfAds2 />}
           />
+          <Route
+  path="/signature"
+  element={<LandingSignatureProjects />}
+/>
           <Route path="/aviso-legal" element={<AvisoLegal />} />
           <Route
             path="/politica-privacidad"
