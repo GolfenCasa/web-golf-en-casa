@@ -158,7 +158,7 @@ const attributionEventData = (a) => ({
   traffic_campaign: a.campaign || "",
   traffic_content: a.content || "",
   traffic_term: a.term || "",
-  landing_page: a.landingPage || "/signature",
+  landing_page: a.landingPage || "/en/signature",
   source_label: classifyTrafficSource(a),
   gclid_present: Boolean(a.gclid),
   fbclid_present: Boolean(a.fbclid),
@@ -167,9 +167,9 @@ const attributionEventData = (a) => ({
 const buildWhatsAppUrl = ({ message, attribution, location }) => {
   const trackingLines = [
     `Origen: ${classifyTrafficSource(attribution)}`,
-    attribution.campaign ? `Campaign: ${attribution.campaign}` : "",
-    attribution.term ? `Search: ${attribution.term}` : "",
-    `Page: ${attribution.landingPage || "/signature"}`,
+    attribution.campaign ? `Campaña: ${attribution.campaign}` : "",
+    attribution.term ? `Búsqueda: ${attribution.term}` : "",
+    `Page: ${attribution.landingPage || "/en/signature"}`,
     `Button: ${location}`,
   ].filter(Boolean);
 
@@ -179,65 +179,65 @@ const buildWhatsAppUrl = ({ message, attribution, location }) => {
 };
 
 const processSteps = [
-  ["01", "DISCOVERY", "Space · needs · objectives"],
+  ["01", "DISCOVERY", "Space · requirements · objectives"],
   ["02", "CONCEPT DESIGN", "Layout · experience · aesthetics"],
   ["03", "TECHNICAL ENGINEERING", "Projection · tracking · infrastructure"],
   ["04", "TECHNOLOGY SELECTION", "Launch monitor · projection · computing"],
-  ["05", "CONSTRUCTION COORDINATION", "Architecture · interior design · services"],
+  ["05", "CONSTRUCTION COORDINATION", "Architecture · interiors · building services"],
   ["06", "INSTALLATION", "Structure · finishes · technology"],
   ["07", "CALIBRATION", "Image · tracking · software"],
-  ["08", "WHITE GLOVE HANDOVER", "Testing · training · delivery"],
+  ["08", "WHITE GLOVE HANDOVER", "Testing · training · handover"],
 ];
 
 const techItems = [
   ["01", "TRACKING", "Launch monitor selected specifically for the space, the player and the intended use.", <Monitor />],
-  ["02", "PROJECTION", "Optics, resolution and brightness calculated for the actual room geometry.", <Lightbulb />],
-  ["03", "COMPUTING", "Hardware specified for the required resolution, software and experience.", <Sparkles />],
-  ["04", "LIGHTING", "Lighting designed to work with projection and the everyday use of the space.", <Lightbulb />],
-  ["05", "ACOUSTICS", "Integrated treatment to control impact noise, reverberation and acoustic comfort.", <Volume2 />],
-  ["06", "CONTROL", "Lighting, AV and system automation whenever the project requires it.", <Wifi />],
+  ["02", "PROJECTION", "Optics, resolution and brightness calculated for the actual geometry of the room.", <Lightbulb />],
+  ["03", "COMPUTING", "Hardware specified for the required resolution, software and user experience.", <Sparkles />],
+  ["04", "LIGHTING", "Lighting designed to work seamlessly with projection and the room's everyday use.", <Lightbulb />],
+  ["05", "ACOUSTICS", "Integrated acoustic treatment to control impact noise, reverberation and comfort.", <Volume2 />],
+  ["06", "CONTROL", "Lighting, AV and system automation when the project requires it.", <Wifi />],
 ];
 
 const privatePillars = [
-  ["BESPOKE DESIGN", "Every project begins with a different space, set of needs and vision.", <DraftingCompass />],
-  ["ARCHITECTURAL INTEGRATION", "We integrate the golf simulator into the architecture and interior design of the residence.", <Home />],
-  ["TECHNOLOGY WITHOUT COMPROMISE", "We select technology around the project — not the other way around.", <Monitor />],
+  ["BESPOKE DESIGN", "Every project begins with a unique space, a unique brief and a unique vision.", <DraftingCompass />],
+  ["ARCHITECTURAL INTEGRATION", "We integrate the room into the architecture and interior design of the residence.", <Home />],
+  ["TECHNOLOGY WITHOUT COMPROMISE", "We select technology around the project — never the other way around.", <Monitor />],
   ["TURNKEY DELIVERY", "We coordinate design, supply, installation, configuration and final handover.", <KeyRound />],
 ];
 
 const professionalServices = [
-  ["SPATIAL PLANNING", "Dimensions, hitting position, circulation and safety zones.", <Ruler />],
-  ["TECHNICAL SPECIFICATION", "Power, data, projection, tracking, lighting and climate requirements.", <DraftingCompass />],
-  ["DESIGN COORDINATION", "Integration with architecture, interior design and building services.", <Home />],
-  ["TECHNOLOGY SPECIFICATION", "Selection of tracking, projection, PC, AV and control systems.", <Monitor />],
-  ["SITE COORDINATION", "Technical coordination during construction and fit-out.", <ShieldCheck />],
+  ["SPATIAL PLANNING", "Dimensions, hitting position, circulation and safety clearances.", <Ruler />],
+  ["TECHNICAL SPECIFICATION", "Power, data, projection, tracking, lighting and HVAC requirements.", <DraftingCompass />],
+  ["DESIGN COORDINATION", "Coordination with architecture, interiors and the wider building services.", <Home />],
+  ["TECHNOLOGY SPECIFICATION", "Specification of tracking, projection, computing, AV and control systems.", <Monitor />],
+  ["SITE COORDINATION", "Technical coordination throughout construction.", <ShieldCheck />],
   ["COMMISSIONING", "Installation, configuration, calibration and handover.", <Sparkles />],
 ];
 
 const faqs = [
   {
-    q: "When should I contact Signature Projects?",
-    a: "The earlier, the better. A golf simulator can influence dimensions, ceiling heights, services, lighting, climate control and finishes. Involving us from the early stages helps optimise the project and avoid later changes.",
+    q: "When should I involve Signature Projects?",
+    a: "As early as possible. A golf room can affect dimensions, ceiling heights, building services, lighting, HVAC and finishes. Early involvement allows us to optimise the project and avoid costly changes later.",
   },
   {
-    q: "Do you work with my architect or interior designer?",
-    a: "Yes. Signature Projects can join the existing project team and work directly with architects, interior designers, contractors and project managers.",
+    q: "Can you work with my architect or interior designer?",
+    a: "Yes. Signature Projects can join your existing project team and collaborate directly with architects, interior designers, contractors and project managers.",
   },
   {
     q: "Can I choose the launch monitor and other equipment?",
-    a: "Yes. We work with multiple manufacturers and select the technology according to the space, the player’s needs and the project objectives.",
+    a: "Yes. We work with multiple manufacturers and specify technology according to the space, the player's requirements and the objectives of the project.",
   },
   {
-    q: "Do you deliver projects outside Spain?",
-    a: "Yes. We assess national and international projects individually according to location and scope.",
+    q: "Do you undertake projects outside Spain?",
+    a: "Yes. We assess projects in Spain and internationally on an individual basis depending on location and scope.",
   },
   {
     q: "Can the room be multifunctional?",
-    a: "Yes. We can design solutions that combine golf with cinema, entertainment or other uses while minimising the visual presence of technology when it is not in use.",
+    a: "Yes. We can design solutions that combine golf with cinema, entertainment or other uses, minimising the visual presence of technology when it is not in use.",
   },
   {
     q: "How much does a Signature Project cost?",
-    a: "Every project is quoted individually. Investment depends on dimensions, technology, finishes, integration complexity and the scope of our services. After an initial conversation, we can determine the most appropriate approach.",
+    a: "Every project is individually commissioned. Investment depends on room dimensions, technology, finishes, integration complexity and the scope of our services. After an initial conversation, we can determine the most appropriate approach.",
   },
 ];
 
@@ -320,16 +320,6 @@ export default function LandingSignatureProjectsEN() {
   const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
   const [submitState, setSubmitState] = useState("idle");
   const [submitError, setSubmitError] = useState("");
-  const [technicalOpen, setTechnicalOpen] = useState(false);
-  const [technicalSubmitState, setTechnicalSubmitState] = useState("idle");
-  const [technicalSubmitError, setTechnicalSubmitError] = useState("");
-  const [technicalForm, setTechnicalForm] = useState({
-    name: "",
-    email: "",
-    company: "",
-    profile: "",
-    message: "",
-  });
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -447,7 +437,7 @@ export default function LandingSignatureProjectsEN() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok || !result.ok) {
-        throw new Error(result.error || "The project enquiry could not be sent.");
+        throw new Error(result.error || "The project could not be submitted.");
       }
 
       // Solo contamos el lead cuando el servidor confirma que lo ha recibido.
@@ -475,76 +465,32 @@ export default function LandingSignatureProjectsEN() {
     } catch (error) {
       console.error(error);
       setSubmitError(
-        "We could not send your project enquiry. Please try again or contact us by WhatsApp or email."
+        "We could not submit your project. Please try again or contact us via WhatsApp or email."
       );
       setSubmitState("error");
-    }
-  };
-
-  const handleTechnicalSubmit = async (e) => {
-    e.preventDefault();
-    if (technicalSubmitState === "sending") return;
-
-    setTechnicalSubmitState("sending");
-    setTechnicalSubmitError("");
-
-    try {
-      const response = await fetch("/api/signature-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          leadType: "signature_technical_request",
-          ...technicalForm,
-          companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution,
-        }),
-      });
-
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "The request could not be sent.");
-      }
-
-      pushDataLayer("signature_technical_request_submit", "professionals_technical_form", {
-        lead_type: "signature_technical_request",
-        client_profile: technicalForm.profile,
-      });
-
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "generate_lead",
-        form_name: "signature_technical_request",
-        lead_type: "signature_technical_request",
-        client_profile: technicalForm.profile,
-        ...attributionEventData(attribution),
-      });
-
-      setTechnicalSubmitState("success");
-    } catch (error) {
-      console.error(error);
-      setTechnicalSubmitError(
-        "We could not send your request. Please try again or contact us by WhatsApp or email."
-      );
-      setTechnicalSubmitState("error");
     }
   };
 
   return (
     <main className="signature-sans min-h-screen bg-[#0B0B0B] text-[#F5F3EF]">
       <Helmet>
-        <title>Luxury Golf Simulators | Bespoke Signature Projects</title>
+        <title>Signature Projects | Bespoke Private Golf Room Design | Golf en Casa</title>
         <meta
           name="description"
-          content="Golf en Casa | Signature Projects. Bespoke luxury golf simulator design and installation for private residences, villas, architecture studios and premium developments."
+          content="Golf en Casa | Signature Projects. Bespoke design and integration of private golf rooms for residences, villas, architecture studios and luxury developments."
         />
-        <link rel="canonical" href="https://www.golfencasa.net/signature" />
+        <link rel="canonical" href="https://www.golfencasa.net/en/signature" />
+        <link rel="alternate" hrefLang="en" href="https://www.golfencasa.net/en/signature" />
+        <link rel="alternate" hrefLang="es" href="https://www.golfencasa.net/signature" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.golfencasa.net/signature" />
         <meta property="og:title" content="Golf en Casa | Signature Projects" />
         <meta
           property="og:description"
-          content="Bespoke golf simulator design and integration. Private golf simulators conceived around architecture, experience and space."
+          content="Bespoke Golf Room Design & Integration. Private golf rooms designed around architecture, experience and space."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.golfencasa.net/signature" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:url" content="https://www.golfencasa.net/en/signature" />
         <meta property="og:image" content="https://www.golfencasa.net/signature/hero-1280.webp" />
         <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
 
@@ -561,9 +507,9 @@ export default function LandingSignatureProjectsEN() {
             "@graph": [
               {
                 "@type": "Service",
-                "@id": "https://www.golfencasa.net/signature/#service",
+                "@id": "https://www.golfencasa.net/en/signature/#service",
                 name: "Golf en Casa | Signature Projects",
-                serviceType: "Bespoke Golf Simulator Design & Integration",
+                serviceType: "Bespoke Golf Room Design & Integration",
                 provider: {
                   "@type": "Organization",
                   name: "Golf en Casa",
@@ -573,7 +519,7 @@ export default function LandingSignatureProjectsEN() {
                 },
                 areaServed: ["Spain", "Europe"],
                 description:
-                  "Bespoke design, engineering, coordination and integration of private golf simulators for residences, villas and high-end architectural projects.",
+                  "Bespoke design, engineering, coordination and integration of private golf rooms for residences, villas and high-end architectural projects.",
               },
               {
                 "@type": "FAQPage",
@@ -670,7 +616,7 @@ export default function LandingSignatureProjectsEN() {
             src="/signature/hero-1280.webp"
             srcSet="/signature/hero-768.webp 768w, /signature/hero-1280.webp 1280w"
             sizes="100vw"
-            alt="Private Signature golf simulator integrated into a contemporary residence"
+            alt="Signature private golf room integrated into a contemporary residence"
             className="h-full w-full object-cover"
             fetchPriority="high"
             decoding="async"
@@ -683,7 +629,7 @@ export default function LandingSignatureProjectsEN() {
           <div className="max-w-[760px]">
             <SectionLabel dark>Golf en Casa | Signature Projects</SectionLabel>
             <h1 className="signature-serif mt-5 text-[50px] font-normal leading-[0.96] tracking-[-0.03em] sm:text-[68px] md:text-[76px] lg:text-[88px]">
-              Private Golf Simulators.
+              Private Golf Rooms.
               <span className="mt-1 block italic">Designed Around You.</span>
             </h1>
             <p className="mt-7 max-w-xl text-sm font-light leading-7 text-white/70 sm:text-base">
@@ -691,7 +637,7 @@ export default function LandingSignatureProjectsEN() {
               interior design come together as one.
             </p>
             <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C8AA7D]">
-              Bespoke Golf Simulator Design & Integration
+              Bespoke Golf Room Design & Integration
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -734,15 +680,15 @@ export default function LandingSignatureProjectsEN() {
             </p>
             <div className="mt-8 max-w-xl space-y-5 text-sm font-light leading-7 text-black/65">
               <p>
-                We design every golf simulator as an integrated project. Architecture,
+                We approach every room as a complete design project. Architecture,
                 dimensions, lighting, acoustics, materials and technology are
-                considered together to create a golf experience that feels like a
-                natural part of the space.
+                considered together to create a golf experience that feels entirely
+                natural within the space.
               </p>
               <p>
-                From a dedicated golf simulator to a fully integrated multifunctional
-                space, every decision responds to the project, the architecture and
-                the way the client wants to experience golf.
+                From a dedicated golf room to a fully integrated multifunctional space,
+                every decision responds to the architecture, the brief and the way
+                the client wants to experience golf.
               </p>
             </div>
           </div>
@@ -789,7 +735,7 @@ export default function LandingSignatureProjectsEN() {
             >
               <img
                 src="/signature/private-clients.webp"
-                alt="Private golf simulator integrated into a residence"
+                alt="Private golf room within a residence"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]"
               />
@@ -799,10 +745,10 @@ export default function LandingSignatureProjectsEN() {
                   Private Clients
                 </p>
                 <h3 className="signature-serif mt-3 text-4xl text-[#F5F3EF]">
-                  Your private golf simulator.
+                  Your private golf room.
                 </h3>
                 <p className="mt-4 max-w-lg text-sm leading-6 text-white/65">
-                  For homeowners looking to integrate an exceptional golf experience
+                  For homeowners seeking to integrate an exceptional golf experience
                   into their residence.
                 </p>
                 <span className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8AA7D]">
@@ -818,7 +764,7 @@ export default function LandingSignatureProjectsEN() {
             >
               <img
                 src="/signature/professionals.webp"
-                alt="Architecture studio coordinating a project"
+                alt="Architecture and design project environment"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]"
               />
@@ -828,11 +774,11 @@ export default function LandingSignatureProjectsEN() {
                   Architects & Designers
                 </p>
                 <h3 className="signature-serif mt-3 text-4xl text-[#F5F3EF]">
-                  Your golf simulator specialist.
+                  Your specialist golf partner.
                 </h3>
                 <p className="mt-4 max-w-lg text-sm leading-6 text-white/65">
-                  We collaborate from the earliest project stages through
-                  installation and commissioning.
+                  We collaborate from the earliest project stages through installation
+                  and commissioning.
                 </p>
                 <span className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#C8AA7D]">
                   Professional Collaboration <ArrowRight className="h-4 w-4" />
@@ -850,15 +796,14 @@ export default function LandingSignatureProjectsEN() {
             <div>
               <SectionLabel dark>03 — Private Clients</SectionLabel>
               <h2 className="signature-serif mt-5 text-5xl leading-[0.96] sm:text-6xl lg:text-7xl">
-                Your simulator.
+                Your room.
                 <br />Your game.
                 <br /><span className="italic">Your Signature.</span>
               </h2>
               <p className="mt-7 max-w-xl text-sm font-light leading-7 text-white/65">
-                A private golf simulator should feel like a natural extension of your
-                home. We design every project from the ground up to combine an
-                exceptional playing experience with the architecture, materials
-                and character of the space.
+                A private golf room should feel like a natural extension of your home.
+                We design each project from the ground up to combine an exceptional
+                playing experience with the architecture, materials and character of the space.
               </p>
               <div className="mt-8">
                 <PrimaryButton
@@ -872,7 +817,7 @@ export default function LandingSignatureProjectsEN() {
             </div>
             <img
               src="/signature/private-feature.webp"
-              alt="Signature golf simulator with architectural integration"
+              alt="Signature golf room with architectural integration"
               loading="lazy"
               className="aspect-[5/4] w-full object-cover"
             />
@@ -893,22 +838,22 @@ export default function LandingSignatureProjectsEN() {
             <div>
               <SectionLabel>04 — For Professionals</SectionLabel>
               <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl">
-                El especialista en simuladores de golf
+                The golf room specialist
                 <br />on your project team.
               </h2>
             </div>
             <div className="lg:pt-10">
               <p className="max-w-2xl text-sm leading-7 text-black/65">
-                We work with architects, interior designers, developers and project
-                managers, providing the specialist knowledge required to integrate
-                a golf simulator from the earliest stages of the project.
+                We collaborate with architects, interior designers, developers and project
+                managers, providing the specialist expertise required to integrate
+                a golf room from the earliest stages of the project.
               </p>
               <div className="mt-8 border-l border-[#C8AA7D] pl-6">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9C7B4F]">
                   Involve us early.
                 </p>
                 <p className="signature-serif mt-3 max-w-2xl text-2xl leading-8">
-                  We anticipate dimensions, services and technical constraints
+                  We anticipate dimensions, building services and technical constraints
                   before they become costly construction changes.
                 </p>
               </div>
@@ -928,18 +873,12 @@ export default function LandingSignatureProjectsEN() {
             >
               Discuss a Project
             </PrimaryButton>
-            <button
-              type="button"
-              onClick={() => {
-                setTechnicalOpen(true);
-                setTechnicalSubmitState("idle");
-                setTechnicalSubmitError("");
-                pushDataLayer("signature_technical_info_click", "professionals");
-              }}
-              className="signature-sans inline-flex items-center justify-center gap-2 border border-[#0B0B0B]/30 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0B0B0B] transition hover:border-[#C8AA7D] hover:text-[#9C7B4F]"
+            <OutlineButton
+              href={`mailto:${EMAIL}?subject=Signature Projects - Technical Information`}
+              onClick={() => pushDataLayer("signature_technical_info_click", "professionals")}
             >
               Request Technical Information
-            </button>
+            </OutlineButton>
           </div>
         </div>
       </section>
@@ -950,11 +889,11 @@ export default function LandingSignatureProjectsEN() {
           <SectionLabel dark>05 — Our Process</SectionLabel>
           <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl">
             From first sketch
-            <br />al primer golpe.
+            <br />to first swing.
           </h2>
           <p className="mt-6 max-w-xl text-sm leading-7 text-white/55">
-            A clear, coordinated process to ensure every detail of the space works
-            exactly as intended.
+            A clear, coordinated process designed to ensure every detail of the space
+            works exactly as intended.
           </p>
 
           <div className="relative mt-16">
@@ -978,8 +917,8 @@ export default function LandingSignatureProjectsEN() {
           <div className="mt-14 border-t border-white/10 pt-8">
             <p className="signature-serif text-3xl">One partner. Every detail.</p>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/50">
-              From the first drawing to final calibration, one team coordinates
-              every element that turns the space into a Signature experience.
+              From the first drawing to final calibration, one team coordinates every
+              element required to turn the space into a Signature experience.
             </p>
           </div>
         </div>
@@ -1011,7 +950,7 @@ export default function LandingSignatureProjectsEN() {
               <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">
                 The best technology
                 <br />is the technology
-                <br /><span className="italic">no se hace notar.</span>
+                <br /><span className="italic">you don't notice.</span>
               </h2>
             </div>
           </div>
@@ -1044,20 +983,20 @@ export default function LandingSignatureProjectsEN() {
           <SectionLabel>07 — Materials & Finishes</SectionLabel>
           <div className="mt-5 grid gap-8 lg:grid-cols-2 lg:items-end">
             <h2 className="signature-serif text-5xl leading-[0.98] sm:text-6xl">
-              Designed
-              <br />down to the last detail.
+              Designed down
+              <br />to the last detail.
             </h2>
             <p className="max-w-xl text-sm leading-7 text-black/60">
               Every Signature Project can be tailored to the material language of the
-              residence. Panelling, acoustic finishes, flooring, lighting, joinery
-              and detailing are developed as part of one coherent design.
+              residence. Wall panelling, acoustic finishes, flooring, lighting,
+              joinery and detailing are considered as part of one coherent whole.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {[
-              ["MADERA", "/signature/material-timber.webp"],
-              ["PIEDRA", "/signature/material-stone.webp"],
+              ["TIMBER", "/signature/material-timber.webp"],
+              ["STONE", "/signature/material-stone.webp"],
               ["TEXTILES", "/signature/material-textile.webp"],
               ["METAL", "/signature/material-metal.webp"],
             ].map(([label, src]) => (
@@ -1077,12 +1016,11 @@ export default function LandingSignatureProjectsEN() {
 
           <div className="mt-16 max-w-4xl border-t border-black/15 pt-10">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9C7B4F]">
-              A golf simulator that belongs to the house.
+              A golf room that belongs to the house.
             </p>
             <p className="signature-serif mt-4 text-3xl leading-10 sm:text-4xl">
-              We do not want the golf simulator to look as though it was installed in
-              a room. We want the room to feel as though it was always designed
-              around the simulator.
+              We do not want the simulator to look as though it was installed in a room.
+              We want the room to feel as though it was always designed around it.
             </p>
           </div>
         </div>
@@ -1102,14 +1040,14 @@ export default function LandingSignatureProjectsEN() {
               className="lg:col-span-7"
               image="/signature/project-01.webp"
               eyebrow="CONCEPT STUDY — PRIVATE RESIDENCE"
-              title="Private Golf Simulator"
+              title="Private Golf Room"
               meta="Concept Design · Architectural Integration"
             />
             <ProjectCard
               className="lg:col-span-5"
               image="/signature/project-02.webp"
-              eyebrow="CONCEPT STUDY — SIGNATURE SIMULATOR"
-              title="Signature Golf Simulator"
+              eyebrow="CONCEPT STUDY — SIGNATURE GOLF ROOM"
+              title="Signature Golf Room"
               meta="Concept Design · Technology Integration"
             />
             <ProjectCard
@@ -1123,15 +1061,15 @@ export default function LandingSignatureProjectsEN() {
               className="lg:col-span-7"
               image="/signature/project-04.webp"
               eyebrow="CONCEPT STUDY — MULTIFUNCTIONAL SPACE"
-              title="Golf Simulator & Entertainment"
+              title="Golf & Entertainment Room"
               meta="Architecture · Technology · Interior Integration"
             />
           </div>
 
           <p className="mt-5 max-w-2xl text-xs leading-5 text-white/40">
-            Concept projects are expressly identified as Concept Study.
-            These images can be replaced with completed installations as the
-            Signature portfolio grows.
+            Los proyectos conceptuales se identificarán expresamente como Concept
+            Study. Sustituye estas imágenes por instalaciones reales a medida que
+            se complete el portfolio Signature.
           </p>
         </div>
       </section>
@@ -1145,16 +1083,16 @@ export default function LandingSignatureProjectsEN() {
             <br /><span className="italic">Entirely bespoke.</span>
           </h2>
           <p className="mt-8 max-w-2xl text-sm leading-7 text-black/60">
-            Every Signature Project is designed and quoted individually. Investment
-            depends on the characteristics of the space, the project scope, the
-            level of integration, finishes and the selected technology.
+            Every Signature Project is designed and commissioned individually. Investment
+            depends on the characteristics of the space, project scope, level of
+            integration, finishes and selected technology.
           </p>
 
           <div className="mt-14 grid gap-8 md:grid-cols-3">
             {[
-              ["SCOPE", "From technology integration within a previously designed room to the complete development of the golf simulator and surrounding space."],
-              ["TECHNOLOGY", "We select every system according to the actual requirements of the project."],
-              ["FINISHES", "Materials, joinery, acoustics and interior design can form part of the Signature scope."],
+              ["SCOPE", "From technology integration within an already designed room to complete development of the space."],
+              ["TECHNOLOGY", "Every system is selected according to the real requirements of the project."],
+              ["FINISHES", "Materials, joinery, acoustics and interior design can all form part of the Signature scope."],
             ].map(([title, text]) => (
               <div key={title} className="border-t border-black/20 pt-6">
                 <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9C7B4F]">{title}</h3>
@@ -1164,7 +1102,7 @@ export default function LandingSignatureProjectsEN() {
           </div>
 
           <div className="mt-14 flex flex-col items-start gap-6 border-t border-black/15 pt-10 sm:flex-row sm:items-center sm:justify-between">
-            <p className="signature-serif text-3xl">Every project begins with a conversation.</p>
+            <p className="signature-serif text-3xl">Every project starts with a conversation.</p>
             <PrimaryButton
               href="#contact"
               onClick={() => pushDataLayer("signature_cta_click", "investment")}
@@ -1179,8 +1117,8 @@ export default function LandingSignatureProjectsEN() {
       <section className="bg-[#151515]">
         <div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[0.68fr_1.32fr] lg:px-10 lg:py-28">
           <div>
-            <SectionLabel dark>Frequently Asked Questions</SectionLabel>
-            <h2 className="signature-serif mt-5 text-5xl">Antes de empezar.</h2>
+            <SectionLabel dark>Questions</SectionLabel>
+            <h2 className="signature-serif mt-5 text-5xl">Before we begin.</h2>
           </div>
           <div>
             {faqs.map((item, index) => (
@@ -1210,14 +1148,14 @@ export default function LandingSignatureProjectsEN() {
       <section id="contact" className="bg-[#F5F3EF] text-[#0B0B0B]">
         <div className="mx-auto grid max-w-[1440px] gap-14 px-6 py-24 lg:grid-cols-[0.74fr_1.26fr] lg:px-10 lg:py-32">
           <div>
-            <SectionLabel>Tell Us About Your Project</SectionLabel>
+            <SectionLabel>Tell us about your project</SectionLabel>
             <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl">
-              Let’s create something
+              Let's create something
               <br /><span className="italic">exceptional.</span>
             </h2>
             <p className="mt-7 max-w-md text-sm leading-7 text-black/60">
               Tell us briefly what you are creating. Every Signature enquiry is
-              reviewed personally and handled with complete discretion.
+              reviewed personally and treated with complete discretion.
             </p>
 
             <div className="mt-10 border-t border-black/15 pt-7">
@@ -1244,7 +1182,7 @@ export default function LandingSignatureProjectsEN() {
                   onClick={() => pushDataLayer("signature_calendly", "contact")}
                   className="flex items-center gap-3 hover:text-[#9C7B4F]"
                 >
-                  <CalendarDays className="h-4 w-4" /> Schedule a Conversation
+                  <CalendarDays className="h-4 w-4" /> Schedule a conversation
                 </a>
               </div>
             </div>
@@ -1258,11 +1196,11 @@ export default function LandingSignatureProjectsEN() {
               <h3 className="signature-serif mt-4 text-4xl leading-tight sm:text-5xl">
                 Thank you.
                 <br />
-                <span className="italic">We have received your project.</span>
+                <span className="italic">Your project has been received.</span>
               </h3>
               <p className="mt-6 max-w-xl text-sm leading-7 text-black/60">
-                We have received your project details. We will review the information
-                personally and contact you shortly.
+                We have received the details of your project. We will review the information
+                personally and get in touch with you.
               </p>
             </div>
           ) : (
@@ -1288,13 +1226,13 @@ export default function LandingSignatureProjectsEN() {
               <input required name="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="signature-input" />
             </FormField>
 
-            <FormField label="I am... *">
+            <FormField label="I am a... *">
               <select required value={form.profile} onChange={(e) => setForm({ ...form, profile: e.target.value })} className="signature-input">
                 <option value="">Select</option>
-                <option>Private client</option>
+                <option>Private Client</option>
                 <option>Architect / Interior Designer</option>
                 <option>Developer</option>
-                <option>Contractor / Project Manager</option>
+                <option>Builder / Project Manager</option>
                 <option>Other</option>
               </select>
             </FormField>
@@ -1302,9 +1240,9 @@ export default function LandingSignatureProjectsEN() {
             <FormField label="Project type *">
               <select required value={form.projectType} onChange={(e) => setForm({ ...form, projectType: e.target.value })} className="signature-input">
                 <option value="">Select</option>
-                <option>Private residence</option>
+                <option>Private Residence</option>
                 <option>Villa</option>
-                <option>Residential development</option>
+                <option>Residential Development</option>
                 <option>Hotel / Resort</option>
                 <option>Commercial</option>
                 <option>Other</option>
@@ -1345,7 +1283,7 @@ export default function LandingSignatureProjectsEN() {
               </select>
             </FormField>
 
-            <FormField label="Tell Us About Your Project" className="sm:col-span-2">
+            <FormField label="Tell us about your project" className="sm:col-span-2">
               <textarea
                 rows={6}
                 value={form.message}
@@ -1362,7 +1300,7 @@ export default function LandingSignatureProjectsEN() {
               />
               <span>
                 I have read and accept the{" "}
-                <a href="/politica-privacidad" className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
+                <a href="/en/privacy-policy" className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
                   Privacy Policy
                 </a>.
               </span>
@@ -1374,7 +1312,7 @@ export default function LandingSignatureProjectsEN() {
                 disabled={submitState === "sending"}
                 className="inline-flex w-full items-center justify-center gap-2 bg-[#0B0B0B] px-7 py-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F5F3EF] transition hover:bg-[#1C1C1C] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
-                {submitState === "sending" ? "Sending..." : "Send Project Enquiry"}
+                {submitState === "sending" ? "Sending..." : "Submit Your Project"}
                 {submitState !== "sending" && <ArrowRight className="h-4 w-4" />}
               </button>
 
@@ -1385,125 +1323,13 @@ export default function LandingSignatureProjectsEN() {
               )}
 
               <p className="mt-4 text-xs leading-5 text-black/45">
-                All enquiries are reviewed personally and handled with complete discretion.
+                All enquiries are reviewed personally and treated with complete discretion.
               </p>
             </div>
           </form>
           )}
         </div>
       </section>
-
-      {technicalOpen && (
-        <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 px-4 py-8 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="technical-request-title"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setTechnicalOpen(false);
-          }}
-        >
-          <div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto bg-[#F5F3EF] p-7 text-[#0B0B0B] shadow-2xl sm:p-10">
-            <button type="button" onClick={() => setTechnicalOpen(false)}
-              className="absolute right-5 top-5 text-black/50 transition hover:text-black"
-              aria-label="Close technical information request">
-              <X className="h-5 w-5" />
-            </button>
-
-            {technicalSubmitState === "success" ? (
-              <div className="py-6">
-                <SectionLabel>Request received</SectionLabel>
-                <h3 id="technical-request-title" className="signature-serif mt-4 text-4xl leading-tight sm:text-5xl">
-                  Thank you.<br /><span className="italic">We have received your request.</span>
-                </h3>
-                <p className="mt-6 max-w-xl text-sm leading-7 text-black/60">
-                  We will review the information personally and contact you shortly.
-                </p>
-                <button type="button" onClick={() => setTechnicalOpen(false)}
-                  className="mt-8 bg-[#0B0B0B] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F5F3EF]">
-                  Cerrar
-                </button>
-              </div>
-            ) : (
-              <>
-                <SectionLabel>Technical Information</SectionLabel>
-                <h3 id="technical-request-title" className="signature-serif mt-4 text-4xl leading-tight sm:text-5xl">
-                  Request Technical Information<br /><span className="italic">for your project.</span>
-                </h3>
-                <p className="mt-5 max-w-xl text-sm leading-7 text-black/60">
-                  For architects, interior designers, developers and professionals who need
-                  technical information to integrate a golf simulator into their project.
-                </p>
-
-                <form onSubmit={handleTechnicalSubmit} className="mt-8 grid gap-x-5 gap-y-6 sm:grid-cols-2">
-                  <input type="text" name="companyWebsite" tabIndex="-1" autoComplete="off"
-                    aria-hidden="true" className="absolute left-[-9999px] h-px w-px opacity-0" />
-
-                  <FormField label="Full name *">
-                    <input required value={technicalForm.name}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, name: e.target.value })}
-                      className="signature-input" />
-                  </FormField>
-
-                  <FormField label="Professional email *">
-                    <input required type="email" value={technicalForm.email}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, email: e.target.value })}
-                      className="signature-input" />
-                  </FormField>
-
-                  <FormField label="Company / Studio">
-                    <input value={technicalForm.company}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, company: e.target.value })}
-                      className="signature-input" />
-                  </FormField>
-
-                  <FormField label="Professional profile *">
-                    <select required value={technicalForm.profile}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, profile: e.target.value })}
-                      className="signature-input">
-                      <option value="">Select</option>
-                      <option>Architect</option>
-                      <option>Interior Designer</option>
-                      <option>Developer</option>
-                      <option>Project Manager</option>
-                      <option>Contractor</option>
-                      <option>Other</option>
-                    </select>
-                  </FormField>
-
-                  <FormField label="What information do you need?" className="sm:col-span-2">
-                    <textarea rows={5} value={technicalForm.message}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, message: e.target.value })}
-                      className="signature-input resize-none" />
-                  </FormField>
-
-                  <label className="sm:col-span-2 flex items-start gap-3 text-xs leading-5 text-black/55">
-                    <input type="checkbox" required className="mt-1 accent-[#0B0B0B]" />
-                    <span>
-                      I have read and accept the{" "}
-                      <a href="/politica-privacidad"
-                        className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
-                        Privacy Policy
-                      </a>.
-                    </span>
-                  </label>
-
-                  <div className="sm:col-span-2">
-                    <button type="submit" disabled={technicalSubmitState === "sending"}
-                      className="inline-flex w-full items-center justify-center gap-2 bg-[#0B0B0B] px-7 py-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F5F3EF] transition hover:bg-[#1C1C1C] disabled:opacity-50 sm:w-auto">
-                      {technicalSubmitState === "sending" ? "Sending..." : "Send Request"}
-                      {technicalSubmitState !== "sending" && <ArrowRight className="h-4 w-4" />}
-                    </button>
-                    {technicalSubmitState === "error" && (
-                      <p className="mt-4 max-w-xl text-sm leading-6 text-red-700">{technicalSubmitError}</p>
-                    )}
-                  </div>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* FINAL CTA */}
       <section className="relative overflow-hidden bg-[#0B0B0B] px-6 py-28 text-center lg:py-36">
@@ -1527,11 +1353,11 @@ export default function LandingSignatureProjectsEN() {
             decoding="async"
           />
           <h2 className="signature-serif text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">
-            Let’s create something
+            Let's create something
             <br /><span className="italic">exceptional.</span>
           </h2>
           <p className="mt-6 text-xs uppercase tracking-[0.2em] text-white/45">
-            Every Signature Project begins with a conversation.
+            Every Signature Project starts with a conversation.
           </p>
           <div className="mt-9">
             <PrimaryButton
@@ -1552,7 +1378,7 @@ export default function LandingSignatureProjectsEN() {
             <div>
               <SignatureLogo />
               <p className="mt-5 text-xs uppercase tracking-[0.16em] text-white/35">
-                Bespoke Golf Simulator Design & Integration
+                Bespoke Golf Room Design & Integration
               </p>
             </div>
             <FooterColumn title="Signature" links={[
@@ -1564,12 +1390,12 @@ export default function LandingSignatureProjectsEN() {
             <FooterColumn title="Contact" links={[
               ["Email", `mailto:${EMAIL}`],
               ["WhatsApp", whatsappUrl],
-              ["Schedule a Conversation", CALENDLY_URL],
+              ["Schedule a conversation", CALENDLY_URL],
             ]} />
             <FooterColumn title="Legal" links={[
-              ["Privacy", "/politica-privacidad"],
-              ["Cookies", "/politica-cookies"],
-              ["Legal Notice", "/aviso-legal"],
+            ["Privacy Policy", "/en/privacy-policy"],
+["Cookie Policy", "/en/cookie-policy"],
+["Legal Notice", "/en/legal-notice"],
             ]} />
           </div>
           <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:justify-between">
