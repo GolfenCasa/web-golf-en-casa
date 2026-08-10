@@ -179,9 +179,54 @@ export default async function handler(request, response) {
         .json({ ok: false, error: "Could not deliver lead email" });
     }
 
+    // Sincroniza el lead con el CRM de Google Sheets.
+    // El email es la fuente de seguridad: si el CRM falla, no perdemos el lead
+    // ni mostramos un falso error al usuario después de haber recibido el correo.
+    let crmSynced = false;
+    let crmLeadId = null;
+
+    if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      try {
+        const crmResponse = await fetch(process.env.CRM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            secret: process.env.CRM_WEBHOOK_SECRET,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            city: data.city,
+            projectType: data.projectType,
+            budget: data.budget,
+            dimensions: data.dimensions,
+            sourceDeclared: data.sourceDeclared,
+            message: data.message,
+            attribution: data.attribution,
+          }),
+        });
+
+        const crmData = await crmResponse.json().catch(() => ({}));
+
+        if (crmResponse.ok && crmData.ok) {
+          crmSynced = true;
+          crmLeadId = crmData.leadId || null;
+        } else {
+          console.error("CRM webhook error", crmResponse.status, crmData);
+        }
+      } catch (crmError) {
+        console.error("CRM webhook request failed", crmError);
+      }
+    } else {
+      console.error("Missing CRM_WEBHOOK_URL or CRM_WEBHOOK_SECRET");
+    }
+
     return response.status(200).json({
       ok: true,
       id: resendData.id || null,
+      crmSynced,
+      crmLeadId,
     });
   } catch (error) {
     console.error("Viability lead error", error);
