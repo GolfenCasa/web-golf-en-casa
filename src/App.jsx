@@ -15,7 +15,6 @@ import { Helmet } from "react-helmet-async";
 
 const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
 const youtubeCourseUrl = 'https://youtube.com/playlist?list=PLfYDa4ADpRpYQ8iuZZrYMbw1-5TRONady';
-const formularioUrl ='https://docs.google.com/forms/d/e/1FAIpQLSecIKbWPdNzt3hQmUO4sNHw_eLWAfGC3XXv87MGgzmESydqaw/viewform?pli=1'
 const email = 'info@golfencasa.net';
 const whatsappNumber = '34678107234';
 const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
@@ -308,7 +307,8 @@ const packages = [
     description: 'Para quien quiere el simulador listo para usar.',
     features: ['Asesoramiento integral', 'Montaje y configuración', 'Pruebas de funcionamiento', 'Puesta en marcha'],
     cta: 'Pedir Presupuesto',
-    url: 'https://docs.google.com/forms/d/e/1FAIpQLSecIKbWPdNzt3hQmUO4sNHw_eLWAfGC3XXv87MGgzmESydqaw/viewform?pli=1',
+    url: '#contacto',
+    internal: true,
 
   },
 ];
@@ -470,9 +470,21 @@ export default function GolfSimulatorLanding() {
 
   const handlePackageClick = (pkg) => {
     if (pkg.url.includes('calendly.com')) {
-      pushDataLayer('calendly_click', `package_${pkg.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`, {
-        contact_channel: 'calendly',
+      pushDataLayer(
+        'calendly_click',
+        `package_${pkg.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`,
+        {
+          contact_channel: 'calendly',
+          package_name: pkg.name,
+        }
+      );
+      return;
+    }
+
+    if (pkg.name === 'Instalación Completa') {
+      pushDataLayer('installation_package_cta', 'package_installation_complete', {
         package_name: pkg.name,
+        destination: 'home_contact_form',
       });
     }
   };
@@ -1166,7 +1178,15 @@ export default function GolfSimulatorLanding() {
                       </li>
                     ))}
                   </ul>
-                  <a href={getPackageUrl(pkg)} target="_blank" rel="noopener noreferrer" onClick={() => handlePackageClick(pkg)} className={`mt-8 inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 font-semibold transition ${pkg.featured ? 'bg-zinc-950 text-white hover:bg-zinc-800' : 'bg-emerald-500 text-zinc-950 hover:bg-emerald-400'}`}>{pkg.cta}</a>
+                  <a
+                    href={getPackageUrl(pkg)}
+                    target={pkg.internal ? undefined : '_blank'}
+                    rel={pkg.internal ? undefined : 'noopener noreferrer'}
+                    onClick={() => handlePackageClick(pkg)}
+                    className={`mt-8 inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 font-semibold transition ${pkg.featured ? 'bg-zinc-950 text-white hover:bg-zinc-800' : 'bg-emerald-500 text-zinc-950 hover:bg-emerald-400'}`}
+                  >
+                    {pkg.cta}
+                  </a>
                 </div>
                 
               ))}
