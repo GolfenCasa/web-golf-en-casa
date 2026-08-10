@@ -3,7 +3,7 @@ const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
   "Golf en Casa Signature <signature@golfencasa.net>";
 
-const requiredFields = [
+const projectRequiredFields = [
   "name",
   "email",
   "phone",
@@ -58,7 +58,12 @@ export default async function handler(request, response) {
   }
 
   const data = {
+    leadType:
+      clean(body.leadType, 80) === "signature_technical_request"
+        ? "signature_technical_request"
+        : "signature_project",
     name: clean(body.name, 120),
+    company: clean(body.company, 180),
     email: clean(body.email, 254),
     phone: clean(body.phone, 80),
     location: clean(body.location, 160),
@@ -82,6 +87,11 @@ export default async function handler(request, response) {
     },
   };
 
+  const requiredFields =
+    data.leadType === "signature_technical_request"
+      ? ["name", "email", "profile"]
+      : projectRequiredFields;
+
   for (const field of requiredFields) {
     if (!data[field]) {
       return response
@@ -98,26 +108,46 @@ export default async function handler(request, response) {
     .filter(Boolean)
     .join(" / ") || "direct / none";
 
-  const subject = `Signature Project — ${data.name} — ${data.location}`;
+  const isTechnical = data.leadType === "signature_technical_request";
 
-  const rows = [
-    ["Nombre", data.name],
-    ["Email", data.email],
-    ["Teléfono", data.phone],
-    ["Ubicación", data.location],
-    ["Perfil", data.profile],
-    ["Tipo de proyecto", data.projectType],
-    ["Estado", data.stage],
-    ["Dimensiones", data.dimensions || "No indicado"],
-    ["Inversión prevista", data.investment || "To be defined"],
-    ["Fuente / medio", sourceLabel],
-    ["Campaña", data.attribution.campaign || "No disponible"],
-    ["Contenido", data.attribution.content || "No disponible"],
-    ["Término", data.attribution.term || "No disponible"],
-    ["Landing", data.attribution.landingPage || "/signature"],
-    ["GCLID", data.attribution.gclid || "No disponible"],
-    ["FBCLID", data.attribution.fbclid || "No disponible"],
-  ];
+  const subject = isTechnical
+    ? `Signature — Solicitud de información técnica — ${data.name}${data.company ? ` — ${data.company}` : ""}`
+    : `Signature Project — ${data.name} — ${data.location}`;
+
+  const rows = isTechnical
+    ? [
+        ["Tipo de solicitud", "Información técnica"],
+        ["Nombre", data.name],
+        ["Email", data.email],
+        ["Empresa / estudio", data.company || "No indicado"],
+        ["Perfil profesional", data.profile],
+        ["Fuente / medio", sourceLabel],
+        ["Campaña", data.attribution.campaign || "No disponible"],
+        ["Contenido", data.attribution.content || "No disponible"],
+        ["Término", data.attribution.term || "No disponible"],
+        ["Landing", data.attribution.landingPage || "/signature"],
+        ["GCLID", data.attribution.gclid || "No disponible"],
+        ["FBCLID", data.attribution.fbclid || "No disponible"],
+      ]
+    : [
+        ["Tipo de solicitud", "Signature Project"],
+        ["Nombre", data.name],
+        ["Email", data.email],
+        ["Teléfono", data.phone],
+        ["Ubicación", data.location],
+        ["Perfil", data.profile],
+        ["Tipo de proyecto", data.projectType],
+        ["Estado", data.stage],
+        ["Dimensiones", data.dimensions || "No indicado"],
+        ["Inversión prevista", data.investment || "Por definir"],
+        ["Fuente / medio", sourceLabel],
+        ["Campaña", data.attribution.campaign || "No disponible"],
+        ["Contenido", data.attribution.content || "No disponible"],
+        ["Término", data.attribution.term || "No disponible"],
+        ["Landing", data.attribution.landingPage || "/signature"],
+        ["GCLID", data.attribution.gclid || "No disponible"],
+        ["FBCLID", data.attribution.fbclid || "No disponible"],
+      ];
 
   const htmlRows = rows
     .map(
@@ -134,7 +164,7 @@ export default async function handler(request, response) {
       <div style="max-width:760px;margin:0 auto;background:white;border:1px solid #e8e5df">
         <div style="background:#0b0b0b;padding:24px 28px">
           <div style="font-size:12px;letter-spacing:2px;color:#c8aa7d">GOLF EN CASA | SIGNATURE PROJECTS</div>
-          <h1 style="margin:10px 0 0;color:#f5f3ef;font-size:24px;font-weight:500">Nueva solicitud Signature</h1>
+          <h1 style="margin:10px 0 0;color:#f5f3ef;font-size:24px;font-weight:500">${isTechnical ? "Nueva solicitud de información técnica" : "Nueva solicitud Signature"}</h1>
         </div>
 
         <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -142,7 +172,7 @@ export default async function handler(request, response) {
         </table>
 
         <div style="padding:24px 28px">
-          <div style="font-size:12px;letter-spacing:1.5px;color:#9c7b4f;font-weight:700;margin-bottom:10px">MENSAJE</div>
+          <div style="font-size:12px;letter-spacing:1.5px;color:#9c7b4f;font-weight:700;margin-bottom:10px">${isTechnical ? "INFORMACIÓN SOLICITADA" : "MENSAJE"}</div>
           <div style="white-space:pre-wrap;line-height:1.65;color:#333">${escapeHtml(data.message || "Sin mensaje adicional")}</div>
         </div>
       </div>
@@ -172,7 +202,7 @@ export default async function handler(request, response) {
         html,
         text,
         tags: [
-          { name: "source", value: "signature_project" },
+          { name: "source", value: data.leadType },
           { name: "profile", value: data.profile.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 256) || "unknown" },
         ],
       }),
@@ -187,9 +217,66 @@ export default async function handler(request, response) {
         .json({ ok: false, error: "Could not deliver lead email" });
     }
 
+    // Sincroniza el lead con el CRM de Google Sheets.
+    // El email es la fuente de seguridad: si el CRM falla, no perdemos el lead
+    // ni mostramos un falso error al usuario después de haber recibido el correo.
+    let crmSynced = false;
+    let crmLeadId = null;
+
+    if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      try {
+        const isTechnical = data.leadType === "signature_technical_request";
+
+        const crmResponse = await fetch(process.env.CRM_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            secret: process.env.CRM_WEBHOOK_SECRET,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || "",
+            city: data.location || "",
+            projectType: isTechnical ? "Información técnica Signature" : data.projectType,
+            budget: data.investment || "Sin definir",
+            dimensions: data.dimensions || "",
+            sourceDeclared: "Signature Projects",
+            message: isTechnical
+              ? [
+                  data.company ? `Empresa / estudio: ${data.company}` : "",
+                  data.profile ? `Perfil profesional: ${data.profile}` : "",
+                  data.message ? `Información solicitada: ${data.message}` : "",
+                ].filter(Boolean).join("\n\n")
+              : [
+                  data.profile ? `Perfil: ${data.profile}` : "",
+                  data.stage ? `Estado del proyecto: ${data.stage}` : "",
+                  data.message || "",
+                ].filter(Boolean).join("\n\n"),
+            attribution: data.attribution,
+          }),
+        });
+
+        const crmData = await crmResponse.json().catch(() => ({}));
+
+        if (crmResponse.ok && crmData.ok) {
+          crmSynced = true;
+          crmLeadId = crmData.leadId || null;
+        } else {
+          console.error("CRM webhook error", crmResponse.status, crmData);
+        }
+      } catch (crmError) {
+        console.error("CRM webhook request failed", crmError);
+      }
+    } else {
+      console.error("Missing CRM_WEBHOOK_URL or CRM_WEBHOOK_SECRET");
+    }
+
     return response.status(200).json({
       ok: true,
       id: resendData.id || null,
+      crmSynced,
+      crmLeadId,
     });
   } catch (error) {
     console.error("Signature lead error", error);
