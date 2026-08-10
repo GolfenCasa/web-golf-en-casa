@@ -234,6 +234,7 @@ export default async function handler(request, response) {
           },
           body: JSON.stringify({
             secret: process.env.CRM_WEBHOOK_SECRET,
+            leadType: data.leadType,
             name: data.name,
             email: data.email,
             phone: data.phone || "",
