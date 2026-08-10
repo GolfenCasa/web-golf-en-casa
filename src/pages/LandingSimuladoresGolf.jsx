@@ -242,6 +242,8 @@ const testimonials = [
 
 export default function LandingSimuladoresGolf() {
   const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
+  const [submitState, setSubmitState] = useState("idle");
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -311,56 +313,50 @@ export default function LandingSimuladoresGolf() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitState === "sending") return;
+    setSubmitState("sending");
+    setSubmitError("");
 
-   window.dataLayer = window.dataLayer || [];
+    try {
+      const response = await fetch("/api/viability-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
+          attribution,
+        }),
+      });
 
-window.dataLayer.push({
-  event: "generate_lead",
-  form_name: "landing_estudio_viabilidad_simulador",
-  lead_type: "formulario_estudio_viabilidad",
-  project_type: form.projectType,
-  budget_range: form.budget,
-  source_declared: form.sourceDeclared,
-  ...attributionEventData(attribution),
-});
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "No se pudo enviar la solicitud.");
 
-window.dataLayer.push({
-  event: "form_submit",
-  form_name: "landing_estudio_viabilidad_simulador",
-  project_type: form.projectType,
-  budget_range: form.budget,
-  source_declared: form.sourceDeclared,
-  ...attributionEventData(attribution),
-});
-
-    setTimeout(() => {
-      const body = encodeURIComponent(
-        `Nombre: ${form.name}
-Email: ${form.email}
-Teléfono: ${form.phone}
-Ciudad / provincia: ${form.city}
-Tipo de instalación: ${form.projectType}
-Presupuesto aproximado: ${form.budget}
-Medidas del espacio: ${form.dimensions}
-¿Cómo nos ha conocido?: ${form.sourceDeclared || "No indicado"}
-
-Origen técnico del lead: ${classifyTrafficSource(attribution)}
-Fuente / medio: ${attribution.source || "direct"} / ${attribution.medium || "none"}
-Campaña: ${attribution.campaign || "No disponible"}
-Contenido: ${attribution.content || "No disponible"}
-Término de búsqueda: ${attribution.term || "No disponible"}
-Landing de entrada: ${attribution.landingPage || "No disponible"}
-GCLID: ${attribution.gclid || "No disponible"}
-FBCLID: ${attribution.fbclid || "No disponible"}
-
-Mensaje:
-${form.message}`
-      );
-
-      window.location.href = `mailto:${EMAIL}?subject=Solicitud de estudio gratuito de viabilidad - Simulador de golf&body=${body}`;
-    }, 500);
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "generate_lead",
+        form_name: "landing_estudio_viabilidad_simulador",
+        lead_type: "formulario_estudio_viabilidad",
+        project_type: form.projectType,
+        budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+        ...attributionEventData(attribution),
+      });
+      window.dataLayer.push({
+        event: "form_submit",
+        form_name: "landing_estudio_viabilidad_simulador",
+        project_type: form.projectType,
+        budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+        ...attributionEventData(attribution),
+      });
+      setSubmitState("success");
+    } catch (error) {
+      console.error(error);
+      setSubmitError("No hemos podido enviar tu solicitud. Inténtalo de nuevo o envíanos las medidas por WhatsApp.");
+      setSubmitState("error");
+    }
   };
 
   return (
@@ -1364,10 +1360,19 @@ Descubre si tu espacio es apto antes de invertir en material
             </div>
           </div>
 
+          {submitState === "success" ? (
+            <div className="rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-8 shadow-2xl">
+              <CheckCircle2 className="h-12 w-12 text-emerald-300" />
+              <p className="mt-6 font-semibold uppercase tracking-[0.22em] text-emerald-300">Solicitud recibida</p>
+              <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">Gracias. Ya tenemos los datos de tu proyecto.</h3>
+              <p className="mt-5 max-w-xl text-base leading-7 text-zinc-300">Revisaremos personalmente las medidas, el tipo de instalación y el presupuesto indicado. Nos pondremos en contacto contigo para darte una primera orientación sobre la viabilidad y los siguientes pasos.</p>
+            </div>
+          ) : (
           <form
             onSubmit={handleSubmit}
             className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-2xl"
           >
+            <input type="text" name="companyWebsite" tabIndex="-1" autoComplete="off" aria-hidden="true" className="absolute left-[-9999px] h-px w-px opacity-0" />
             <div className="grid gap-4 md:grid-cols-2">
               <label htmlFor="name" className="sr-only">
                 Nombre
@@ -1540,16 +1545,22 @@ Descubre si tu espacio es apto antes de invertir en material
 
             <button
               type="submit"
-              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-400"
+              disabled={submitState === "sending"}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Solicitar estudio gratuito
-              <ArrowRight className="ml-2 h-5 w-5" />
+              {submitState === "sending" ? "Enviando..." : "Solicitar estudio gratuito"}
+              {submitState !== "sending" && <ArrowRight className="ml-2 h-5 w-5" />}
             </button>
+
+            {submitState === "error" && (
+              <p className="mt-4 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm leading-6 text-red-200">{submitError}</p>
+            )}
 
             <p className="mt-4 text-center text-xs text-zinc-400">
               También puedes enviar fotos o medidas directamente por WhatsApp.
             </p>
           </form>
+          )}
         </div>
       </section>
 
