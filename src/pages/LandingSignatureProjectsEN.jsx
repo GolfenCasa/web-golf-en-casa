@@ -159,6 +159,7 @@ const attributionEventData = (a) => ({
   traffic_content: a.content || "",
   traffic_term: a.term || "",
   landing_page: a.landingPage || "/signature",
+  conversion_page: typeof window !== "undefined" ? window.location.pathname : "",
   source_label: classifyTrafficSource(a),
   gclid_present: Boolean(a.gclid),
   fbclid_present: Boolean(a.fbclid),
@@ -417,7 +418,10 @@ export default function LandingSignatureProjectsEN() {
       buildWhatsAppUrl({
         message:
           "Hello, I would like to discuss a project with Golf en Casa | Signature Projects.",
-        attribution,
+        attribution: {
+          ...attribution,
+          conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
+        },
         location: "signature_contact",
       }),
     [attribution]
@@ -440,7 +444,10 @@ export default function LandingSignatureProjectsEN() {
         body: JSON.stringify({
           ...form,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution,
+          attribution: {
+            ...attribution,
+            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
+          },
         }),
       });
 
@@ -496,7 +503,10 @@ export default function LandingSignatureProjectsEN() {
           leadType: "signature_technical_request",
           ...technicalForm,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution,
+          attribution: {
+            ...attribution,
+            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
+          },
         }),
       });
 

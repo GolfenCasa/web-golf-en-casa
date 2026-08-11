@@ -59,6 +59,7 @@ export default async function handler(request, response) {
       gclid: clean(body.attribution?.gclid, 300),
       fbclid: clean(body.attribution?.fbclid, 300),
       landingPage: clean(body.attribution?.landingPage, 500),
+      conversionPage: clean(body.attribution?.conversionPage, 500),
       referrer: clean(body.attribution?.referrer, 500),
       capturedAt: clean(body.attribution?.capturedAt, 80),
     },
@@ -94,6 +95,7 @@ export default async function handler(request, response) {
     ["Contenido", data.attribution.content || "No disponible"],
     ["Término", data.attribution.term || "No disponible"],
     ["Landing", data.attribution.landingPage || "/"],
+        ["Página de conversión", data.attribution.conversionPage || "No disponible"],
     ["Referrer", data.attribution.referrer || "No disponible"],
     ["GCLID", data.attribution.gclid || "No disponible"],
     ["FBCLID", data.attribution.fbclid || "No disponible"],
@@ -172,6 +174,12 @@ export default async function handler(request, response) {
         const notes = [
           data.space ? `Tipo de espacio: ${data.space}` : "",
           data.message ? `Mensaje: ${data.message}` : "",
+          data.attribution.landingPage
+            ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+            : "",
+          data.attribution.conversionPage
+            ? `Página conversión: ${data.attribution.conversionPage}`
+            : "",
         ]
           .filter(Boolean)
           .join(" | ");

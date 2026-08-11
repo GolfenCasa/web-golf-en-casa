@@ -201,6 +201,7 @@ const attributionEventData = (attribution) => ({
   traffic_content: attribution.content || '',
   traffic_term: attribution.term || '',
   landing_page: attribution.landingPage || '/',
+  conversion_page: typeof window !== "undefined" ? window.location.pathname : "",
   source_label: classifyTrafficSource(attribution),
   gclid_present: Boolean(attribution.gclid),
   fbclid_present: Boolean(attribution.fbclid),
@@ -460,7 +461,10 @@ export default function GolfSimulatorLanding() {
     () =>
       buildWhatsAppUrl({
         message: whatsappMessage,
-        attribution,
+        attribution: {
+          ...attribution,
+          conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
+        },
       }),
     [attribution]
   );
@@ -506,7 +510,10 @@ export default function GolfSimulatorLanding() {
         body: JSON.stringify({
           leadType: 'website_general_enquiry',
           ...form,
-          attribution,
+          attribution: {
+            ...attribution,
+            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
+          },
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || '',
         }),
       });

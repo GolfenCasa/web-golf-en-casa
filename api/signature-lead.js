@@ -82,6 +82,7 @@ export default async function handler(request, response) {
       gclid: clean(body.attribution?.gclid, 300),
       fbclid: clean(body.attribution?.fbclid, 300),
       landingPage: clean(body.attribution?.landingPage, 500),
+      conversionPage: clean(body.attribution?.conversionPage, 500),
       referrer: clean(body.attribution?.referrer, 500),
       capturedAt: clean(body.attribution?.capturedAt, 80),
     },
@@ -126,6 +127,7 @@ export default async function handler(request, response) {
         ["Contenido", data.attribution.content || "No disponible"],
         ["Término", data.attribution.term || "No disponible"],
         ["Landing", data.attribution.landingPage || "/signature"],
+        ["Página de conversión", data.attribution.conversionPage || "No disponible"],
         ["GCLID", data.attribution.gclid || "No disponible"],
         ["FBCLID", data.attribution.fbclid || "No disponible"],
       ]
@@ -145,6 +147,7 @@ export default async function handler(request, response) {
         ["Contenido", data.attribution.content || "No disponible"],
         ["Término", data.attribution.term || "No disponible"],
         ["Landing", data.attribution.landingPage || "/signature"],
+        ["Página de conversión", data.attribution.conversionPage || "No disponible"],
         ["GCLID", data.attribution.gclid || "No disponible"],
         ["FBCLID", data.attribution.fbclid || "No disponible"],
       ];
@@ -248,12 +251,24 @@ export default async function handler(request, response) {
                   data.company ? `Empresa / estudio: ${data.company}` : "",
                   data.profile ? `Perfil profesional: ${data.profile}` : "",
                   data.message ? `Información solicitada: ${data.message}` : "",
-                ].filter(Boolean).join("\n\n")
+                  data.attribution.landingPage
+                    ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+                    : "",
+                  data.attribution.conversionPage
+                    ? `Página conversión: ${data.attribution.conversionPage}`
+                    : "",
+                ].filter(Boolean).join(" | ")
               : [
                   data.profile ? `Perfil: ${data.profile}` : "",
                   data.stage ? `Estado del proyecto: ${data.stage}` : "",
                   data.message || "",
-                ].filter(Boolean).join("\n\n"),
+                  data.attribution.landingPage
+                    ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+                    : "",
+                  data.attribution.conversionPage
+                    ? `Página conversión: ${data.attribution.conversionPage}`
+                    : "",
+                ].filter(Boolean).join(" | "),
             attribution: data.attribution,
           }),
         });
