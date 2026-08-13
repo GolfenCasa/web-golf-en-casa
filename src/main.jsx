@@ -5,6 +5,7 @@ import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
 import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf.jsx";
 import LandingSimuladoresGolfAds2 from "./pages/LandingSimuladoresGolfAds2";
+import ABLandingRouter from "./pages/ABLandingRouter.jsx";
 
 const GolfSimulatorLanding = lazy(() => import("./App.jsx"));
 const LandingSignatureProjects = lazy(() => import("./pages/LandingSignatureProjects.jsx"));
@@ -42,6 +43,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route
             path="/estudio-simulador-golf"
             element={<LandingSimuladoresGolfAds2 />}
+          />
+          <Route
+            path="/simulador-golf"
+            element={<ABLandingRouter />}
           />
           <Route
   path="/signature"
