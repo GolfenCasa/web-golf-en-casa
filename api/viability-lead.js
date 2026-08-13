@@ -1,7 +1,7 @@
-const EMAIL_TO = process.env.LANDING_LEAD_TO || "info@golfencasa.net";
+const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
-  process.env.LANDING_LEAD_FROM ||
-  "Golf en Casa | Estudio de viabilidad <estudio@email.golfencasa.net>";
+  process.env.SIGNATURE_LEAD_FROM ||
+  "Golf en Casa | Estudio de viabilidad <signature@golfencasa.net>";
 
 const CRM_TIMEOUT_MS = 2500;
 
@@ -72,9 +72,9 @@ export default async function handler(request, response) {
       gclid: clean(body.attribution?.gclid, 300),
       fbclid: clean(body.attribution?.fbclid, 300),
       landingPage: clean(body.attribution?.landingPage, 500),
+      conversionPage: clean(body.attribution?.conversionPage, 500),
       referrer: clean(body.attribution?.referrer, 500),
       capturedAt: clean(body.attribution?.capturedAt, 80),
-      conversionPage: clean(body.attribution?.conversionPage, 500),
     },
   };
 
@@ -94,7 +94,7 @@ export default async function handler(request, response) {
     .filter(Boolean)
     .join(" / ") || "direct / none";
 
-  const subject = `Nuevo estudio de viabilidad — ${data.name} — ${data.city || "Sin ubicación"}`;
+  const subject = `[LANDING 2.0] Nuevo estudio de viabilidad — ${data.name} — ${data.city || "Sin ubicación"}`;
 
   const rows = [
     ["Nombre", data.name],
@@ -109,8 +109,8 @@ export default async function handler(request, response) {
     ["Campaña", data.attribution.campaign || "No disponible"],
     ["Contenido", data.attribution.content || "No disponible"],
     ["Término de búsqueda", data.attribution.term || "No disponible"],
-    ["Landing de captación", data.attribution.landingPage || "/estudio-simulador-golf"],
-    ["Página de conversión", data.attribution.conversionPage || "/estudio-simulador-golf"],
+    ["Landing", data.attribution.landingPage || "/instalacion-simuladores-golf"],
+        ["Página de conversión", data.attribution.conversionPage || "No disponible"],
     ["GCLID", data.attribution.gclid || "No disponible"],
     ["FBCLID", data.attribution.fbclid || "No disponible"],
   ];
@@ -210,7 +210,15 @@ export default async function handler(request, response) {
             budget: data.budget,
             dimensions: data.dimensions,
             sourceDeclared: data.sourceDeclared,
-            message: data.message,
+            message: [
+              data.message || "",
+              data.attribution.landingPage
+                ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+                : "",
+              data.attribution.conversionPage
+                ? `Página conversión: ${data.attribution.conversionPage}`
+                : "",
+            ].filter(Boolean).join(" | "),
             attribution: data.attribution,
           }),
         });
