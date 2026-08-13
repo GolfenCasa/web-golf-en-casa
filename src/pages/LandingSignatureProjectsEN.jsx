@@ -158,7 +158,7 @@ const attributionEventData = (a) => ({
   traffic_campaign: a.campaign || "",
   traffic_content: a.content || "",
   traffic_term: a.term || "",
-  landing_page: a.landingPage || "/signature",
+  landing_page: a.landingPage || "/en/signature",
   conversion_page: typeof window !== "undefined" ? window.location.pathname : "",
   source_label: classifyTrafficSource(a),
   gclid_present: Boolean(a.gclid),
@@ -170,7 +170,7 @@ const buildWhatsAppUrl = ({ message, attribution, location }) => {
     `Origen: ${classifyTrafficSource(attribution)}`,
     attribution.campaign ? `Campaign: ${attribution.campaign}` : "",
     attribution.term ? `Search: ${attribution.term}` : "",
-    `Page: ${attribution.landingPage || "/signature"}`,
+    `Page: ${attribution.landingPage || "/en/signature"}`,
     `Button: ${location}`,
   ].filter(Boolean);
 
@@ -457,7 +457,7 @@ export default function LandingSignatureProjectsEN() {
         throw new Error(result.error || "The project enquiry could not be sent.");
       }
 
-      // Solo contamos el lead cuando el servidor confirma que lo ha recibido.
+      // Count the lead only after the server confirms it has been received.
       pushDataLayer("signature_project_form_submit", "signature_form", {
         lead_type: "signature_project",
         client_profile: form.profile,
@@ -547,14 +547,14 @@ export default function LandingSignatureProjectsEN() {
           name="description"
           content="Golf en Casa | Signature Projects. Bespoke luxury golf simulator design and installation for private residences, villas, architecture studios and premium developments."
         />
-        <link rel="canonical" href="https://www.golfencasa.net/signature" />
+        <link rel="canonical" href="https://www.golfencasa.net/en/signature" />
         <meta property="og:title" content="Golf en Casa | Signature Projects" />
         <meta
           property="og:description"
           content="Bespoke golf simulator design and integration. Private golf simulators conceived around architecture, experience and space."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.golfencasa.net/signature" />
+        <meta property="og:url" content="https://www.golfencasa.net/en/signature" />
         <meta property="og:image" content="https://www.golfencasa.net/signature/hero-1280.webp" />
         <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
 
@@ -571,7 +571,7 @@ export default function LandingSignatureProjectsEN() {
             "@graph": [
               {
                 "@type": "Service",
-                "@id": "https://www.golfencasa.net/signature/#service",
+                "@id": "https://www.golfencasa.net/en/signature/#service",
                 name: "Golf en Casa | Signature Projects",
                 serviceType: "Bespoke Golf Simulator Design & Integration",
                 provider: {
@@ -903,7 +903,7 @@ export default function LandingSignatureProjectsEN() {
             <div>
               <SectionLabel>04 — For Professionals</SectionLabel>
               <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl">
-                El especialista en simuladores de golf
+                The golf simulator specialist
                 <br />on your project team.
               </h2>
             </div>
@@ -960,7 +960,7 @@ export default function LandingSignatureProjectsEN() {
           <SectionLabel dark>05 — Our Process</SectionLabel>
           <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl">
             From first sketch
-            <br />al primer golpe.
+            <br />to the first swing.
           </h2>
           <p className="mt-6 max-w-xl text-sm leading-7 text-white/55">
             A clear, coordinated process to ensure every detail of the space works
@@ -1021,7 +1021,7 @@ export default function LandingSignatureProjectsEN() {
               <h2 className="signature-serif mt-5 text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">
                 The best technology
                 <br />is the technology
-                <br /><span className="italic">no se hace notar.</span>
+                <br /><span className="italic">you don’t notice.</span>
               </h2>
             </div>
           </div>
@@ -1066,8 +1066,8 @@ export default function LandingSignatureProjectsEN() {
 
           <div className="mt-12 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {[
-              ["MADERA", "/signature/material-timber.webp"],
-              ["PIEDRA", "/signature/material-stone.webp"],
+              ["TIMBER", "/signature/material-timber.webp"],
+              ["STONE", "/signature/material-stone.webp"],
               ["TEXTILES", "/signature/material-textile.webp"],
               ["METAL", "/signature/material-metal.webp"],
             ].map(([label, src]) => (
@@ -1190,7 +1190,7 @@ export default function LandingSignatureProjectsEN() {
         <div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-24 lg:grid-cols-[0.68fr_1.32fr] lg:px-10 lg:py-28">
           <div>
             <SectionLabel dark>Frequently Asked Questions</SectionLabel>
-            <h2 className="signature-serif mt-5 text-5xl">Antes de empezar.</h2>
+            <h2 className="signature-serif mt-5 text-5xl">Before you begin.</h2>
           </div>
           <div>
             {faqs.map((item, index) => (
@@ -1372,7 +1372,7 @@ export default function LandingSignatureProjectsEN() {
               />
               <span>
                 I have read and accept the{" "}
-                <a href="/politica-privacidad" className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
+                <a href="/en/privacy-policy" className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
                   Privacy Policy
                 </a>.
               </span>
@@ -1431,7 +1431,7 @@ export default function LandingSignatureProjectsEN() {
                 </p>
                 <button type="button" onClick={() => setTechnicalOpen(false)}
                   className="mt-8 bg-[#0B0B0B] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F5F3EF]">
-                  Cerrar
+                  Close
                 </button>
               </div>
             ) : (
@@ -1491,7 +1491,7 @@ export default function LandingSignatureProjectsEN() {
                     <input type="checkbox" required className="mt-1 accent-[#0B0B0B]" />
                     <span>
                       I have read and accept the{" "}
-                      <a href="/politica-privacidad"
+                      <a href="/en/privacy-policy"
                         className="underline decoration-black/30 underline-offset-2 hover:text-[#9C7B4F]">
                         Privacy Policy
                       </a>.
@@ -1577,9 +1577,9 @@ export default function LandingSignatureProjectsEN() {
               ["Schedule a Conversation", CALENDLY_URL],
             ]} />
             <FooterColumn title="Legal" links={[
-              ["Privacy", "/politica-privacidad"],
-              ["Cookies", "/politica-cookies"],
-              ["Legal Notice", "/aviso-legal"],
+              ["Privacy", "/en/privacy-policy"],
+              ["Cookies", "/en/cookie-policy"],
+              ["Legal Notice", "/en/legal-notice"],
             ]} />
           </div>
           <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:justify-between">
