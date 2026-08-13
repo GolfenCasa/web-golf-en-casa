@@ -1,7 +1,9 @@
-const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
+const EMAIL_TO = process.env.LANDING_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
-  process.env.SIGNATURE_LEAD_FROM ||
-  "Golf en Casa Signature <signature@golfencasa.net>";
+  process.env.LANDING_LEAD_FROM ||
+  "Golf en Casa | Estudio de viabilidad <estudio@email.golfencasa.net>";
+
+const CRM_TIMEOUT_MS = 2500;
 
 const requiredFields = [
   "name", "email", "phone", "projectType", "budget", "dimensions", "sourceDeclared",
@@ -70,9 +72,9 @@ export default async function handler(request, response) {
       gclid: clean(body.attribution?.gclid, 300),
       fbclid: clean(body.attribution?.fbclid, 300),
       landingPage: clean(body.attribution?.landingPage, 500),
-      conversionPage: clean(body.attribution?.conversionPage, 500),
       referrer: clean(body.attribution?.referrer, 500),
       capturedAt: clean(body.attribution?.capturedAt, 80),
+      conversionPage: clean(body.attribution?.conversionPage, 500),
     },
   };
 
@@ -107,8 +109,8 @@ export default async function handler(request, response) {
     ["Campaña", data.attribution.campaign || "No disponible"],
     ["Contenido", data.attribution.content || "No disponible"],
     ["Término de búsqueda", data.attribution.term || "No disponible"],
-    ["Landing", data.attribution.landingPage || "/instalacion-simuladores-golf"],
-        ["Página de conversión", data.attribution.conversionPage || "No disponible"],
+    ["Landing de captación", data.attribution.landingPage || "/estudio-simulador-golf"],
+    ["Página de conversión", data.attribution.conversionPage || "/estudio-simulador-golf"],
     ["GCLID", data.attribution.gclid || "No disponible"],
     ["FBCLID", data.attribution.fbclid || "No disponible"],
   ];
@@ -188,12 +190,16 @@ export default async function handler(request, response) {
     let crmLeadId = null;
 
     if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      const crmController = new AbortController();
+      const crmTimeout = setTimeout(() => crmController.abort(), CRM_TIMEOUT_MS);
+
       try {
         const crmResponse = await fetch(process.env.CRM_WEBHOOK_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          signal: crmController.signal,
           body: JSON.stringify({
             secret: process.env.CRM_WEBHOOK_SECRET,
             name: data.name,
@@ -204,23 +210,7 @@ export default async function handler(request, response) {
             budget: data.budget,
             dimensions: data.dimensions,
             sourceDeclared: data.sourceDeclared,
-            message: [
-
-              data.message || "",
-
-              data.attribution.landingPage
-
-                ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
-
-                : "",
-
-              data.attribution.conversionPage
-
-                ? `Página conversión: ${data.attribution.conversionPage}`
-
-                : "",
-
-            ].filter(Boolean).join(" | "),
+            message: data.message,
             attribution: data.attribution,
           }),
         });
@@ -234,7 +224,13 @@ export default async function handler(request, response) {
           console.error("CRM webhook error", crmResponse.status, crmData);
         }
       } catch (crmError) {
-        console.error("CRM webhook request failed", crmError);
+        if (crmError?.name === "AbortError") {
+          console.error(`CRM webhook timeout after ${CRM_TIMEOUT_MS} ms`);
+        } else {
+          console.error("CRM webhook request failed", crmError);
+        }
+      } finally {
+        clearTimeout(crmTimeout);
       }
     } else {
       console.error("Missing CRM_WEBHOOK_URL or CRM_WEBHOOK_SECRET");
