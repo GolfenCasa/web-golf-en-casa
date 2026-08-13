@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
@@ -35,12 +35,233 @@ import {
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 
-const WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20he%20visto%20vuestro%20anuncio%20en%20Google%20y%20quiero%20saber%20si%20mi%20espacio%20es%20apto%20para%20montar%20un%20simulador%20de%20golf.%20Mis%20medidas%20aproximadas%20son:%20";
+const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
-const EMAIL = "info@golfencasa.net";
-const GOLF_STUDIO_WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20he%20visto%20la%20opci%C3%B3n%20Golf%20Studio%20y%20quiero%20estudiar%20la%20instalaci%C3%B3n%20de%20una%20caseta%20con%20simulador%20de%20golf%20en%20mi%20jard%C3%ADn.%20La%20parcela%20est%C3%A1%20en:%20";
+const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_attribution_v1";
+const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const LANDING_VERSION = "landing_2_clarity_v1";
+
+const EMPTY_ATTRIBUTION = {
+  source: "direct",
+  medium: "none",
+  campaign: "",
+  content: "",
+  term: "",
+  gclid: "",
+  fbclid: "",
+  landingPage: "",
+  referrer: "",
+  capturedAt: "",
+};
+
+const isInternalReferrer = (referrer) => {
+  if (!referrer) return false;
+  try {
+    const hostname = new URL(referrer).hostname.toLowerCase();
+    return (
+      hostname === "golfencasa.net" ||
+      hostname === "www.golfencasa.net" ||
+      hostname === "localhost" ||
+      hostname.endsWith(".vercel.app")
+    );
+  } catch {
+    return false;
+  }
+};
+
+const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
+  const sourceValue = (source || "").toLowerCase();
+  const mediumValue = (medium || "").toLowerCase();
+  const referrerValue = (referrer || "").toLowerCase();
+
+  if (
+    gclid ||
+    (sourceValue === "google" &&
+      ["cpc", "ppc", "paid", "paid_search"].includes(mediumValue))
+  ) {
+    return "Google Ads";
+  }
+
+  if (
+    fbclid ||
+    (["facebook", "instagram", "meta", "fb", "ig"].includes(sourceValue) &&
+      ["cpc", "paid", "paid_social", "social_paid"].includes(mediumValue))
+  ) {
+    return "Meta Ads";
+  }
+
+  if (
+    sourceValue === "youtube" ||
+    referrerValue.includes("youtube.com") ||
+    referrerValue.includes("youtu.be")
+  ) {
+    return "YouTube";
+  }
+
+  if (sourceValue === "google" || referrerValue.includes("google.")) {
+    return "Google orgánico";
+  }
+
+  if (sourceValue && sourceValue !== "direct") return sourceValue;
+  return "Acceso directo";
+};
+
+const readAttributionFromBrowser = () => {
+  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
+
+  const params = new URLSearchParams(window.location.search);
+  const rawReferrer = document.referrer || "";
+  const externalReferrer = isInternalReferrer(rawReferrer) ? "" : rawReferrer;
+
+  const detected = {
+    source: params.get("utm_source") || "",
+    medium: params.get("utm_medium") || "",
+    campaign: params.get("utm_campaign") || "",
+    content: params.get("utm_content") || "",
+    term: params.get("utm_term") || "",
+    gclid: params.get("gclid") || "",
+    fbclid: params.get("fbclid") || "",
+    landingPage: `${window.location.pathname}${window.location.search}`,
+    referrer: externalReferrer,
+    capturedAt: new Date().toISOString(),
+  };
+
+  if (!detected.source) {
+    if (detected.gclid) {
+      detected.source = "google";
+      detected.medium = "cpc";
+    } else if (detected.fbclid) {
+      detected.source = "meta";
+      detected.medium = "paid_social";
+    } else if (
+      externalReferrer.includes("youtube.com") ||
+      externalReferrer.includes("youtu.be")
+    ) {
+      detected.source = "youtube";
+      detected.medium = "referral";
+    } else if (externalReferrer.includes("google.")) {
+      detected.source = "google";
+      detected.medium = "organic";
+    } else if (
+      externalReferrer.includes("facebook.com") ||
+      externalReferrer.includes("instagram.com")
+    ) {
+      detected.source = "meta";
+      detected.medium = "referral";
+    } else if (externalReferrer) {
+      try {
+        detected.source = new URL(externalReferrer).hostname.replace(/^www\./, "");
+        detected.medium = "referral";
+      } catch {
+        detected.source = "referral";
+        detected.medium = "referral";
+      }
+    } else {
+      detected.source = "direct";
+      detected.medium = "none";
+    }
+  }
+
+  return detected;
+};
+
+const getStoredAttribution = () => {
+  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
+  try {
+    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
+  } catch {
+    return EMPTY_ATTRIBUTION;
+  }
+};
+
+const captureAttribution = () => {
+  const detected = readAttributionFromBrowser();
+  const stored = getStoredAttribution();
+
+  const storedCapturedAt = stored.capturedAt
+    ? new Date(stored.capturedAt).getTime()
+    : 0;
+  const storedIsFresh =
+    storedCapturedAt > 0 &&
+    Date.now() - storedCapturedAt <= ATTRIBUTION_TTL_MS;
+
+  const hasNewAcquisitionData = Boolean(
+    detected.gclid ||
+      detected.fbclid ||
+      detected.campaign ||
+      detected.source !== "direct"
+  );
+
+  const attribution =
+    storedIsFresh && !hasNewAcquisitionData ? stored : detected;
+
+  try {
+    window.localStorage.setItem(
+      ATTRIBUTION_STORAGE_KEY,
+      JSON.stringify(attribution)
+    );
+  } catch {
+    // El tracking continúa aunque localStorage esté bloqueado.
+  }
+
+  return attribution;
+};
+
+const getCurrentPage = () => {
+  if (typeof window === "undefined") return "/estudio-simulador-golf";
+  return `${window.location.pathname}${window.location.search}`;
+};
+
+const attributionEventData = (attribution) => ({
+  traffic_source: attribution.source || "direct",
+  traffic_medium: attribution.medium || "none",
+  traffic_campaign: attribution.campaign || "",
+  traffic_content: attribution.content || "",
+  traffic_term: attribution.term || "",
+  landing_page: attribution.landingPage || "/estudio-simulador-golf",
+  conversion_page: getCurrentPage(),
+  source_label: classifyTrafficSource(attribution),
+  gclid_present: Boolean(attribution.gclid),
+  fbclid_present: Boolean(attribution.fbclid),
+  landing_version: LANDING_VERSION,
+});
+
+const buildCalendlyUrl = (attribution) => {
+  try {
+    const url = new URL(CALENDLY_URL);
+    const params = {
+      utm_source: attribution.source,
+      utm_medium: attribution.medium,
+      utm_campaign: attribution.campaign,
+      utm_content: attribution.content,
+      utm_term: attribution.term,
+    };
+    Object.entries(params).forEach(([key, value]) => {
+      if (value && value !== "none") url.searchParams.set(key, value);
+    });
+    return url.toString();
+  } catch {
+    return CALENDLY_URL;
+  }
+};
+
+const getWhatsAppReference = (attribution) => {
+  const sourceLabel = classifyTrafficSource(attribution);
+  if (sourceLabel === "Google Ads") return "GADS";
+  if (sourceLabel === "Meta Ads") return "META";
+  if (sourceLabel === "YouTube") return "YT";
+  if (sourceLabel === "Google orgánico") return "GORG";
+  if (sourceLabel === "Acceso directo") return "DIRECT";
+  return "WEB";
+};
+
+const buildWhatsAppUrl = ({ message, attribution }) => {
+  const reference = getWhatsAppReference(attribution);
+  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
+    `Ref: ${reference}\n\n${message}`
+  )}`;
+};
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -108,7 +329,9 @@ const faqItems = [
 
 export default function LandingSimuladoresGolfAds2() {
   const [step, setStep] = useState(1);
-  const [submitted, setSubmitted] = useState(false);
+  const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
+  const [submitState, setSubmitState] = useState("idle");
+  const [submitError, setSubmitError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -117,9 +340,52 @@ export default function LandingSimuladoresGolfAds2() {
     projectType: "",
     dimensions: "",
     budget: "",
+    sourceDeclared: "",
     message: "",
     privacyConsent: false,
   });
+
+  useEffect(() => {
+    const captured = captureAttribution();
+    setAttribution(captured);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "landing_2_view",
+      ...attributionEventData(captured),
+    });
+  }, []);
+
+  const whatsappUrls = useMemo(
+    () => ({
+      floating_button: buildWhatsAppUrl({
+        message:
+          "Hola, quiero saber si mi espacio es apto para instalar un simulador de golf. Mis medidas aproximadas son:",
+        attribution,
+      }),
+      hero: buildWhatsAppUrl({
+        message:
+          "Hola, quiero comprobar si mi espacio es viable para instalar un simulador de golf.",
+        attribution,
+      }),
+      golf_studio_section: buildWhatsAppUrl({
+        message:
+          "Hola, he visto la opción Golf Studio y quiero estudiar la instalación de una caseta con simulador de golf en mi jardín. La parcela está en:",
+        attribution,
+      }),
+      form_success: buildWhatsAppUrl({
+        message:
+          "Hola, acabo de solicitar el estudio gratuito y quiero enviar fotos de mi espacio.",
+        attribution,
+      }),
+    }),
+    [attribution]
+  );
+
+  const calendlyUrl = useMemo(
+    () => buildCalendlyUrl(attribution),
+    [attribution]
+  );
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -135,51 +401,81 @@ export default function LandingSimuladoresGolfAds2() {
     window.dataLayer.push({
       event,
       location,
-      landing_version: "google_ads_search_v3",
-      traffic_source: "google_search_ads",
+      ...attributionEventData(attribution),
       ...extra,
+    });
+  };
+
+  const trackWhatsAppClick = (location) => {
+    pushDataLayer("click_whatsapp", location, {
+      contact_channel: "whatsapp",
+      whatsapp_reference: getWhatsAppReference(attribution),
     });
   };
 
   const moveToStepTwo = () => {
     if (!form.projectType || !form.dimensions || !form.budget) return;
     setStep(2);
-    pushDataLayer("form_step_completed", "hero_form", { form_step: 1 });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!form.privacyConsent) return;
-
-    pushDataLayer("generate_lead", "hero_form", {
-      form_name: "landing_google_search_v3_estudio_viabilidad",
-      lead_type: "formulario_estudio_viabilidad",
+    pushDataLayer("form_step_completed", "hero_form", {
+      form_step: 1,
       project_type: form.projectType,
       budget_range: form.budget,
     });
+  };
 
-    pushDataLayer("form_submit", "hero_form", {
-      form_name: "landing_google_search_v3_estudio_viabilidad",
-    });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!form.privacyConsent || submitState === "sending") return;
 
-    setSubmitted(true);
+    setSubmitState("sending");
+    setSubmitError("");
 
-    const body = encodeURIComponent(`Nombre: ${form.name}
-Email: ${form.email}
-Teléfono: ${form.phone}
-Ciudad / provincia: ${form.city}
-Tipo de instalación: ${form.projectType}
-Presupuesto aproximado: ${form.budget}
-Medidas del espacio: ${form.dimensions}
+    const conversionPage = getCurrentPage();
 
-Mensaje:
-${form.message || "Sin información adicional"}
+    try {
+      const response = await fetch("/api/viability-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          companyWebsite:
+            event.currentTarget.elements.companyWebsite?.value || "",
+          attribution: {
+            ...attribution,
+            conversionPage,
+          },
+        }),
+      });
 
-Origen: Landing Search Google Ads 3.0`);
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "No se pudo enviar la solicitud.");
+      }
 
-    window.setTimeout(() => {
-      window.location.href = `mailto:${EMAIL}?subject=Solicitud de estudio gratuito - Landing Search Google Ads&body=${body}`;
-    }, 700);
+      pushDataLayer("generate_lead", "hero_form", {
+        form_name: "landing_2_estudio_viabilidad",
+        lead_type: "formulario_estudio_viabilidad",
+        project_type: form.projectType,
+        budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+        crm_synced: Boolean(result.crmSynced),
+      });
+
+      pushDataLayer("form_submit", "hero_form", {
+        form_name: "landing_2_estudio_viabilidad",
+        project_type: form.projectType,
+        budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+      });
+
+      setSubmitState("success");
+    } catch (error) {
+      console.error(error);
+      setSubmitError(
+        "No hemos podido enviar tu solicitud. Inténtalo de nuevo o escríbenos por WhatsApp."
+      );
+      setSubmitState("error");
+    }
   };
 
   return (
@@ -198,25 +494,25 @@ Origen: Landing Search Google Ads 3.0`);
       </Helmet>
 
       <a
-        href={WHATSAPP_URL}
+        href={whatsappUrls.floating_button}
         target="_blank"
         rel="noreferrer"
         aria-label="Enviar medidas por WhatsApp"
-        onClick={() => pushDataLayer("click_whatsapp", "floating_button")}
+        onClick={() => trackWhatsAppClick("floating_button")}
         className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-600"
       >
         <FaWhatsapp />
       </a>
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-5 sm:py-3">
           <a href="/" className="flex items-center gap-3" aria-label="Golf en Casa">
             <img
               src="/logo-mail4.png"
               alt="Golf en Casa"
               width="56"
               height="56"
-              className="h-14 w-auto"
+              className="h-11 w-auto sm:h-14"
             />
             <div className="hidden sm:block">
               <p className="text-sm font-bold">Golf en Casa</p>
@@ -234,7 +530,7 @@ Origen: Landing Search Google Ads 3.0`);
               onClick={() => pushDataLayer("click_solicitar_presupuesto", "header")}
               className="rounded-xl bg-emerald-400 px-4 py-3 text-sm font-black text-zinc-950 transition hover:bg-emerald-300"
             >
-              Solicitar estudio
+              Comprobar espacio
             </a>
           </div>
         </div>
@@ -242,66 +538,63 @@ Origen: Landing Search Google Ads 3.0`);
 
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(16,185,129,0.24),transparent_32%),radial-gradient(circle_at_85%_80%,rgba(34,197,94,0.10),transparent_30%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
+        <div className="relative mx-auto grid max-w-7xl gap-7 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-12 lg:py-16">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm font-bold text-emerald-300">
+            <p className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-300 sm:px-4 sm:py-2 sm:text-sm">
               <Sparkles className="h-4 w-4" />
-              Simuladores de golf a medida en toda España
+              Estudio gratuito · Toda España
             </p>
 
-            <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
-              Diseño e instalación de simuladores de golf a medida en toda España
+            <h1 className="mt-4 text-[2.15rem] font-black leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+              Tu simulador de golf, diseñado e instalado a medida
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-300">
-              Estudiamos tus medidas y diseñamos una solución llave en mano con pantalla, proyector, monitor de lanzamiento, software, protección e instalación adaptados a tu espacio y presupuesto.
+            <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-300 sm:mt-5 sm:text-lg sm:leading-8">
+              Comprueba gratis si tu espacio es viable y qué rango de inversión necesita antes de comprar ningún componente.
             </p>
 
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              <HeroProof icon={<Ruler />} text="Revisión de medidas" />
-              <HeroProof icon={<ShieldCheck />} text="Diseño independiente" />
-              <HeroProof icon={<Wrench />} text="Instalación completa" />
+            <div className="mt-5 flex flex-wrap gap-2 text-xs font-bold text-zinc-200 sm:mt-6 sm:text-sm">
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Llave en mano</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Diseño independiente</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Sin compromiso</span>
             </div>
 
-            <div className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-300">
-                Primera orientación personalizada en menos de 48 h laborables
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <CompactBenefit text="Si el espacio es viable" />
-                <CompactBenefit text="Qué condicionantes debes resolver" />
-                <CompactBenefit text="Rango de inversión razonable" />
-                <CompactBenefit text="Tecnología que puede encajar" />
-              </div>
-            </div>
-
-            <div className="mt-7 flex flex-col gap-4 sm:flex-row">
+            <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
               <a
                 href="#estudio"
-                onClick={() => pushDataLayer("click_solicitar_presupuesto", "hero")}
-                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300"
+                onClick={() => pushDataLayer("click_solicitar_estudio", "hero")}
+                className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-5 py-4 font-black text-zinc-950 shadow-2xl shadow-emerald-400/20 transition hover:bg-emerald-300 sm:px-6"
               >
-                Solicitar estudio gratuito
+                Comprobar mi espacio gratis
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a
-                href={WHATSAPP_URL}
+                href={whatsappUrls.hero}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "hero")}
-                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold transition hover:bg-white/10"
+                onClick={() => trackWhatsAppClick("hero")}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-5 py-4 font-bold transition hover:bg-white/10 sm:px-6"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
-                Enviar fotos por WhatsApp
+                Prefiero WhatsApp
               </a>
             </div>
 
-            <p className="mt-4 text-sm text-zinc-400">
-              Sin compromiso · Instalación en toda España · Trato directo con el responsable del proyecto
+            <p className="mt-4 text-xs leading-5 text-zinc-400 sm:text-sm">
+              Primera orientación personalizada · Normalmente en menos de 48 h laborables
             </p>
+
+            <div className="mt-6 hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 sm:block lg:mt-8">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <CompactBenefit text="Viabilidad del espacio" />
+                <CompactBenefit text="Condicionantes a resolver" />
+                <CompactBenefit text="Rango de inversión" />
+                <CompactBenefit text="Tecnología que puede encajar" />
+              </div>
+            </div>
           </div>
 
-          <div id="estudio" className="scroll-mt-24">
+          <div id="estudio" className="scroll-mt-20">
             <LeadForm
               step={step}
               setStep={setStep}
@@ -309,7 +602,10 @@ Origen: Landing Search Google Ads 3.0`);
               handleChange={handleChange}
               moveToStepTwo={moveToStepTwo}
               handleSubmit={handleSubmit}
-              submitted={submitted}
+              submitState={submitState}
+              submitError={submitError}
+              whatsappSuccessUrl={whatsappUrls.form_success}
+              trackWhatsAppClick={trackWhatsAppClick}
             />
           </div>
         </div>
@@ -317,9 +613,9 @@ Origen: Landing Search Google Ads 3.0`);
 
       <section className="border-b border-white/10 bg-emerald-400 text-zinc-950">
         <div className="mx-auto grid max-w-7xl gap-6 px-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
+          <TrustNumber value="< 48 h" label="Primera orientación" />
           <TrustNumber value="Toda España" label="Cobertura de servicio" />
           <TrustNumber value="Llave en mano" label="Diseño e instalación" />
-          <TrustNumber value="A medida" label="Sin kits obligatorios" />
           <TrustNumber value="1 responsable" label="De principio a fin" />
         </div>
       </section>
@@ -425,10 +721,10 @@ Origen: Landing Search Google Ads 3.0`);
               </a>
 
               <a
-                href={GOLF_STUDIO_WHATSAPP_URL}
+                href={whatsappUrls.golf_studio_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "golf_studio_section")}
+                onClick={() => trackWhatsAppClick("golf_studio_section")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -703,10 +999,14 @@ Origen: Landing Search Google Ads 3.0`);
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a
-                href={CALENDLY_URL}
+                href={calendlyUrl}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_calendly", "personal")}
+                onClick={() =>
+                  pushDataLayer("calendly_click", "personal", {
+                    contact_channel: "calendly",
+                  })
+                }
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold transition hover:bg-white/10"
               >
                 <CalendarDays className="mr-2 h-5 w-5" />
@@ -793,34 +1093,27 @@ function LeadForm({
   handleChange,
   moveToStepTwo,
   handleSubmit,
-  submitted,
+  submitState,
+  submitError,
+  whatsappSuccessUrl,
+  trackWhatsAppClick,
 }) {
-  if (submitted) {
+  if (submitState === "success") {
     return (
       <div className="rounded-[2rem] border border-emerald-400/30 bg-zinc-900 p-7 shadow-2xl">
         <CircleCheckBig className="h-14 w-14 text-emerald-300" />
-        <h2 className="mt-5 text-3xl font-black">Solicitud preparada</h2>
+        <h2 className="mt-5 text-3xl font-black">Solicitud enviada</h2>
         <p className="mt-4 leading-7 text-zinc-300">
-          Se abrirá tu aplicación de correo con la información del estudio. Solo tendrás que pulsar enviar.
+          Hemos recibido tus datos correctamente. Revisaremos el espacio y te enviaremos una primera orientación personalizada.
         </p>
         <p className="mt-4 text-sm text-zinc-400">
           También puedes enviarnos fotos del espacio por WhatsApp para agilizar la valoración.
         </p>
         <a
-          href={WHATSAPP_URL}
+          href={whatsappSuccessUrl}
           target="_blank"
           rel="noreferrer"
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              window.dataLayer = window.dataLayer || [];
-              window.dataLayer.push({
-                event: "click_whatsapp",
-                location: "form_success",
-                landing_version: "google_ads_search_v3",
-                traffic_source: "google_search_ads",
-              });
-            }
-          }}
+          onClick={() => trackWhatsAppClick("form_success")}
           className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-black transition hover:bg-green-600"
         >
           <FaWhatsapp className="mr-2 text-xl" />
@@ -835,15 +1128,23 @@ function LeadForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-[2rem] border border-white/10 bg-zinc-900/95 p-6 shadow-2xl shadow-black/40 sm:p-7"
+      className="rounded-[1.5rem] border border-white/10 bg-zinc-900/95 p-5 shadow-2xl shadow-black/40 sm:rounded-[2rem] sm:p-7"
     >
+      <input
+        type="text"
+        name="companyWebsite"
+        tabIndex="-1"
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
       <div className="flex items-start justify-between gap-5">
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
             Estudio gratuito de viabilidad
           </p>
           <h2 className="mt-2 text-2xl font-black sm:text-3xl">
-            Cuéntanos cómo es tu espacio
+            Comprueba la viabilidad de tu espacio
           </h2>
         </div>
         <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-zinc-300">
@@ -885,7 +1186,7 @@ function LeadForm({
             value={form.dimensions}
             onChange={handleChange}
             required
-            placeholder="Ej.: 3,5 m ancho × 5 m fondo × 2,8 m alto"
+            placeholder="Ej.: 3,5 m ancho × 5 m fondo × 2,8 m alto · o escribe «Aún no las sé»"
             className="w-full rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
           />
 
@@ -941,6 +1242,27 @@ function LeadForm({
           </div>
 
           <div>
+            <FieldLabel htmlFor="sourceDeclared" text="¿Cómo nos has conocido?" />
+            <select
+              id="sourceDeclared"
+              name="sourceDeclared"
+              value={form.sourceDeclared}
+              onChange={handleChange}
+              required
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
+            >
+              <option value="">Selecciona una opción</option>
+              <option>Google</option>
+              <option>Instagram / Facebook</option>
+              <option>YouTube</option>
+              <option>Recomendación</option>
+              <option>Ya conocía Golf en Casa</option>
+              <option>Otro</option>
+              <option>No sabe / No recuerda</option>
+            </select>
+          </div>
+
+          <div>
             <FieldLabel htmlFor="message" text="Información adicional (opcional)" />
             <textarea id="message" name="message" value={form.message} onChange={handleChange} rows="3" placeholder="Cuéntanos cualquier duda o material que ya tengas" className="mt-2 w-full rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500" />
           </div>
@@ -966,12 +1288,22 @@ function LeadForm({
             </button>
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 transition hover:bg-emerald-300"
+              disabled={submitState === "sending"}
+              className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Solicitar estudio gratuito
-              <ArrowRight className="ml-2 h-5 w-5" />
+              {submitState === "sending" ? "Enviando..." : "Solicitar estudio gratuito"}
+              {submitState !== "sending" && <ArrowRight className="ml-2 h-5 w-5" />}
             </button>
           </div>
+        </div>
+      )}
+
+      {submitState === "error" && submitError && (
+        <div
+          role="alert"
+          className="mt-4 rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-100"
+        >
+          {submitError}
         </div>
       )}
 
