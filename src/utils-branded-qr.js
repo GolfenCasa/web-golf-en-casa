@@ -276,20 +276,44 @@ export function getPhysicalQrMetrics(url, options = {}) {
   };
 }
 
-function qrRectsSvg(qr, x0, y0, moduleMm, dark) {
-  const parts = [];
+function qrCompoundPathSvg(qr, x0, y0, moduleMm, dark) {
+  // Un único <path> SVG en lugar de cientos de <rect>.
+  // Cada tramo horizontal continuo de módulos negros se convierte en
+  // un subtrazado rectangular dentro del mismo elemento. Esto mantiene
+  // exactamente la geometría del QR, pero Bambu Studio lo importa como
+  // una sola pieza SVG en vez de crear una pieza por cada módulo.
+  const subpaths = [];
   const count = qr.modules.size;
+
   for (let row = 0; row < count; row += 1) {
-    for (let col = 0; col < count; col += 1) {
-      if (!qr.modules.get(row, col)) continue;
-      const x = x0 + col * moduleMm;
+    let col = 0;
+    while (col < count) {
+      if (!qr.modules.get(row, col)) {
+        col += 1;
+        continue;
+      }
+
+      const startCol = col;
+      while (col + 1 < count && qr.modules.get(row, col + 1)) col += 1;
+      const endCol = col;
+
+      const x = x0 + startCol * moduleMm;
       const y = y0 + row * moduleMm;
-      parts.push(
-        `<rect x="${x.toFixed(4)}" y="${y.toFixed(4)}" width="${moduleMm.toFixed(4)}" height="${moduleMm.toFixed(4)}"/>`
+      const width = (endCol - startCol + 1) * moduleMm;
+      const height = moduleMm;
+
+      const x2 = x + width;
+      const y2 = y + height;
+
+      subpaths.push(
+        `M${x.toFixed(4)} ${y.toFixed(4)}H${x2.toFixed(4)}V${y2.toFixed(4)}H${x.toFixed(4)}Z`
       );
+
+      col += 1;
     }
   }
-  return `<g fill="${esc(dark)}">${parts.join('')}</g>`;
+
+  return `<path fill="${esc(dark)}" fill-rule="nonzero" d="${subpaths.join('')}"/>`;
 }
 
 export function createPhysicalQrSvg(url, options = {}) {
@@ -302,8 +326,8 @@ export function createPhysicalQrSvg(url, options = {}) {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${metrics.diameterMm}mm" height="${metrics.diameterMm}mm" viewBox="0 0 ${metrics.diameterMm} ${metrics.diameterMm}">
   <title>QR físico para marcador 3D</title>
-  <desc>Módulo ${metrics.moduleMm.toFixed(3)} mm, corrección ${metrics.errorCorrectionLevel}, zona silenciosa ${quietMm.toFixed(3)} mm.</desc>
-  ${qrRectsSvg(qr, x0, y0, metrics.moduleMm, metrics.dark)}
+  <desc>Geometría QR compuesta en un único path SVG. Módulo ${metrics.moduleMm.toFixed(3)} mm, corrección ${metrics.errorCorrectionLevel}, zona silenciosa ${quietMm.toFixed(3)} mm.</desc>
+  ${qrCompoundPathSvg(qr, x0, y0, metrics.moduleMm, metrics.dark)}
 </svg>`;
 }
 
