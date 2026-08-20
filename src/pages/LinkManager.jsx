@@ -30,8 +30,6 @@ export default function LinkManager() {
   const [data, setData] = useState({ links: [], history: [] });
   const [form, setForm] = useState(emptyForm);
   const [showEditor, setShowEditor] = useState(false);
-  const [showCreateChoice, setShowCreateChoice] = useState(false);
-  const [pendingTokenAfterSave, setPendingTokenAfterSave] = useState(false);
   const [query, setQuery] = useState('');
   const [folder, setFolder] = useState('Todos');
   const [message, setMessage] = useState('');
@@ -78,27 +76,14 @@ export default function LinkManager() {
   }
 
   function openCreate() {
-    setShowCreateChoice(true);
-    setMessage('');
-  }
-
-  function openCreateCorporate() {
-    setPendingTokenAfterSave(false);
     setForm(emptyForm);
-    setShowCreateChoice(false);
-    setShowEditor(true);
-    setMessage('');
-  }
-
-  function openCreatePhysical() {
-    setPendingTokenAfterSave(true);
-    setForm({ ...emptyForm, name: 'Marcador / llavero QR 3D', folder: 'Marketing' });
-    setShowCreateChoice(false);
     setShowEditor(true);
     setMessage('');
   }
 
   function openEdit(link) {
+    setCreateMode('corporate');
+    setPendingTokenAfterSave(false);
     setForm({ ...link });
     setShowEditor(true);
     setMessage('');
@@ -117,18 +102,6 @@ export default function LinkManager() {
     setBusy(false);
     if (!res.ok) return setMessage(json.error || 'No se pudo guardar');
     setShowEditor(false);
-
-    if (pendingTokenAfterSave && !form.id) {
-      const createdLink = json.link || json;
-      const physicalLink = {
-        ...form,
-        ...createdLink,
-        publicUrl: createdLink.publicUrl || `https://go.golfencasa.net/${createdLink.slug || form.slug}`,
-      };
-      setPendingTokenAfterSave(false);
-      setTokenPreview(physicalLink);
-    }
-
     await loadData();
   }
 
@@ -255,10 +228,7 @@ export default function LinkManager() {
                 <div className="flex items-center gap-2"><QrCode size={19} className="text-emerald-400"/><h2 className="font-medium">Marcadores y llaveros 3D</h2></div>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Genera un QR técnico sin decoración, con módulos cuadrados y zona silenciosa de 4 módulos, preparado para importarlo como geometría en Bambu Studio. El logo se descarga por separado para la cara opuesta.</p>
               </div>
-              <div className="flex flex-col gap-2 sm:items-end">
-                <p className="rounded-xl border border-white/10 bg-[#071020] px-4 py-3 text-xs text-slate-400">40 mm · base 3,2 mm · relieve recomendado 0,4–0,6 mm</p>
-                <button type="button" onClick={openCreatePhysical} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-emerald-400"><Plus size={17}/>Crear marcador 3D</button>
-              </div>
+              <p className="rounded-xl border border-white/10 bg-[#071020] px-4 py-3 text-xs text-slate-400">40 mm · base 3,2 mm · relieve recomendado 0,4–0,6 mm</p>
             </div>
           </section>
 
@@ -269,40 +239,11 @@ export default function LinkManager() {
         </div>
       </main>
 
-      {showCreateChoice && <CreateChoice onClose={() => setShowCreateChoice(false)} onCorporate={openCreateCorporate} onPhysical={openCreatePhysical}/>}
-      {showEditor && <Editor form={form} setForm={setForm} onClose={() => { setShowEditor(false); setPendingTokenAfterSave(false); }} onSave={save} busy={busy} message={message}/>} 
+      {showEditor && <Editor form={form} setForm={setForm} onClose={() => setShowEditor(false)} onSave={save} busy={busy} message={message}/>} 
       {preview && <QrPreview preview={preview} busy={previewBusy} onClose={() => setPreview(null)} onDownload={downloadQr}/>} 
       {tokenPreview && <TokenDesigner link={tokenPreview} onClose={() => setTokenPreview(null)} />}
     </div>
   );
-}
-
-function CreateChoice({ onClose, onCorporate, onPhysical }) {
-  return <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/80 p-4 backdrop-blur-sm">
-    <div className="flex min-h-full items-center justify-center py-8">
-      <div className="w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#071020] text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
-          <div><p className="text-sm font-medium text-emerald-400">NUEVO ENLACE</p><h2 className="text-xl font-semibold">¿Qué quieres crear?</h2></div>
-          <button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10" aria-label="Cerrar"><X/></button>
-        </div>
-        <div className="grid gap-4 p-6 md:grid-cols-2">
-          <button type="button" onClick={onCorporate} className="rounded-2xl border border-white/10 bg-white/[0.025] p-6 text-left transition hover:border-emerald-400/50 hover:bg-emerald-400/[0.05]">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400"><QrCode/></div>
-            <h3 className="mt-5 text-lg font-semibold">QR corporativo</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">Para camisetas, cartelería, folletos, publicidad y soportes digitales. Incluye logo, marco y CTA corporativo.</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-400">Crear QR corporativo →</span>
-          </button>
-          <button type="button" onClick={onPhysical} className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] p-6 text-left transition hover:border-emerald-400/60 hover:bg-emerald-400/[0.09]">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400"><Settings/></div>
-            <h3 className="mt-5 text-lg font-semibold">Marcador / llavero 3D</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">Crea primero el enlace dinámico y, al guardarlo, abre automáticamente el diseñador físico para Bambu Studio.</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-400">Diseñar pieza 3D →</span>
-          </button>
-        </div>
-        <p className="px-6 pb-6 text-xs leading-5 text-slate-500">Ambos modos utilizan go.golfencasa.net. Puedes cambiar el destino posteriormente sin regenerar ni reimprimir el QR.</p>
-      </div>
-    </div>
-  </div>;
 }
 
 function Sidebar({ open, onClose }) {
@@ -325,51 +266,170 @@ function Centered({ children }) { return <div className="flex min-h-screen items
 function Metric({ label, value, icon }) { return <div className="rounded-2xl border border-white/10 bg-[#0a1122] p-6"><div className="flex items-center justify-between text-slate-400"><span>{label}</span><span className="text-emerald-400 [&_svg]:h-7 [&_svg]:w-7">{icon}</span></div><p className="mt-4 text-4xl font-semibold">{value}</p></div>; }
 function IconButton({ children, title, onClick, danger }) { return <button title={title} onClick={onClick} className={`rounded-lg p-2 hover:bg-white/10 [&_svg]:h-4 [&_svg]:w-4 ${danger ? 'text-red-400' : 'text-slate-300'}`}>{children}</button>; }
 
-function Editor({ form, setForm, onClose, onSave, busy, message }) {
+function Editor({ mode = 'corporate', form, setForm, onClose, onSave, busy, message }) {
+  const physicalMode = mode === 'physical';
   const [qrData, setQrData] = useState('');
+  const [physicalPreview, setPhysicalPreview] = useState(null);
   const [qrBusy, setQrBusy] = useState(false);
+  const [diameterMm, setDiameterMm] = useState(40);
+  const [qrAreaMm, setQrAreaMm] = useState(30);
+  const [keychainHoleMm, setKeychainHoleMm] = useState(0);
+  const [errorCorrectionLevel, setErrorCorrectionLevel] = useState('Q');
+
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
   const publicUrl = `https://go.golfencasa.net/${form.slug || 'alias'}`;
+  const tokenOptions = useMemo(
+    () => ({ diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel }),
+    [diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel]
+  );
+  const metrics = useMemo(
+    () => physicalMode ? getPhysicalQrMetrics(publicUrl, tokenOptions) : null,
+    [physicalMode, publicUrl, tokenOptions]
+  );
 
   useEffect(() => {
     let cancelled = false;
     const timer = window.setTimeout(async () => {
       setQrBusy(true);
       try {
-        const dataUrl = await createBrandedQrPng(publicUrl);
-        if (!cancelled) setQrData(dataUrl);
+        if (physicalMode) {
+          const preview = await createPhysicalTokenPreview(publicUrl, tokenOptions);
+          if (!cancelled) {
+            setPhysicalPreview(preview);
+            setQrData('');
+          }
+        } else {
+          const dataUrl = await createBrandedQrPng(publicUrl);
+          if (!cancelled) {
+            setQrData(dataUrl);
+            setPhysicalPreview(null);
+          }
+        }
       } finally {
         if (!cancelled) setQrBusy(false);
       }
     }, 180);
-    return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [publicUrl]);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [physicalMode, publicUrl, tokenOptions]);
+
+  const ratingClass = !metrics ? '' :
+    metrics.ratingKey === 'excellent' ? 'text-emerald-300' :
+    metrics.ratingKey === 'good' ? 'text-cyan-300' :
+    metrics.ratingKey === 'test' ? 'text-amber-300' : 'text-red-300';
 
   return <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/80 p-4 backdrop-blur-sm">
     <div className="flex min-h-full items-center justify-center py-6">
-      <form onSubmit={onSave} className="w-full max-w-[1020px] overflow-hidden rounded-3xl border border-white/10 bg-[#0a1324] text-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5"><h2 className="text-xl font-semibold">{form.id ? 'Editar enlace' : 'Nuevo enlace'}</h2><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div>
-        <div className="grid gap-7 p-6 lg:grid-cols-[1fr_380px]">
+      <form onSubmit={onSave} className={`w-full overflow-hidden rounded-3xl border border-white/10 bg-[#0a1324] text-white shadow-2xl ${physicalMode ? 'max-w-[1180px]' : 'max-w-[1020px]'}`}>
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
           <div>
-            <Field label="Nombre (opcional)"><input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="QR camiseta corporativa"/></Field>
-            <Field label="Alias *"><input required value={form.slug} onChange={(e) => update('slug', slugify(e.target.value))} placeholder="camiseta"/></Field>
+            {physicalMode && <p className="text-xs font-semibold tracking-[0.18em] text-emerald-400">IMPRESIÓN 3D</p>}
+            <h2 className="text-xl font-semibold">{form.id ? 'Editar enlace' : physicalMode ? 'Nuevo marcador / llavero QR 3D' : 'Nuevo enlace'}</h2>
+          </div>
+          <button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button>
+        </div>
+
+        <div className={`grid gap-7 p-6 ${physicalMode ? 'lg:grid-cols-[1fr_440px]' : 'lg:grid-cols-[1fr_380px]'}`}>
+          <div>
+            <Field label="Nombre (opcional)"><input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder={physicalMode ? 'Marcador Golf en Casa' : 'QR camiseta corporativa'}/></Field>
+            <Field label="Alias *"><input required value={form.slug} onChange={(e) => update('slug', slugify(e.target.value))} placeholder={physicalMode ? 'marcador' : 'camiseta'}/></Field>
             <p className="-mt-1 break-all text-sm text-emerald-400">{publicUrl}</p>
             <Field label="Carpeta"><select value={form.folder} onChange={(e) => update('folder', e.target.value)}><option>Marketing</option><option>Clientes</option><option>Eventos</option><option>Redes sociales</option><option>Otros</option></select></Field>
             <Field label="URL de destino *"><input required type="url" value={form.destination} onChange={(e) => update('destination', e.target.value)}/></Field>
             <Field label="Descripción (opcional)"><textarea rows="4" value={form.notes} onChange={(e) => update('notes', e.target.value)} placeholder="Describe para qué se utilizará este QR."/></Field>
+
+            {physicalMode && <>
+              <div className="mt-6 border-t border-white/10 pt-6">
+                <p className="mb-4 font-medium">Configuración física</p>
+
+                <label className="text-sm text-slate-300">Diámetro de la ficha</label>
+                <div className="mt-2 flex gap-2">
+                  {[38, 40, 42].map((value) => <button key={value} type="button" onClick={() => { setDiameterMm(value); setQrAreaMm((current) => Math.min(current, value - 7)); }} className={`flex-1 rounded-xl border px-3 py-2.5 text-sm ${diameterMm === value ? 'border-emerald-400 bg-emerald-400/10 text-emerald-300' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}>{value} mm</button>)}
+                </div>
+
+                <label className="mt-5 block text-sm text-slate-300">Área total del QR
+                  <input type="range" min="25" max={Math.max(25, diameterMm - 7)} step="0.5" value={qrAreaMm} onChange={(e) => setQrAreaMm(Number(e.target.value))} className="mt-3 w-full accent-emerald-500"/>
+                  <div className="mt-1 flex justify-between text-xs text-slate-500"><span>25 mm</span><b className="text-slate-300">{qrAreaMm.toFixed(1)} mm</b><span>{diameterMm - 7} mm</span></div>
+                </label>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <label className="text-sm text-slate-300">Formato
+                    <select value={keychainHoleMm} onChange={(e) => setKeychainHoleMm(Number(e.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d172b] px-3 py-3 outline-none focus:border-emerald-500">
+                      <option value={0}>Marcador · sin agujero</option>
+                      <option value={4}>Llavero · agujero 4 mm</option>
+                      <option value={5}>Llavero · agujero 5 mm</option>
+                    </select>
+                  </label>
+
+                  <div>
+                    <label className="text-sm text-slate-300">Corrección</label>
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      {['M', 'Q', 'H'].map((level) => <button key={level} type="button" onClick={() => setErrorCorrectionLevel(level)} className={`rounded-xl border px-3 py-3 text-sm ${errorCorrectionLevel === level ? 'border-emerald-400 bg-emerald-400/10 text-emerald-300' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}>{level}</button>)}
+                    </div>
+                  </div>
+                </div>
+
+                {metrics && <div className="mt-5 rounded-2xl border border-white/10 bg-[#08101f] p-4 text-sm">
+                  <div className="flex justify-between"><span className="text-slate-400">Matriz QR</span><b>{metrics.count}×{metrics.count}</b></div>
+                  <div className="mt-2 flex justify-between"><span className="text-slate-400">Módulo físico</span><b>{metrics.moduleMm.toFixed(3)} mm</b></div>
+                  <div className="mt-2 flex justify-between"><span className="text-slate-400">Quiet zone</span><b>4 módulos</b></div>
+                  <p className={`mt-3 font-medium ${ratingClass}`}>{metrics.rating}</p>
+                </div>}
+              </div>
+            </>}
+
             <label className="mt-6 flex items-center gap-3"><button type="button" onClick={() => update('active', !form.active)} className={`relative h-7 w-12 rounded-full transition ${form.active ? 'bg-emerald-500' : 'bg-slate-700'}`}><span className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${form.active ? 'left-6' : 'left-1'}`}/></button><span>Activo</span></label>
             <p className="mt-5 text-xs leading-5 text-slate-500">Puedes cambiar el destino del enlace en cualquier momento. El QR seguirá funcionando.</p>
           </div>
+
           <div>
-            <p className="mb-3 font-medium">Vista previa del QR</p>
-            <div className="rounded-2xl bg-white p-2">{qrBusy || !qrData ? <div className="flex aspect-square items-center justify-center text-slate-600">Generando vista previa…</div> : <img src={qrData} alt="Vista previa del QR corporativo" className="h-auto w-full rounded-xl"/>}</div>
-            <div className="mt-4 rounded-xl border border-white/10 bg-[#08101f] p-4 text-sm text-slate-400">
-              {['Corrección de errores: Nivel H (30%)', 'Formato: PNG (1600×1600 px) y SVG vectorial', 'Color: Verde Golf en Casa', 'Logo: Centro integrado', 'Marco y franja inferior incluidos'].map((item) => <p key={item} className="mb-2 flex items-start gap-2 last:mb-0"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>{item}</p>)}
-            </div>
+            {!physicalMode ? <>
+              <p className="mb-3 font-medium">Vista previa del QR</p>
+              <div className="rounded-2xl bg-white p-2">{qrBusy || !qrData ? <div className="flex aspect-square items-center justify-center text-slate-600">Generando vista previa…</div> : <img src={qrData} alt="Vista previa del QR corporativo" className="h-auto w-full rounded-xl"/>}</div>
+              <div className="mt-4 rounded-xl border border-white/10 bg-[#08101f] p-4 text-sm text-slate-400">
+                {['Corrección de errores: Nivel H (30%)', 'Formato: PNG (1600×1600 px) y SVG vectorial', 'Color: Verde Golf en Casa', 'Logo: Centro integrado', 'Marco y franja inferior incluidos'].map((item) => <p key={item} className="mb-2 flex items-start gap-2 last:mb-0"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>{item}</p>)}
+              </div>
+            </> : <>
+              <p className="mb-3 font-medium">Vista previa de la pieza</p>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                <div>
+                  <p className="mb-2 text-sm text-slate-400">Cara QR</p>
+                  <div className="flex aspect-square items-center justify-center rounded-2xl bg-white p-6">
+                    {qrBusy || !physicalPreview ? <p className="text-slate-600">Generando…</p> :
+                      <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white">
+                        <img src={physicalPreview.qrDataUrl} alt="QR técnico para impresión 3D" className="absolute inset-0 h-full w-full"/>
+                        {keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}
+                      </div>}
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-2 text-sm text-slate-400">Cara logo</p>
+                  <div className="flex aspect-square items-center justify-center rounded-2xl bg-white p-6">
+                    {qrBusy || !physicalPreview ? <p className="text-slate-600">Generando…</p> :
+                      <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white">
+                        <img src={physicalPreview.logoDataUrl} alt="Logo para la cara opuesta" className="absolute inset-0 h-full w-full p-[8%]"/>
+                        {keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}
+                      </div>}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 rounded-xl border border-emerald-400/15 bg-emerald-400/[0.06] p-4 text-sm text-slate-400">
+                <p className="flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>QR sin logo, texto ni marco.</p>
+                <p className="mt-2 flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>Módulos cuadrados y quiet zone de 4 módulos.</p>
+                <p className="mt-2 flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>Tras crear el enlace se abrirá el diseñador final y podrás descargar Base, QR y Logo en SVG.</p>
+              </div>
+            </>}
           </div>
         </div>
+
         {message && <p className="px-6 pb-2 text-sm text-red-300">{message}</p>}
-        <div className="flex justify-end gap-3 border-t border-white/10 px-6 py-5"><button type="button" onClick={onClose} className="rounded-xl border border-white/15 px-5 py-2.5">Cancelar</button><button disabled={busy} className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 font-semibold text-slate-950 disabled:opacity-60"><Check size={18}/>{busy ? 'Guardando…' : form.id ? 'Guardar cambios' : 'Crear enlace'}</button></div>
+        <div className="flex justify-end gap-3 border-t border-white/10 px-6 py-5">
+          <button type="button" onClick={onClose} className="rounded-xl border border-white/15 px-5 py-2.5">Cancelar</button>
+          <button disabled={busy} className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 font-semibold text-slate-950 disabled:opacity-60"><Check size={18}/>{busy ? 'Guardando…' : form.id ? 'Guardar cambios' : physicalMode ? 'Crear enlace y diseñar pieza' : 'Crear enlace'}</button>
+        </div>
       </form>
     </div>
   </div>;
