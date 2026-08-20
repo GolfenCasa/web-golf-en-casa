@@ -206,3 +206,167 @@ export async function createBrandedQrSvg(url, { logoUrl = '/brand/logo-qr.png' }
   <text x="225" y="${CTA_Y + 108}" fill="#fff" font-family="Arial, sans-serif" font-size="28" font-weight="600">CÓMO MONTAR TU SIMULADOR DE GOLF EN CASA</text>
 </svg>`;
 }
+
+// -----------------------------------------------------------------------------
+// QR FÍSICO PARA MARCADOR / LLAVERO 3D
+// -----------------------------------------------------------------------------
+
+const TOKEN_DEFAULTS = {
+  diameterMm: 40,
+  qrAreaMm: 30,
+  keychainHoleMm: 0,
+  errorCorrectionLevel: 'Q',
+  dark: '#041914',
+};
+
+function clampNumber(value, min, max, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+}
+
+function normalizeTokenOptions(options = {}) {
+  const diameterMm = clampNumber(options.diameterMm, 32, 50, TOKEN_DEFAULTS.diameterMm);
+  const maxQr = Math.max(20, diameterMm - 7);
+  const qrAreaMm = clampNumber(options.qrAreaMm, 20, maxQr, Math.min(TOKEN_DEFAULTS.qrAreaMm, maxQr));
+  const keychainHoleMm = clampNumber(options.keychainHoleMm, 0, 6, TOKEN_DEFAULTS.keychainHoleMm);
+  const errorCorrectionLevel = ['M', 'Q', 'H'].includes(options.errorCorrectionLevel)
+    ? options.errorCorrectionLevel
+    : TOKEN_DEFAULTS.errorCorrectionLevel;
+
+  return {
+    diameterMm,
+    qrAreaMm,
+    keychainHoleMm,
+    errorCorrectionLevel,
+    dark: options.dark || TOKEN_DEFAULTS.dark,
+  };
+}
+
+export function getPhysicalQrMetrics(url, options = {}) {
+  const normalized = normalizeTokenOptions(options);
+  const qr = QRCode.create(url, { errorCorrectionLevel: normalized.errorCorrectionLevel });
+  const count = qr.modules.size;
+  const quietModules = 4;
+  const totalModules = count + quietModules * 2;
+  const moduleMm = normalized.qrAreaMm / totalModules;
+
+  let rating = 'Excelente';
+  let ratingKey = 'excellent';
+  if (moduleMm < 0.55) {
+    rating = 'Arriesgado: aumenta el área QR';
+    ratingKey = 'risky';
+  } else if (moduleMm < 0.65) {
+    rating = 'Correcto: imprime una prueba';
+    ratingKey = 'test';
+  } else if (moduleMm < 0.75) {
+    rating = 'Bueno';
+    ratingKey = 'good';
+  }
+
+  return {
+    ...normalized,
+    count,
+    quietModules,
+    totalModules,
+    moduleMm,
+    rating,
+    ratingKey,
+  };
+}
+
+function qrRectsSvg(qr, x0, y0, moduleMm, dark) {
+  const parts = [];
+  const count = qr.modules.size;
+  for (let row = 0; row < count; row += 1) {
+    for (let col = 0; col < count; col += 1) {
+      if (!qr.modules.get(row, col)) continue;
+      const x = x0 + col * moduleMm;
+      const y = y0 + row * moduleMm;
+      parts.push(
+        `<rect x="${x.toFixed(4)}" y="${y.toFixed(4)}" width="${moduleMm.toFixed(4)}" height="${moduleMm.toFixed(4)}"/>`
+      );
+    }
+  }
+  return `<g fill="${esc(dark)}">${parts.join('')}</g>`;
+}
+
+export function createPhysicalQrSvg(url, options = {}) {
+  const metrics = getPhysicalQrMetrics(url, options);
+  const qr = QRCode.create(url, { errorCorrectionLevel: metrics.errorCorrectionLevel });
+  const quietMm = metrics.quietModules * metrics.moduleMm;
+  const qrMatrixMm = metrics.count * metrics.moduleMm;
+  const x0 = (metrics.diameterMm - qrMatrixMm) / 2;
+  const y0 = (metrics.diameterMm - qrMatrixMm) / 2;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${metrics.diameterMm}mm" height="${metrics.diameterMm}mm" viewBox="0 0 ${metrics.diameterMm} ${metrics.diameterMm}">
+  <title>QR físico para marcador 3D</title>
+  <desc>Módulo ${metrics.moduleMm.toFixed(3)} mm, corrección ${metrics.errorCorrectionLevel}, zona silenciosa ${quietMm.toFixed(3)} mm.</desc>
+  ${qrRectsSvg(qr, x0, y0, metrics.moduleMm, metrics.dark)}
+</svg>`;
+}
+
+export function createTokenBaseSvg(options = {}) {
+  const { diameterMm, keychainHoleMm } = normalizeTokenOptions(options);
+  const r = diameterMm / 2;
+  const holeR = keychainHoleMm / 2;
+  const holeCx = r;
+  const holeCy = keychainHoleMm > 0 ? 3.7 + holeR : 0;
+
+  let geometry = `<circle cx="${r}" cy="${r}" r="${r}"/>`;
+  if (keychainHoleMm > 0) {
+    geometry = `<path fill-rule="evenodd" d="M ${r},0 A ${r},${r} 0 1 1 ${r},${diameterMm} A ${r},${r} 0 1 1 ${r},0 Z M ${holeCx},${holeCy - holeR} A ${holeR},${holeR} 0 1 0 ${holeCx},${holeCy + holeR} A ${holeR},${holeR} 0 1 0 ${holeCx},${holeCy - holeR} Z"/>`;
+  }
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${diameterMm}mm" height="${diameterMm}mm" viewBox="0 0 ${diameterMm} ${diameterMm}">
+  <title>Perfil base marcador 3D</title>
+  <g fill="#111">${geometry}</g>
+</svg>`;
+}
+
+function svgDataUrl(svg) {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+async function fetchSvgMarkup(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`No se pudo cargar el SVG del logo (${response.status})`);
+  return response.text();
+}
+
+function extractInlineSvg(markup) {
+  const viewBoxMatch = markup.match(/viewBox=["']([^"']+)["']/i);
+  const bodyMatch = markup.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+  if (!viewBoxMatch || !bodyMatch) throw new Error('SVG de logo no válido');
+  return { viewBox: viewBoxMatch[1], body: bodyMatch[1] };
+}
+
+export async function createTokenLogoSvg(options = {}) {
+  const normalized = normalizeTokenOptions(options);
+  const logoUrl = options.logoUrl || '/brand/logo-token.svg';
+  const markup = await fetchSvgMarkup(logoUrl);
+  const { viewBox, body } = extractInlineSvg(markup);
+  const logoSizeMm = Math.min(normalized.diameterMm * 0.78, normalized.diameterMm - 7);
+  const x = (normalized.diameterMm - logoSizeMm) / 2;
+  const y = (normalized.diameterMm - logoSizeMm) / 2 + (normalized.keychainHoleMm > 0 ? 1.2 : 0);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
+  <title>Logo Golf en Casa para marcador 3D</title>
+  <svg x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
+    ${body}
+  </svg>
+</svg>`;
+}
+
+export async function createPhysicalTokenPreview(url, options = {}) {
+  const qrSvg = createPhysicalQrSvg(url, options);
+  const logoSvg = await createTokenLogoSvg(options);
+  return {
+    qrSvg,
+    logoSvg,
+    qrDataUrl: svgDataUrl(qrSvg),
+    logoDataUrl: svgDataUrl(logoSvg),
+    metrics: getPhysicalQrMetrics(url, options),
+  };
+}
+

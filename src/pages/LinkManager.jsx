@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { createBrandedQrPng, createBrandedQrSvg } from '../utils-branded-qr.js';
+import {
+  createBrandedQrPng,
+  createBrandedQrSvg,
+  createPhysicalQrSvg,
+  createPhysicalTokenPreview,
+  createTokenBaseSvg,
+  createTokenLogoSvg,
+  getPhysicalQrMetrics,
+} from '../utils-branded-qr.js';
 import {
   Activity, BarChart3, Check, CircleHelp, Copy, Download, Edit3, Eye, FolderOpen,
   Gauge, History, Home, Link2, LogOut, Menu, Plus, QrCode, Search, Settings,
@@ -28,6 +36,7 @@ export default function LinkManager() {
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState(null);
   const [previewBusy, setPreviewBusy] = useState(false);
+  const [tokenPreview, setTokenPreview] = useState(null);
   const [mobileNav, setMobileNav] = useState(false);
 
   useEffect(() => { checkAuth(); }, []);
@@ -200,7 +209,7 @@ export default function LinkManager() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[960px] text-left">
                 <thead className="border-b border-white/10 text-sm text-slate-400"><tr><th className="p-5">Enlace</th><th className="p-5">Destino</th><th className="p-5">Carpeta</th><th className="p-5">Clics</th><th className="p-5">Estado</th><th className="p-5 text-right">Acciones</th></tr></thead>
-                <tbody>{filtered.map((link) => <tr key={link.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.018]"><td className="p-5"><p className="font-medium">{link.name}</p><button onClick={() => copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-5"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-5"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-5 font-medium">{link.clicks || 0}</td><td className="p-5"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'}`}>{link.active ? 'Activo' : 'Pausado'}</span></td><td className="p-5"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={() => previewQr(link)}><Eye/></IconButton><IconButton title="Copiar enlace" onClick={() => copy(link.publicUrl)}><Copy/></IconButton><IconButton title="Descargar PNG" onClick={() => downloadQr(link, 'png')}><Download/></IconButton><IconButton title="Descargar SVG" onClick={() => downloadQr(link, 'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={() => openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={() => remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody>
+                <tbody>{filtered.map((link) => <tr key={link.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.018]"><td className="p-5"><p className="font-medium">{link.name}</p><button onClick={() => copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-5"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-5"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-5 font-medium">{link.clicks || 0}</td><td className="p-5"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'}`}>{link.active ? 'Activo' : 'Pausado'}</span></td><td className="p-5"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={() => previewQr(link)}><Eye/></IconButton><IconButton title="Marcador / llavero 3D" onClick={() => setTokenPreview(link)}><Settings/></IconButton><IconButton title="Copiar enlace" onClick={() => copy(link.publicUrl)}><Copy/></IconButton><IconButton title="Descargar PNG" onClick={() => downloadQr(link, 'png')}><Download/></IconButton><IconButton title="Descargar SVG" onClick={() => downloadQr(link, 'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={() => openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={() => remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody>
               </table>
             </div>
             {!filtered.length && <div className="p-14 text-center text-slate-400">No hay enlaces que coincidan.</div>}
@@ -209,6 +218,16 @@ export default function LinkManager() {
           <section className="rounded-2xl border border-white/10 bg-[#0a1122] p-6">
             <div className="mb-4 flex items-center gap-2"><History size={19} className="text-emerald-400"/><h2 className="font-medium">Actividad reciente</h2></div>
             <div className="space-y-2 text-sm">{data.history.slice(0, 8).map((h) => <div key={h.id} className="flex justify-between gap-4 border-b border-white/5 py-2 last:border-0"><span><b>{h.name}</b> · {h.action === 'created' ? 'creado' : h.action === 'updated' ? 'actualizado' : 'eliminado'}</span><time className="text-slate-500">{new Date(h.at).toLocaleString('es-ES')}</time></div>)}{!data.history.length && <p className="text-slate-500">Todavía no hay actividad.</p>}</div>
+          </section>
+
+          <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <div className="flex items-center gap-2"><QrCode size={19} className="text-emerald-400"/><h2 className="font-medium">Marcadores y llaveros 3D</h2></div>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Genera un QR técnico sin decoración, con módulos cuadrados y zona silenciosa de 4 módulos, preparado para importarlo como geometría en Bambu Studio. El logo se descarga por separado para la cara opuesta.</p>
+              </div>
+              <p className="rounded-xl border border-white/10 bg-[#071020] px-4 py-3 text-xs text-slate-400">40 mm · base 3,2 mm · relieve recomendado 0,4–0,6 mm</p>
+            </div>
           </section>
 
           <section className="rounded-2xl border border-white/10 bg-[#0a1122] p-6">
@@ -220,6 +239,7 @@ export default function LinkManager() {
 
       {showEditor && <Editor form={form} setForm={setForm} onClose={() => setShowEditor(false)} onSave={save} busy={busy} message={message}/>} 
       {preview && <QrPreview preview={preview} busy={previewBusy} onClose={() => setPreview(null)} onDownload={downloadQr}/>} 
+      {tokenPreview && <TokenDesigner link={tokenPreview} onClose={() => setTokenPreview(null)} />}
     </div>
   );
 }
@@ -300,6 +320,127 @@ function Field({ label, children }) {
 
 function QrPreview({ preview, busy, onClose, onDownload }) {
   return <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4"><div className="max-h-[94vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-[#071020] p-5 text-white"><div className="flex items-center justify-between gap-3"><div><p className="text-sm text-emerald-400">QR CORPORATIVO</p><h2 className="text-xl font-semibold">{preview.link.name}</h2></div><button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button></div><div className="mt-5 flex min-h-[360px] items-center justify-center rounded-2xl bg-white p-3">{busy || !preview.dataUrl ? <p className="text-slate-700">Generando vista previa…</p> : <img src={preview.dataUrl} alt={`QR dinámico ${preview.link.name}`} className="h-auto w-full max-w-[540px]"/>}</div><p className="mt-3 break-all text-sm text-slate-400">{preview.link.publicUrl}</p><div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end"><button type="button" onClick={() => onDownload(preview.link, 'svg')} className="rounded-xl border border-white/15 px-4 py-2.5">Descargar SVG</button><button type="button" onClick={() => onDownload(preview.link, 'png')} className="rounded-xl bg-emerald-500 px-4 py-2.5 font-medium text-slate-950">Descargar PNG</button></div></div></div>;
+}
+
+
+function TokenDesigner({ link, onClose }) {
+  const [diameterMm, setDiameterMm] = useState(40);
+  const [qrAreaMm, setQrAreaMm] = useState(30);
+  const [keychainHoleMm, setKeychainHoleMm] = useState(0);
+  const [errorCorrectionLevel, setErrorCorrectionLevel] = useState('Q');
+  const [previewData, setPreviewData] = useState(null);
+  const [busy, setBusy] = useState(true);
+  const [error, setError] = useState('');
+
+  const options = useMemo(() => ({ diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel }), [diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel]);
+  const metrics = useMemo(() => getPhysicalQrMetrics(link.publicUrl, options), [link.publicUrl, options]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setBusy(true);
+    setError('');
+    createPhysicalTokenPreview(link.publicUrl, options)
+      .then((data) => { if (!cancelled) setPreviewData(data); })
+      .catch((err) => { if (!cancelled) setError(err.message || 'No se pudo generar la vista previa'); })
+      .finally(() => { if (!cancelled) setBusy(false); });
+    return () => { cancelled = true; };
+  }, [link.publicUrl, options]);
+
+  async function saveSvg(svgOrPromise, filename) {
+    try {
+      const svg = await Promise.resolve(svgOrPromise);
+      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = filename;
+      a.click();
+      window.setTimeout(() => URL.revokeObjectURL(href), 500);
+    } catch (err) {
+      setError(err.message || 'No se pudo descargar el SVG');
+    }
+  }
+
+  const ratingClass = metrics.ratingKey === 'excellent'
+    ? 'text-emerald-300'
+    : metrics.ratingKey === 'good'
+      ? 'text-cyan-300'
+      : metrics.ratingKey === 'test'
+        ? 'text-amber-300'
+        : 'text-red-300';
+
+  return <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/85 p-4 backdrop-blur-sm">
+    <div className="flex min-h-full items-center justify-center py-6">
+      <div className="w-full max-w-[1180px] overflow-hidden rounded-3xl border border-white/10 bg-[#071020] text-white shadow-2xl">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-5">
+          <div><p className="text-sm font-medium text-emerald-400">IMPRESIÓN 3D</p><h2 className="text-xl font-semibold">Marcador / llavero QR · {link.name || link.slug}</h2></div>
+          <button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10"><X/></button>
+        </div>
+
+        <div className="grid gap-7 p-6 lg:grid-cols-[360px_1fr]">
+          <div className="space-y-5">
+            <div>
+              <label className="text-sm text-slate-300">Diámetro de la ficha</label>
+              <div className="mt-2 flex gap-2">{[38, 40, 42].map((value) => <button key={value} type="button" onClick={() => { setDiameterMm(value); setQrAreaMm(Math.min(qrAreaMm, value - 7)); }} className={`flex-1 rounded-xl border px-3 py-2.5 text-sm ${diameterMm === value ? 'border-emerald-400 bg-emerald-400/10 text-emerald-300' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}>{value} mm</button>)}</div>
+            </div>
+
+            <label className="block text-sm text-slate-300">Área total del QR
+              <input type="range" min="25" max={Math.max(25, diameterMm - 7)} step="0.5" value={qrAreaMm} onChange={(e) => setQrAreaMm(Number(e.target.value))} className="mt-3 w-full accent-emerald-500"/>
+              <div className="mt-1 flex justify-between text-xs text-slate-500"><span>25 mm</span><b className="text-slate-300">{qrAreaMm.toFixed(1)} mm</b><span>{diameterMm - 7} mm</span></div>
+            </label>
+
+            <div>
+              <label className="text-sm text-slate-300">Formato</label>
+              <select value={keychainHoleMm} onChange={(e) => setKeychainHoleMm(Number(e.target.value))} className="mt-2 w-full rounded-xl border border-white/10 bg-[#0d172b] px-3 py-3 outline-none focus:border-emerald-500">
+                <option value={0}>Marcador de bola · sin agujero</option>
+                <option value={4}>Llavero · agujero 4 mm</option>
+                <option value={5}>Llavero · agujero 5 mm</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm text-slate-300">Corrección de errores</label>
+              <div className="mt-2 grid grid-cols-3 gap-2">{['M', 'Q', 'H'].map((level) => <button key={level} type="button" onClick={() => setErrorCorrectionLevel(level)} className={`rounded-xl border px-3 py-2.5 text-sm ${errorCorrectionLevel === level ? 'border-emerald-400 bg-emerald-400/10 text-emerald-300' : 'border-white/10 bg-white/[0.03] text-slate-300'}`}>{level}</button>)}</div>
+              <p className="mt-2 text-xs leading-5 text-slate-500">Q es el equilibrio recomendado para una pieza física. H tolera más daños, pero hace los módulos más pequeños.</p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-[#0b1528] p-4 text-sm">
+              <div className="flex justify-between gap-4"><span className="text-slate-400">Matriz QR</span><b>{metrics.count}×{metrics.count}</b></div>
+              <div className="mt-2 flex justify-between gap-4"><span className="text-slate-400">Módulo físico</span><b>{metrics.moduleMm.toFixed(3)} mm</b></div>
+              <div className="mt-2 flex justify-between gap-4"><span className="text-slate-400">Quiet zone</span><b>4 módulos</b></div>
+              <p className={`mt-3 font-medium ${ratingClass}`}>{metrics.rating}</p>
+            </div>
+
+            <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/[0.06] p-4 text-xs leading-5 text-slate-400">
+              <b className="text-slate-200">Configuración inicial P2S</b><br/>
+              Base: 3,2 mm · QR/logo: 0,4–0,6 mm · boquilla 0,4 mm · base clara + QR oscuro. Para el QR no uses redondeos ni suavizado geométrico.
+            </div>
+          </div>
+
+          <div>
+            <div className="grid gap-5 md:grid-cols-2">
+              <div><p className="mb-3 font-medium">Cara QR</p><div className="flex aspect-square items-center justify-center rounded-3xl bg-white p-7">{busy || !previewData ? <p className="text-slate-600">Generando…</p> : <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white"><img src={previewData.qrDataUrl} alt="Vista previa QR para impresión 3D" className="absolute inset-0 h-full w-full"/>{keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}</div>}</div></div>
+              <div><p className="mb-3 font-medium">Cara logo</p><div className="flex aspect-square items-center justify-center rounded-3xl bg-white p-7">{busy || !previewData ? <p className="text-slate-600">Generando…</p> : <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white"><img src={previewData.logoDataUrl} alt="Vista previa logo para impresión 3D" className="absolute inset-0 h-full w-full p-[8%]"/>{keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}</div>}</div></div>
+            </div>
+
+            <p className="mt-5 break-all rounded-xl border border-white/10 bg-[#0b1528] p-3 text-sm text-emerald-400">{link.publicUrl}</p>
+            {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <button type="button" onClick={() => saveSvg(createTokenBaseSvg(options), `${link.slug}-base-${diameterMm}mm.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Base SVG</button>
+              <button type="button" onClick={() => saveSvg(createPhysicalQrSvg(link.publicUrl, options), `${link.slug}-qr-3d.svg`)} className="rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">QR 3D SVG</button>
+              <button type="button" onClick={() => saveSvg(createTokenLogoSvg(options), `${link.slug}-logo-3d.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Logo SVG</button>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <p className="font-medium">Flujo recomendado en Bambu Studio</p>
+              <ol className="mt-3 space-y-2 text-sm leading-6 text-slate-400"><li>1. Importa <b className="text-slate-200">Base SVG</b> y extrúyela a 3,2 mm.</li><li>2. Añade <b className="text-slate-200">QR 3D SVG</b> centrado sobre una cara como pieza independiente de 0,4–0,6 mm.</li><li>3. Añade <b className="text-slate-200">Logo SVG</b> en la cara opuesta.</li><li>4. Asigna filamento claro a la base y oscuro al QR. Imprime primero una unidad y comprueba el escaneo con varios móviles.</li></ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>;
 }
 
 function slugify(value) {
