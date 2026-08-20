@@ -211,7 +211,6 @@ export async function createBrandedQrSvg(url, { logoUrl = '/brand/logo-qr.png' }
 // QR FÍSICO PARA MARCADOR / LLAVERO 3D
 // -----------------------------------------------------------------------------
 
-const TOKEN_LOGO_MARGIN_MM = 3;
 
 const TOKEN_DEFAULTS = {
   diameterMm: 40,
@@ -355,9 +354,9 @@ export async function createTokenLogoSvg(options = {}) {
   const { viewBox, body } = extractInlineSvg(markup);
   // Mantiene un margen físico constante de 3 mm entre el logo y el borde
   // de la ficha, independientemente de que la ficha mida 38, 40 o 42 mm.
-  const logoSizeMm = normalized.diameterMm - TOKEN_LOGO_MARGIN_MM * 2;
-  const x = TOKEN_LOGO_MARGIN_MM;
-  const y = TOKEN_LOGO_MARGIN_MM + (normalized.keychainHoleMm > 0 ? 1.2 : 0);
+  const logoSizeMm = normalized.diameterMm;
+  const x = 0;
+  const y = 0;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
   <title>Logo Golf en Casa para marcador 3D</title>
