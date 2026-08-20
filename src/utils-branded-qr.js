@@ -376,18 +376,18 @@ export async function createTokenLogoSvg(options = {}) {
   const logoUrl = options.logoUrl || '/brand/logo-token.svg';
   const markup = await fetchSvgMarkup(logoUrl);
   const { viewBox, body } = extractInlineSvg(markup);
-  // Mantiene un margen físico constante de 3 mm entre el logo y el borde
-  // de la ficha, independientemente de que la ficha mida 38, 40 o 42 mm.
-  const logoSizeMm = normalized.diameterMm;
-  const x = 0;
-  const y = 0;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
-  <title>Logo Golf en Casa para marcador 3D</title>
-  <svg xmlns="http://www.w3.org/2000/svg" x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
+  // El logo-token.svg ya es geometría 3D limpia: un único path compuesto
+  // y un viewBox cuadrado que representa exactamente la cara de la ficha.
+  // No se añade margen ni SVG anidado: Bambu Studio recibe una única pieza.
+  return `<svg xmlns="http://www.w3.org/2000/svg"
+    width="${normalized.diameterMm}mm"
+    height="${normalized.diameterMm}mm"
+    viewBox="${esc(viewBox)}"
+    preserveAspectRatio="xMidYMid meet">
+    <title>Logo Golf en Casa para marcador 3D</title>
     ${body}
-  </svg>
-</svg>`;
+  </svg>`;
 }
 
 export async function createPhysicalTokenPreview(url, options = {}) {
