@@ -529,6 +529,23 @@ function TokenDesigner({ link, onClose }) {
 
   const options = useMemo(() => ({ diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel }), [diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel]);
   const metrics = useMemo(() => getPhysicalQrMetrics(link.publicUrl, options), [link.publicUrl, options]);
+  const qrObject = useMemo(() => getPhysicalQrObject(link.publicUrl, options), [link.publicUrl, options]);
+
+  function downloadBaseStl() {
+    downloadStl(`${link.slug}-base-${diameterMm}mm.stl`, createBaseStl(diameterMm, 3.2));
+  }
+
+  function downloadQrStl() {
+    downloadStl(
+      `${link.slug}-qr-3d-${diameterMm}mm.stl`,
+      createQrStl(qrObject.qr, qrAreaMm, 4, 3.0, 3.4)
+    );
+  }
+
+  function downloadLogoStl() {
+    downloadStl(`${link.slug}-logo-${diameterMm}mm.stl`, createLogoStl(diameterMm, 0, 0.2));
+  }
+
 
   useEffect(() => {
     let cancelled = false;
@@ -622,9 +639,9 @@ function TokenDesigner({ link, onClose }) {
             {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <button type="button" onClick={() => saveSvg(createTokenBaseSvg(options), `${link.slug}-base-${diameterMm}mm.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Base STL</button>
-              <button type="button" onClick={() => saveSvg(createPhysicalQrSvg(link.publicUrl, options), `${link.slug}-qr-3d.svg`)} className="rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">QR 3D STL</button>
-              <button type="button" onClick={() => saveSvg(createTokenLogoSvg(options), `${link.slug}-logo-3d.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Logo STL</button>
+              <button type="button" onClick={downloadBaseStl} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Base STL</button>
+              <button type="button" onClick={downloadQrStl} className="rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">QR 3D STL</button>
+              <button type="button" onClick={downloadLogoStl} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Logo STL</button>
             </div>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
