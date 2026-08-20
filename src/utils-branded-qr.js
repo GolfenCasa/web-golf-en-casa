@@ -211,6 +211,8 @@ export async function createBrandedQrSvg(url, { logoUrl = '/brand/logo-qr.png' }
 // QR FÍSICO PARA MARCADOR / LLAVERO 3D
 // -----------------------------------------------------------------------------
 
+const TOKEN_LOGO_MARGIN_MM = 3;
+
 const TOKEN_DEFAULTS = {
   diameterMm: 40,
   qrAreaMm: 30,
@@ -339,9 +341,6 @@ function extractInlineSvg(markup) {
   const bodyMatch = markup.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
   if (!viewBoxMatch || !bodyMatch) throw new Error('SVG de logo no válido');
 
-  // El SVG original puede contener metadata C2PA y referencias xlink.
-  // Al incrustarlo dentro de otro SVG, xlink puede quedar sin namespace
-  // y el navegador muestra el icono de imagen rota. Lo normalizamos.
   const body = bodyMatch[1]
     .replace(/<metadata[\s\S]*?<\/metadata>/gi, '')
     .replace(/xlink:href=/gi, 'href=');
@@ -354,9 +353,11 @@ export async function createTokenLogoSvg(options = {}) {
   const logoUrl = options.logoUrl || '/brand/logo-token.svg';
   const markup = await fetchSvgMarkup(logoUrl);
   const { viewBox, body } = extractInlineSvg(markup);
-  const logoSizeMm = Math.min(normalized.diameterMm * 0.78, normalized.diameterMm - 7);
-  const x = (normalized.diameterMm - logoSizeMm) / 2;
-  const y = (normalized.diameterMm - logoSizeMm) / 2 + (normalized.keychainHoleMm > 0 ? 1.2 : 0);
+  // Mantiene un margen físico constante de 3 mm entre el logo y el borde
+  // de la ficha, independientemente de que la ficha mida 38, 40 o 42 mm.
+  const logoSizeMm = normalized.diameterMm - TOKEN_LOGO_MARGIN_MM * 2;
+  const x = TOKEN_LOGO_MARGIN_MM;
+  const y = TOKEN_LOGO_MARGIN_MM + (normalized.keychainHoleMm > 0 ? 1.2 : 0);
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
   <title>Logo Golf en Casa para marcador 3D</title>
