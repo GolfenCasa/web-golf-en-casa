@@ -7,12 +7,14 @@ import {
   createTokenBaseSvg,
   createTokenLogoSvg,
   getPhysicalQrMetrics,
+    getPhysicalQrObject,
 } from '../utils-branded-qr.js';
 import {
   Activity, BarChart3, Check, CircleHelp, Copy, Download, Edit3, Eye, FolderOpen,
   Gauge, History, Home, Link2, LogOut, Menu, Plus, QrCode, Search, Settings,
   Trash2, X
 } from 'lucide-react';
+import { createBaseStl, createQrStl, createLogoStl, downloadStl } from '../physical-stl.js';
 
 const emptyForm = {
   id: '',
@@ -620,14 +622,14 @@ function TokenDesigner({ link, onClose }) {
             {error && <p className="mt-3 text-sm text-red-300">{error}</p>}
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <button type="button" onClick={() => saveSvg(createTokenBaseSvg(options), `${link.slug}-base-${diameterMm}mm.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Base SVG</button>
-              <button type="button" onClick={() => saveSvg(createPhysicalQrSvg(link.publicUrl, options), `${link.slug}-qr-3d.svg`)} className="rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">QR 3D SVG</button>
-              <button type="button" onClick={() => saveSvg(createTokenLogoSvg(options), `${link.slug}-logo-3d.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Logo SVG</button>
+              <button type="button" onClick={() => saveSvg(createTokenBaseSvg(options), `${link.slug}-base-${diameterMm}mm.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Base STL</button>
+              <button type="button" onClick={() => saveSvg(createPhysicalQrSvg(link.publicUrl, options), `${link.slug}-qr-3d.svg`)} className="rounded-xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-400">QR 3D STL</button>
+              <button type="button" onClick={() => saveSvg(createTokenLogoSvg(options), `${link.slug}-logo-3d.svg`)} className="rounded-xl border border-white/15 px-4 py-3 text-sm hover:bg-white/5">Logo STL</button>
             </div>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <p className="font-medium">Flujo recomendado en Bambu Studio</p>
-              <ol className="mt-3 space-y-2 text-sm leading-6 text-slate-400"><li>1. Importa <b className="text-slate-200">Base SVG</b> y extrúyela a 3,2 mm.</li><li>2. Añade <b className="text-slate-200">QR 3D SVG</b> centrado sobre una cara como pieza independiente de 0,4–0,6 mm.</li><li>3. Añade <b className="text-slate-200">Logo SVG</b> en la cara opuesta.</li><li>4. Asigna filamento claro a la base y oscuro al QR. Imprime primero una unidad y comprueba el escaneo con varios móviles.</li></ol>
+              <ol className="mt-3 space-y-2 text-sm leading-6 text-slate-400"><li>1. Importa <b className="text-slate-200">Base STL</b> y extrúyela a 3,2 mm.</li><li>2. Añade <b className="text-slate-200">QR 3D STL</b> centrado sobre una cara como pieza independiente de 0,4–0,6 mm.</li><li>3. Añade <b className="text-slate-200">Logo STL</b> en la cara opuesta.</li><li>4. Asigna filamento claro a la base y oscuro al QR. Imprime primero una unidad y comprueba el escaneo con varios móviles.</li></ol>
             </div>
           </div>
         </div>

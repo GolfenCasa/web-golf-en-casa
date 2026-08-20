@@ -244,6 +244,12 @@ function normalizeTokenOptions(options = {}) {
   };
 }
 
+
+export function getPhysicalQrObject(url, options = {}) {
+  const normalized = normalizeTokenOptions(options);
+  const qr = buildQr(url, normalized.errorCorrectionLevel);
+  return { qr, options: normalized };
+}
 export function getPhysicalQrMetrics(url, options = {}) {
   const normalized = normalizeTokenOptions(options);
   const qr = QRCode.create(url, { errorCorrectionLevel: normalized.errorCorrectionLevel });
@@ -375,15 +381,19 @@ export async function createTokenLogoSvg(options = {}) {
   const normalized = normalizeTokenOptions(options);
   const logoUrl = options.logoUrl || '/brand/logo-token.svg';
   const markup = await fetchSvgMarkup(logoUrl);
-  const { body } = extractInlineSvg(markup);
+  const { viewBox, body } = extractInlineSvg(markup);
+  // Mantiene un margen físico constante de 3 mm entre el logo y el borde
+  // de la ficha, independientemente de que la ficha mida 38, 40 o 42 mm.
+  const logoSizeMm = normalized.diameterMm;
+  const x = 0;
+  const y = 0;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg"
-    width="${normalized.diameterMm}mm"
-    height="${normalized.diameterMm}mm"
-    viewBox="0 0 1000 1000">
-    <title>Logo Golf en Casa para marcador 3D</title>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
+  <title>Logo Golf en Casa para marcador 3D</title>
+  <svg xmlns="http://www.w3.org/2000/svg" x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
     ${body}
-  </svg>`;
+  </svg>
+</svg>`;
 }
 
 export async function createPhysicalTokenPreview(url, options = {}) {
