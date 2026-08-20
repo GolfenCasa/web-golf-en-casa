@@ -247,7 +247,7 @@ function normalizeTokenOptions(options = {}) {
 
 export function getPhysicalQrObject(url, options = {}) {
   const normalized = normalizeTokenOptions(options);
-  const qr = buildQr(url, normalized.errorCorrectionLevel);
+  const qr = QRCode.create(url, { errorCorrectionLevel: normalized.errorCorrectionLevel });
   return { qr, options: normalized };
 }
 export function getPhysicalQrMetrics(url, options = {}) {
