@@ -56,36 +56,20 @@ export function createQrStl(qr, qrAreaMm, quietModules=4, z0=3.0, z1=3.4) {
 }
 
 export async function createLogoStl(diameterMm, z0=0, z1=0.2) {
-  // La geometría V4 se carga sólo cuando el usuario descarga Logo STL.
-  // Así no forma parte del bundle principal de LinkManager.
-  const response = await fetch('/brand/logo-v4-geometry.json', { cache: 'force-cache' });
-  if (!response.ok) throw new Error('No se pudo cargar la geometría Logo V4');
-  const geometry = await response.json();
-
-  const scale=diameterMm;
-  const tx=-diameterMm/2, ty=-diameterMm/2;
-  let s='solid golfencasa_logo\n';
-
-  for(const tri of geometry.triangles) {
-    const a=[tx+tri[0][0]*scale,ty+tri[0][1]*scale,z0];
-    const b=[tx+tri[1][0]*scale,ty+tri[1][1]*scale,z0];
-    const c=[tx+tri[2][0]*scale,ty+tri[2][1]*scale,z0];
-    s+=facet(a,c,b);
-    const A=[a[0],a[1],z1], B=[b[0],b[1],z1], C=[c[0],c[1],z1];
-    s+=facet(A,B,C);
+  const response=await fetch('/brand/logo-v4-1-geometry.json',{cache:'force-cache'});
+  if(!response.ok) throw new Error('No se pudo cargar Logo V4.1');
+  const geometry=await response.json();
+  const scale=diameterMm, tx=-diameterMm/2, ty=-diameterMm/2;
+  let s='solid golfencasa_logo_v4_1\n';
+  for(const tri of geometry.triangles){
+    const a=[tx+tri[0][0]*scale,ty+tri[0][1]*scale,z0],b=[tx+tri[1][0]*scale,ty+tri[1][1]*scale,z0],c=[tx+tri[2][0]*scale,ty+tri[2][1]*scale,z0];
+    s+=facet(a,c,b); const A=[a[0],a[1],z1],B=[b[0],b[1],z1],C=[c[0],c[1],z1]; s+=facet(A,B,C);
   }
-
-  for(const ring of geometry.rings) {
-    for(let i=0;i<ring.length;i++) {
-      const p=ring[i], q=ring[(i+1)%ring.length];
-      const a=[tx+p[0]*scale,ty+p[1]*scale,z0];
-      const b=[tx+q[0]*scale,ty+q[1]*scale,z0];
-      const A=[a[0],a[1],z1], B=[b[0],b[1],z1];
-      s+=facet(a,b,B)+facet(a,B,A);
-    }
+  for(const ring of geometry.rings) for(let i=0;i<ring.length;i++){
+    const p=ring[i],q=ring[(i+1)%ring.length],a=[tx+p[0]*scale,ty+p[1]*scale,z0],b=[tx+q[0]*scale,ty+q[1]*scale,z0],A=[a[0],a[1],z1],B=[b[0],b[1],z1];
+    s+=facet(a,b,B)+facet(a,B,A);
   }
-
-  return s+'endsolid golfencasa_logo\n';
+  return s+'endsolid golfencasa_logo_v4_1\n';
 }
 
 export function downloadStl(filename, text) {
