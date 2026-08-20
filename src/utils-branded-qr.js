@@ -375,16 +375,11 @@ export async function createTokenLogoSvg(options = {}) {
   const normalized = normalizeTokenOptions(options);
   const logoUrl = options.logoUrl || '/brand/logo-token.svg';
   const markup = await fetchSvgMarkup(logoUrl);
-  const { viewBox, body } = extractInlineSvg(markup);
-
-  // El logo-token.svg ya es geometría 3D limpia: un único path compuesto
-  // y un viewBox cuadrado que representa exactamente la cara de la ficha.
-  // No se añade margen ni SVG anidado: Bambu Studio recibe una única pieza.
+  const { body } = extractInlineSvg(markup);
   return `<svg xmlns="http://www.w3.org/2000/svg"
     width="${normalized.diameterMm}mm"
     height="${normalized.diameterMm}mm"
-    viewBox="${esc(viewBox)}"
-    preserveAspectRatio="xMidYMid meet">
+    viewBox="0 0 1000 1000">
     <title>Logo Golf en Casa para marcador 3D</title>
     ${body}
   </svg>`;
