@@ -479,7 +479,7 @@ function Editor({ mode = 'corporate', form, setForm, onClose, onSave, busy, mess
                   <div className="flex aspect-square items-center justify-center rounded-2xl bg-white p-6">
                     {qrBusy || !physicalPreview ? <p className="text-slate-600">Generando…</p> :
                       <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white">
-                        <img src={physicalPreview.logoDataUrl} alt="Logo para la cara opuesta" className="absolute inset-0 h-full w-full p-[8%]"/>
+                        <img src={physicalPreview.logoDataUrl} alt="Logo para la cara opuesta" className="absolute inset-0 h-full w-full"/>
                         {keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}
                       </div>}
                   </div>
@@ -613,7 +613,7 @@ function TokenDesigner({ link, onClose }) {
           <div>
             <div className="grid gap-5 md:grid-cols-2">
               <div><p className="mb-3 font-medium">Cara QR</p><div className="flex aspect-square items-center justify-center rounded-3xl bg-white p-7">{busy || !previewData ? <p className="text-slate-600">Generando…</p> : <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white"><img src={previewData.qrDataUrl} alt="Vista previa QR para impresión 3D" className="absolute inset-0 h-full w-full"/>{keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}</div>}</div></div>
-              <div><p className="mb-3 font-medium">Cara logo</p><div className="flex aspect-square items-center justify-center rounded-3xl bg-white p-7">{busy || !previewData ? <p className="text-slate-600">Generando…</p> : <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white"><img src={previewData.logoDataUrl} alt="Vista previa logo para impresión 3D" className="absolute inset-0 h-full w-full p-[8%]"/>{keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}</div>}</div></div>
+              <div><p className="mb-3 font-medium">Cara logo</p><div className="flex aspect-square items-center justify-center rounded-3xl bg-white p-7">{busy || !previewData ? <p className="text-slate-600">Generando…</p> : <div className="relative aspect-square w-full max-w-[360px] rounded-full border border-slate-200 bg-white"><img src={previewData.logoDataUrl} alt="Vista previa logo para impresión 3D" className="absolute inset-0 h-full w-full"/>{keychainHoleMm > 0 && <span className="absolute left-1/2 top-[7%] h-[10%] w-[10%] -translate-x-1/2 rounded-full border-2 border-slate-400 bg-[#071020]"/>}</div>}</div></div>
             </div>
 
             <p className="mt-5 break-all rounded-xl border border-white/10 bg-[#0b1528] p-3 text-sm text-emerald-400">{link.publicUrl}</p>
