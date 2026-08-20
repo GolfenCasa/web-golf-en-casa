@@ -30,6 +30,8 @@ export default function LinkManager() {
   const [data, setData] = useState({ links: [], history: [] });
   const [form, setForm] = useState(emptyForm);
   const [showEditor, setShowEditor] = useState(false);
+  const [showCreateChoice, setShowCreateChoice] = useState(false);
+  const [pendingTokenAfterSave, setPendingTokenAfterSave] = useState(false);
   const [query, setQuery] = useState('');
   const [folder, setFolder] = useState('Todos');
   const [message, setMessage] = useState('');
@@ -76,7 +78,22 @@ export default function LinkManager() {
   }
 
   function openCreate() {
+    setShowCreateChoice(true);
+    setMessage('');
+  }
+
+  function openCreateCorporate() {
+    setPendingTokenAfterSave(false);
     setForm(emptyForm);
+    setShowCreateChoice(false);
+    setShowEditor(true);
+    setMessage('');
+  }
+
+  function openCreatePhysical() {
+    setPendingTokenAfterSave(true);
+    setForm({ ...emptyForm, name: 'Marcador / llavero QR 3D', folder: 'Marketing' });
+    setShowCreateChoice(false);
     setShowEditor(true);
     setMessage('');
   }
@@ -100,6 +117,18 @@ export default function LinkManager() {
     setBusy(false);
     if (!res.ok) return setMessage(json.error || 'No se pudo guardar');
     setShowEditor(false);
+
+    if (pendingTokenAfterSave && !form.id) {
+      const createdLink = json.link || json;
+      const physicalLink = {
+        ...form,
+        ...createdLink,
+        publicUrl: createdLink.publicUrl || `https://go.golfencasa.net/${createdLink.slug || form.slug}`,
+      };
+      setPendingTokenAfterSave(false);
+      setTokenPreview(physicalLink);
+    }
+
     await loadData();
   }
 
@@ -226,7 +255,10 @@ export default function LinkManager() {
                 <div className="flex items-center gap-2"><QrCode size={19} className="text-emerald-400"/><h2 className="font-medium">Marcadores y llaveros 3D</h2></div>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">Genera un QR técnico sin decoración, con módulos cuadrados y zona silenciosa de 4 módulos, preparado para importarlo como geometría en Bambu Studio. El logo se descarga por separado para la cara opuesta.</p>
               </div>
-              <p className="rounded-xl border border-white/10 bg-[#071020] px-4 py-3 text-xs text-slate-400">40 mm · base 3,2 mm · relieve recomendado 0,4–0,6 mm</p>
+              <div className="flex flex-col gap-2 sm:items-end">
+                <p className="rounded-xl border border-white/10 bg-[#071020] px-4 py-3 text-xs text-slate-400">40 mm · base 3,2 mm · relieve recomendado 0,4–0,6 mm</p>
+                <button type="button" onClick={openCreatePhysical} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-emerald-400"><Plus size={17}/>Crear marcador 3D</button>
+              </div>
             </div>
           </section>
 
@@ -237,11 +269,40 @@ export default function LinkManager() {
         </div>
       </main>
 
-      {showEditor && <Editor form={form} setForm={setForm} onClose={() => setShowEditor(false)} onSave={save} busy={busy} message={message}/>} 
+      {showCreateChoice && <CreateChoice onClose={() => setShowCreateChoice(false)} onCorporate={openCreateCorporate} onPhysical={openCreatePhysical}/>}
+      {showEditor && <Editor form={form} setForm={setForm} onClose={() => { setShowEditor(false); setPendingTokenAfterSave(false); }} onSave={save} busy={busy} message={message}/>} 
       {preview && <QrPreview preview={preview} busy={previewBusy} onClose={() => setPreview(null)} onDownload={downloadQr}/>} 
       {tokenPreview && <TokenDesigner link={tokenPreview} onClose={() => setTokenPreview(null)} />}
     </div>
   );
+}
+
+function CreateChoice({ onClose, onCorporate, onPhysical }) {
+  return <div className="fixed inset-0 z-[80] overflow-y-auto bg-black/80 p-4 backdrop-blur-sm">
+    <div className="flex min-h-full items-center justify-center py-8">
+      <div className="w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#071020] text-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+          <div><p className="text-sm font-medium text-emerald-400">NUEVO ENLACE</p><h2 className="text-xl font-semibold">¿Qué quieres crear?</h2></div>
+          <button type="button" onClick={onClose} className="rounded-lg p-2 hover:bg-white/10" aria-label="Cerrar"><X/></button>
+        </div>
+        <div className="grid gap-4 p-6 md:grid-cols-2">
+          <button type="button" onClick={onCorporate} className="rounded-2xl border border-white/10 bg-white/[0.025] p-6 text-left transition hover:border-emerald-400/50 hover:bg-emerald-400/[0.05]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400"><QrCode/></div>
+            <h3 className="mt-5 text-lg font-semibold">QR corporativo</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">Para camisetas, cartelería, folletos, publicidad y soportes digitales. Incluye logo, marco y CTA corporativo.</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-400">Crear QR corporativo →</span>
+          </button>
+          <button type="button" onClick={onPhysical} className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] p-6 text-left transition hover:border-emerald-400/60 hover:bg-emerald-400/[0.09]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-400"><Settings/></div>
+            <h3 className="mt-5 text-lg font-semibold">Marcador / llavero 3D</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">Crea primero el enlace dinámico y, al guardarlo, abre automáticamente el diseñador físico para Bambu Studio.</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-400">Diseñar pieza 3D →</span>
+          </button>
+        </div>
+        <p className="px-6 pb-6 text-xs leading-5 text-slate-500">Ambos modos utilizan go.golfencasa.net. Puedes cambiar el destino posteriormente sin regenerar ni reimprimir el QR.</p>
+      </div>
+    </div>
+  </div>;
 }
 
 function Sidebar({ open, onClose }) {
