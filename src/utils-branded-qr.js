@@ -338,7 +338,15 @@ function extractInlineSvg(markup) {
   const viewBoxMatch = markup.match(/viewBox=["']([^"']+)["']/i);
   const bodyMatch = markup.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
   if (!viewBoxMatch || !bodyMatch) throw new Error('SVG de logo no válido');
-  return { viewBox: viewBoxMatch[1], body: bodyMatch[1] };
+
+  // El SVG original puede contener metadata C2PA y referencias xlink.
+  // Al incrustarlo dentro de otro SVG, xlink puede quedar sin namespace
+  // y el navegador muestra el icono de imagen rota. Lo normalizamos.
+  const body = bodyMatch[1]
+    .replace(/<metadata[\s\S]*?<\/metadata>/gi, '')
+    .replace(/xlink:href=/gi, 'href=');
+
+  return { viewBox: viewBoxMatch[1], body };
 }
 
 export async function createTokenLogoSvg(options = {}) {
@@ -352,7 +360,7 @@ export async function createTokenLogoSvg(options = {}) {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
   <title>Logo Golf en Casa para marcador 3D</title>
-  <svg x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
+  <svg xmlns="http://www.w3.org/2000/svg" x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
     ${body}
   </svg>
 </svg>`;
