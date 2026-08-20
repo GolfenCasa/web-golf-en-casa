@@ -542,8 +542,14 @@ function TokenDesigner({ link, onClose }) {
     );
   }
 
-  function downloadLogoStl() {
-    downloadStl(`${link.slug}-logo-${diameterMm}mm.stl`, createLogoStl(diameterMm, 0, 0.2));
+  async function downloadLogoStl() {
+    try {
+      const stl = await createLogoStl(diameterMm, 0, 0.2);
+      downloadStl(`${link.slug}-logo-${diameterMm}mm.stl`, stl);
+    } catch (error) {
+      console.error(error);
+      alert('No se pudo generar Logo STL. Vuelve a intentarlo.');
+    }
   }
 
 
