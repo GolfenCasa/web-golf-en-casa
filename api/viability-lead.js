@@ -1,9 +1,15 @@
+import {
+  getAttributionSummaryRows,
+  sanitizeLeadAttribution,
+} from "./_lib/lead-attribution.js";
+
 const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
   "Golf en Casa | Estudio de viabilidad <signature@golfencasa.net>";
 
 const CRM_TIMEOUT_MS = 2500;
+const PRIVACY_POLICY_VERSION = "2026-09-03";
 
 const requiredFields = [
   "name", "email", "phone", "projectType", "budget", "dimensions", "sourceDeclared",
@@ -32,11 +38,6 @@ export default async function handler(request, response) {
     return response.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    console.error("Missing RESEND_API_KEY");
-    return response.status(500).json({ ok: false, error: "Email service unavailable" });
-  }
-
   let body;
   try {
     body = request.body;
@@ -50,7 +51,13 @@ export default async function handler(request, response) {
 
   // Honeypot: bots often fill hidden fields.
   if (clean(body.companyWebsite, 200)) {
-    return response.status(200).json({ ok: true });
+    return response.status(200).json({ ok: true, filtered: true });
+  }
+
+  if (body.privacyConsent !== true) {
+    return response
+      .status(400)
+      .json({ ok: false, error: "Privacy consent required" });
   }
 
   const data = {
@@ -63,19 +70,7 @@ export default async function handler(request, response) {
     dimensions: clean(body.dimensions, 200),
     sourceDeclared: clean(body.sourceDeclared, 160),
     message: clean(body.message, 4000),
-    attribution: {
-      source: clean(body.attribution?.source, 120),
-      medium: clean(body.attribution?.medium, 120),
-      campaign: clean(body.attribution?.campaign, 200),
-      content: clean(body.attribution?.content, 200),
-      term: clean(body.attribution?.term, 300),
-      gclid: clean(body.attribution?.gclid, 300),
-      fbclid: clean(body.attribution?.fbclid, 300),
-      landingPage: clean(body.attribution?.landingPage, 500),
-      conversionPage: clean(body.attribution?.conversionPage, 500),
-      referrer: clean(body.attribution?.referrer, 500),
-      capturedAt: clean(body.attribution?.capturedAt, 80),
-    },
+    attribution: sanitizeLeadAttribution(body.attribution),
   };
 
   for (const field of requiredFields) {
@@ -89,6 +84,22 @@ export default async function handler(request, response) {
   if (!isValidEmail(data.email)) {
     return response.status(400).json({ ok: false, error: "Invalid email" });
   }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error("Missing RESEND_API_KEY");
+    return response.status(500).json({ ok: false, error: "Email service unavailable" });
+  }
+
+  const consent = {
+    acceptedAt: new Date().toISOString(),
+    policyVersion: PRIVACY_POLICY_VERSION,
+  };
+
+  const consentRows = [
+    ["Consentimiento de privacidad", "Sí"],
+    ["acceptedAt", consent.acceptedAt],
+    ["policyVersion", consent.policyVersion],
+  ];
 
   const sourceLabel = [data.attribution.source, data.attribution.medium]
     .filter(Boolean)
@@ -112,7 +123,12 @@ export default async function handler(request, response) {
     ["Landing", data.attribution.landingPage || "/instalacion-simuladores-golf"],
         ["Página de conversión", data.attribution.conversionPage || "No disponible"],
     ["GCLID", data.attribution.gclid || "No disponible"],
+    ["GBRAID", data.attribution.gbraid || "No disponible"],
+    ["WBRAID", data.attribution.wbraid || "No disponible"],
+    ["MSCLKID", data.attribution.msclkid || "No disponible"],
     ["FBCLID", data.attribution.fbclid || "No disponible"],
+    ...getAttributionSummaryRows(data.attribution),
+    ...consentRows,
   ];
 
   const htmlRows = rows
@@ -218,6 +234,9 @@ export default async function handler(request, response) {
               data.attribution.conversionPage
                 ? `Página conversión: ${data.attribution.conversionPage}`
                 : "",
+              "Consentimiento de privacidad: Sí",
+              `acceptedAt: ${consent.acceptedAt}`,
+              `policyVersion: ${consent.policyVersion}`,
             ].filter(Boolean).join(" | "),
             attribution: data.attribution,
           }),

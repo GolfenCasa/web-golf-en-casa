@@ -1,3 +1,5 @@
+import { Helmet } from "react-helmet-async";
+
 export default function AvisoLegal() {
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -9,6 +11,15 @@ export default function AvisoLegal() {
 
   return (
     <main className="min-h-screen bg-zinc-950 px-5 py-16 text-white">
+      <Helmet>
+        <title>Aviso legal | Golf en Casa</title>
+        <meta
+          name="description"
+          content="Información legal sobre la titularidad y las condiciones de uso del sitio web de Golf en Casa."
+        />
+        <meta name="robots" content="noindex,follow" />
+        <link rel="canonical" href="https://www.golfencasa.net/aviso-legal" />
+      </Helmet>
       <div className="mx-auto max-w-4xl">
         <button
           type="button"

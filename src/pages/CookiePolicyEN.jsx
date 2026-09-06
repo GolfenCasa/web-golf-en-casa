@@ -11,7 +11,8 @@ export default function CookiePolicyEN() {
     <main className="signature-sans min-h-screen bg-[#0B0B0B] text-[#F5F3EF]">
       <Helmet>
         <title>Cookie Policy | Golf en Casa Signature Projects</title>
-        <meta name="robots" content="index,follow" />
+        <meta name="description" content="Information about cookies used by Golf en Casa and how visitors can manage their preferences." />
+        <meta name="robots" content="noindex,follow" />
         <link rel="canonical" href="https://www.golfencasa.net/en/cookie-policy" />
         <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,6 +41,7 @@ export default function CookiePolicyEN() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#C8AA7D]">Legal</p>
           <h1 className="signature-serif mt-5 text-5xl leading-[0.98] tracking-[-0.025em] sm:text-6xl lg:text-7xl">Cookie Policy</h1>
           <p className="mt-7 max-w-2xl text-sm font-light leading-7 text-white/55">Information about the cookies used on this website and the options available to manage your preferences.</p>
+          <p className="mt-4 text-xs uppercase tracking-[0.12em] text-white/35">Policy version: 2026-09-03 (3 September 2026).</p>
         </div>
       </section>
 

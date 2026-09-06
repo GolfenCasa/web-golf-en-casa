@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "functions": {
     "api/*.js": { "maxDuration": 10 }
   },
@@ -11,33 +13,49 @@
       ]
     },
     {
-      "source": "/images/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/logos/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
       "source": "/(.*)\\.(webp|avif|png|jpg|jpeg|svg|woff2|mp4)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/estudio-simulador-golf",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+      ]
+    },
+    {
+      "source": "/simulador-golf",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive, nosnippet" },
+        { "key": "Cache-Control", "value": "private, no-store" }
+      ]
+    },
+    {
+      "source": "/(aviso-legal|politica-privacidad|politica-cookies|prime-day-amazon)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+      ]
+    },
+    {
+      "source": "/en/(privacy-policy|cookie-policy|legal-notice)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, follow" }
       ]
     }
   ],
-  "rewrites": [
+  "redirects": [
     {
       "source": "/:slug",
       "has": [{ "type": "host", "value": "go.golfencasa.net" }],
-      "destination": "/api/redirect?slug=:slug"
-    },
-    {
-      "source": "/((?!api/|favicon.ico|favicon.png|robots.txt|sitemap.xml|assets/).*)",
-      "destination": "/"
+      "destination": "/api/redirect?slug=:slug",
+      "permanent": false
     }
   ]
 }

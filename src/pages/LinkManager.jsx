@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   createBrandedQrPng,
   createBrandedQrSvg,
@@ -204,11 +205,12 @@ export default function LinkManager() {
   }), [data.links, query, folder]);
   const totalClicks = data.links.reduce((sum, link) => sum + Number(link.clicks || 0), 0);
 
-  if (authenticated === null) return <Centered><p>Comprobando acceso…</p></Centered>;
-  if (!authenticated) return <Login password={password} setPassword={setPassword} onSubmit={login} busy={busy} message={message} />;
+  if (authenticated === null) return <><AdminHead/><Centered><h1 className="sr-only">Acceso al gestor de enlaces</h1><p>Comprobando acceso…</p></Centered></>;
+  if (!authenticated) return <><AdminHead/><Login password={password} setPassword={setPassword} onSubmit={login} busy={busy} message={message} /></>;
 
   return (
     <div className="min-h-screen bg-[#020817] text-slate-100">
+      <AdminHead />
       <header className="fixed inset-x-0 top-0 z-40 h-20 border-b border-white/10 bg-[#020817]/95 backdrop-blur">
         <div className="flex h-full items-center justify-between px-5 lg:px-7">
           <div className="flex items-center gap-3">
@@ -282,6 +284,10 @@ export default function LinkManager() {
       {tokenPreview && <TokenDesigner link={tokenPreview} onClose={() => setTokenPreview(null)} />}
     </div>
   );
+}
+
+function AdminHead() {
+  return <Helmet><title>Gestor de enlaces | Golf en Casa</title><meta name="description" content="Acceso privado al gestor de enlaces y códigos QR de Golf en Casa."/><meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/><link rel="canonical" href="https://www.golfencasa.net/admin/enlaces"/></Helmet>;
 }
 
 function CreateChoice({ onClose, onCorporate, onPhysical }) {

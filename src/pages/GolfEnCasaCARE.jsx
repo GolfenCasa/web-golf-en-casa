@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
@@ -19,11 +19,29 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import {
+  EMPTY_ATTRIBUTION,
+  appendAttributionToUrl,
+  attributionEventData,
+  buildWhatsAppUrl,
+  captureAttribution,
+  getCurrentBrowserPath,
+  prepareAttributedLink,
+} from "../lib/attribution";
 
-const WHATSAPP_URL =
-  "https://wa.me/34678107234?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20los%20planes%20Golf%20en%20Casa%20CARE%20y%20CARE%2B%20para%20mi%20simulador.";
-
+const WHATSAPP_PHONE = "34678107234";
+const WHATSAPP_MESSAGE =
+  "Hola, quiero información sobre los planes Golf en Casa CARE y CARE+ para mi simulador.";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
+
+const buildCareWhatsAppUrl = (attribution, button) =>
+  buildWhatsAppUrl({
+    phone: WHATSAPP_PHONE,
+    message: WHATSAPP_MESSAGE,
+    attribution,
+    pagePath: getCurrentBrowserPath({ fallback: "/care" }),
+    button,
+  });
 
 const careFeatures = [
   "Soporte técnico remoto",
@@ -118,13 +136,80 @@ const faqs = [
 ];
 
 export default function GolfEnCasaCARE() {
-  const pushDataLayer = (event, location, plan) => {
+  const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
+
+  useEffect(() => {
+    const captured = captureAttribution();
+    const updateHandle = window.setTimeout(() => setAttribution(captured), 0);
+
+    return () => window.clearTimeout(updateHandle);
+  }, []);
+
+  const pushDataLayer = (
+    event,
+    location,
+    plan,
+    attributionOverride = attribution,
+  ) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
+      ...attributionEventData(attributionOverride, {
+        landingFallback: "/care",
+        conversionPage: getCurrentBrowserPath(),
+      }),
       ...(plan ? { plan } : {}),
     });
+  };
+
+  const calendlyUrl = useMemo(
+    () => appendAttributionToUrl(CALENDLY_URL, attribution),
+    [attribution],
+  );
+
+  const whatsappUrls = useMemo(
+    () => ({
+      floating: buildCareWhatsAppUrl(attribution, "care_floating_button"),
+      hero: buildCareWhatsAppUrl(attribution, "care_hero"),
+      pricingCare: buildCareWhatsAppUrl(attribution, "pricing_care"),
+      pricingCarePlus: buildCareWhatsAppUrl(attribution, "pricing_care_plus"),
+      request: buildCareWhatsAppUrl(attribution, "care_request_section"),
+      final: buildCareWhatsAppUrl(attribution, "care_final_cta"),
+    }),
+    [attribution],
+  );
+
+  const refreshCalendlyLink = (event) => {
+    const prepared = prepareAttributedLink(event, CALENDLY_URL, attribution);
+    setAttribution(prepared.attribution);
+    return prepared;
+  };
+
+  const trackCalendlyClick = (event, location) => {
+    const prepared = refreshCalendlyLink(event);
+    pushDataLayer("click_calendly", location, undefined, prepared.attribution);
+  };
+
+  const refreshWhatsAppLink = (event, button) => {
+    const freshAttribution = captureAttribution();
+    const href = buildCareWhatsAppUrl(freshAttribution, button);
+
+    if (event?.currentTarget) event.currentTarget.href = href;
+    setAttribution(freshAttribution);
+
+    return { attribution: freshAttribution, href };
+  };
+
+  const trackWhatsAppClick = ({
+    event,
+    eventName = "click_whatsapp",
+    location,
+    button,
+    plan,
+  }) => {
+    const prepared = refreshWhatsAppLink(event, button);
+    pushDataLayer(eventName, location, plan, prepared.attribution);
   };
 
   return (
@@ -137,6 +222,15 @@ export default function GolfEnCasaCARE() {
           name="description"
           content="Planes CARE y CARE+ para soporte remoto, actualizaciones, licencias, mantenimiento preventivo, calibración y revisión anual de simuladores de golf."
         />
+        <link rel="canonical" href="https://www.golfencasa.net/care" />
+        <meta property="og:title" content="CARE y CARE+ | Mantenimiento de simuladores de golf" />
+        <meta
+          property="og:description"
+          content="Soporte, mantenimiento preventivo, calibración y revisión de simuladores de golf en España."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.golfencasa.net/care" />
+        <meta property="og:image" content="https://www.golfencasa.net/logo.png" />
 
         <script type="application/ld+json">
           {JSON.stringify({
@@ -198,11 +292,20 @@ export default function GolfEnCasaCARE() {
 
       {/* WHATSAPP FLOTANTE */}
       <a
-        href={WHATSAPP_URL}
+        href={whatsappUrls.floating}
         target="_blank"
         rel="noreferrer"
         aria-label="Consultar CARE y CARE+ por WhatsApp"
-        onClick={() => pushDataLayer("click_whatsapp", "care_floating_button")}
+        onPointerDown={(event) =>
+          refreshWhatsAppLink(event, "care_floating_button")
+        }
+        onClick={(event) =>
+          trackWhatsAppClick({
+            event,
+            location: "care_floating_button",
+            button: "care_floating_button",
+          })
+        }
         className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400"
       >
         <FaWhatsapp />
@@ -279,10 +382,19 @@ export default function GolfEnCasaCARE() {
               </a>
 
               <a
-                href={WHATSAPP_URL}
+                href={whatsappUrls.hero}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => pushDataLayer("click_whatsapp", "care_hero")}
+                onPointerDown={(event) =>
+                  refreshWhatsAppLink(event, "care_hero")
+                }
+                onClick={(event) =>
+                  trackWhatsAppClick({
+                    event,
+                    location: "care_hero",
+                    button: "care_hero",
+                  })
+                }
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -478,10 +590,19 @@ export default function GolfEnCasaCARE() {
             monthlyEquivalent="49 €/mes"
             features={careFeatures}
             buttonText="Solicitar propuesta CARE"
-            onClick={() =>
-              pushDataLayer("click_care_plan", "pricing_card", "CARE")
+            onPointerDown={(event) =>
+              refreshWhatsAppLink(event, "pricing_care")
             }
-            href={WHATSAPP_URL}
+            onClick={(event) =>
+              trackWhatsAppClick({
+                event,
+                eventName: "click_care_plan",
+                location: "pricing_card",
+                button: "pricing_care",
+                plan: "CARE",
+              })
+            }
+            href={whatsappUrls.pricingCare}
           />
 
           <PricingCard
@@ -494,10 +615,19 @@ export default function GolfEnCasaCARE() {
             monthlyEquivalent="79 €/mes"
             features={carePlusFeatures}
             buttonText="Solicitar propuesta CARE+"
-            onClick={() =>
-              pushDataLayer("click_care_plan", "pricing_card", "CARE+")
+            onPointerDown={(event) =>
+              refreshWhatsAppLink(event, "pricing_care_plus")
             }
-            href={WHATSAPP_URL}
+            onClick={(event) =>
+              trackWhatsAppClick({
+                event,
+                eventName: "click_care_plan",
+                location: "pricing_card",
+                button: "pricing_care_plus",
+                plan: "CARE+",
+              })
+            }
+            href={whatsappUrls.pricingCarePlus}
           />
         </div>
 
@@ -688,11 +818,18 @@ export default function GolfEnCasaCARE() {
 
             <div className="mt-7 grid gap-4">
               <a
-                href={WHATSAPP_URL}
+                href={whatsappUrls.request}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() =>
-                  pushDataLayer("click_whatsapp", "care_request_section")
+                onPointerDown={(event) =>
+                  refreshWhatsAppLink(event, "care_request_section")
+                }
+                onClick={(event) =>
+                  trackWhatsAppClick({
+                    event,
+                    location: "care_request_section",
+                    button: "care_request_section",
+                  })
                 }
                 className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-4 font-bold text-white transition hover:bg-green-400"
               >
@@ -701,11 +838,12 @@ export default function GolfEnCasaCARE() {
               </a>
 
               <a
-                href={CALENDLY_URL}
+                href={calendlyUrl}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() =>
-                  pushDataLayer("click_calendly", "care_request_section")
+                onPointerDown={refreshCalendlyLink}
+                onClick={(event) =>
+                  trackCalendlyClick(event, "care_request_section")
                 }
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold transition hover:bg-white/10"
               >
@@ -752,10 +890,19 @@ export default function GolfEnCasaCARE() {
           </div>
 
           <a
-            href={WHATSAPP_URL}
+            href={whatsappUrls.final}
             target="_blank"
             rel="noreferrer"
-            onClick={() => pushDataLayer("click_whatsapp", "care_final_cta")}
+            onPointerDown={(event) =>
+              refreshWhatsAppLink(event, "care_final_cta")
+            }
+            onClick={(event) =>
+              trackWhatsAppClick({
+                event,
+                location: "care_final_cta",
+                button: "care_final_cta",
+              })
+            }
             className="inline-flex shrink-0 items-center justify-center rounded-2xl bg-zinc-950 px-7 py-4 font-bold text-white transition hover:bg-zinc-800"
           >
             <FaWhatsapp className="mr-2 text-xl" />
@@ -858,6 +1005,7 @@ function PricingCard({
   features,
   buttonText,
   href,
+  onPointerDown,
   onClick,
   featured = false,
 }) {
@@ -933,6 +1081,7 @@ function PricingCard({
         href={href}
         target="_blank"
         rel="noreferrer"
+        onPointerDown={onPointerDown}
         onClick={onClick}
         className={`mt-8 inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 font-bold transition ${
           featured

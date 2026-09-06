@@ -11,7 +11,8 @@ export default function LegalNoticeEN() {
     <main className="signature-sans min-h-screen bg-[#0B0B0B] text-[#F5F3EF]">
       <Helmet>
         <title>Legal Notice | Golf en Casa Signature Projects</title>
-        <meta name="robots" content="index,follow" />
+        <meta name="description" content="Legal information about the ownership and use of the Golf en Casa website." />
+        <meta name="robots" content="noindex,follow" />
         <link rel="canonical" href="https://www.golfencasa.net/en/legal-notice" />
         <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

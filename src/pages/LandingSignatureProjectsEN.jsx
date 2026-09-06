@@ -21,11 +21,20 @@ import {
 } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import {
+  EMPTY_ATTRIBUTION,
+  appendAttributionToUrl,
+  attributionEventData as getAttributionEventData,
+  buildWhatsAppUrl,
+  captureAttribution,
+  getCurrentBrowserPath,
+  prepareAttributedLink,
+  toLeadAttribution,
+} from "../lib/attribution";
 
 const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
-const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_signature_attribution_v1";
 
 const COLORS = {
   black: "#0B0B0B",
@@ -35,149 +44,12 @@ const COLORS = {
   gold: "#C8AA7D",
 };
 
-const EMPTY_ATTRIBUTION = {
-  source: "direct",
-  medium: "none",
-  campaign: "",
-  content: "",
-  term: "",
-  gclid: "",
-  fbclid: "",
-  landingPage: "",
-  referrer: "",
-  capturedAt: "",
-};
-
-const readAttributionFromBrowser = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-
-  const params = new URLSearchParams(window.location.search);
-  const referrer = document.referrer || "";
-  const detected = {
-    source: params.get("utm_source") || "",
-    medium: params.get("utm_medium") || "",
-    campaign: params.get("utm_campaign") || "",
-    content: params.get("utm_content") || "",
-    term: params.get("utm_term") || "",
-    gclid: params.get("gclid") || "",
-    fbclid: params.get("fbclid") || "",
-    landingPage: `${window.location.pathname}${window.location.search}`,
-    referrer,
-    capturedAt: new Date().toISOString(),
-  };
-
-  if (!detected.source) {
-    if (detected.gclid) {
-      detected.source = "google";
-      detected.medium = "cpc";
-    } else if (detected.fbclid) {
-      detected.source = "meta";
-      detected.medium = "paid_social";
-    } else if (referrer.includes("google.")) {
-      detected.source = "google";
-      detected.medium = "organic";
-    } else if (referrer.includes("facebook.com") || referrer.includes("instagram.com")) {
-      detected.source = "meta";
-      detected.medium = "referral";
-    } else if (referrer) {
-      try {
-        detected.source = new URL(referrer).hostname.replace(/^www\./, "");
-        detected.medium = "referral";
-      } catch {
-        detected.source = "referral";
-        detected.medium = "referral";
-      }
-    } else {
-      detected.source = "direct";
-      detected.medium = "none";
-    }
-  }
-
-  return detected;
-};
-
-const getStoredAttribution = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-  try {
-    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
-  } catch {
-    return EMPTY_ATTRIBUTION;
-  }
-};
-
-const captureAttribution = () => {
-  const detected = readAttributionFromBrowser();
-  const stored = getStoredAttribution();
-  const hasCampaignData = Boolean(
-    detected.gclid ||
-      detected.fbclid ||
-      detected.campaign ||
-      detected.source !== "direct"
-  );
-  const attribution = stored.capturedAt && !hasCampaignData ? stored : detected;
-
-  try {
-    window.localStorage.setItem(
-      ATTRIBUTION_STORAGE_KEY,
-      JSON.stringify(attribution)
-    );
-  } catch {
-    // Keep measurement running if localStorage is unavailable.
-  }
-
-  return attribution;
-};
-
-const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
-  const s = (source || "").toLowerCase();
-  const m = (medium || "").toLowerCase();
-  const r = (referrer || "").toLowerCase();
-
-  if (gclid || (s === "google" && ["cpc", "ppc", "paid"].includes(m))) {
-    return "Google Ads";
-  }
-  if (
-    fbclid ||
-    (["facebook", "instagram", "meta", "fb", "ig"].includes(s) &&
-      ["cpc", "paid", "paid_social", "social_paid"].includes(m))
-  ) {
-    return "Meta Ads";
-  }
-  if (s === "linkedin" && ["cpc", "paid", "paid_social"].includes(m)) {
-    return "LinkedIn Ads";
-  }
-  if (s === "google" || r.includes("google.")) return "Google organic";
-  if (s && s !== "direct") return s;
-  return "Direct";
-};
-
-const attributionEventData = (a) => ({
-  traffic_source: a.source || "direct",
-  traffic_medium: a.medium || "none",
-  traffic_campaign: a.campaign || "",
-  traffic_content: a.content || "",
-  traffic_term: a.term || "",
-  landing_page: a.landingPage || "/en/signature",
-  conversion_page: typeof window !== "undefined" ? window.location.pathname : "",
-  source_label: classifyTrafficSource(a),
-  gclid_present: Boolean(a.gclid),
-  fbclid_present: Boolean(a.fbclid),
-});
-
-const buildWhatsAppUrl = ({ message, attribution, location }) => {
-  const trackingLines = [
-    `Origen: ${classifyTrafficSource(attribution)}`,
-    attribution.campaign ? `Campaign: ${attribution.campaign}` : "",
-    attribution.term ? `Search: ${attribution.term}` : "",
-    `Page: ${attribution.landingPage || "/en/signature"}`,
-    `Button: ${location}`,
-  ].filter(Boolean);
-
-  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
-    `${message}\n\n---\n${trackingLines.join("\n")}`
-  )}`;
-};
+const attributionEventData = (attribution) =>
+  getAttributionEventData(attribution, {
+    landingFallback: "/en/signature",
+    conversionPage: getCurrentBrowserPath(),
+    locale: "en",
+  });
 
 const processSteps = [
   ["01", "DISCOVERY", "Space · needs · objectives"],
@@ -327,8 +199,14 @@ export default function LandingSignatureProjectsEN() {
   const [technicalForm, setTechnicalForm] = useState({
     name: "",
     email: "",
+    phone: "",
+    location: "",
     company: "",
     profile: "",
+    projectType: "",
+    dimensions: "",
+    investment: "",
+    sourceDeclared: "",
     message: "",
   });
   const [form, setForm] = useState({
@@ -341,6 +219,7 @@ export default function LandingSignatureProjectsEN() {
     stage: "",
     dimensions: "",
     investment: "",
+    sourceDeclared: "",
     message: "",
   });
 
@@ -403,14 +282,35 @@ export default function LandingSignatureProjectsEN() {
     };
   }, []);
 
-  const pushDataLayer = (event, location, extra = {}) => {
+  const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
-      ...attributionEventData(attribution),
+      ...attributionEventData(attributionOverride),
       ...extra,
     });
+  };
+
+  const calendlyUrl = useMemo(
+    () => appendAttributionToUrl(CALENDLY_URL, attribution),
+    [attribution],
+  );
+
+  const refreshCalendlyLink = (event) => {
+    const prepared = prepareAttributedLink(event, CALENDLY_URL, attribution);
+    setAttribution(prepared.attribution);
+    return prepared;
+  };
+
+  const trackCalendlyClick = (event, location) => {
+    const prepared = refreshCalendlyLink(event);
+    pushDataLayer(
+      "signature_calendly",
+      location,
+      {},
+      prepared.attribution,
+    );
   };
 
   const whatsappUrl = useMemo(
@@ -418,11 +318,11 @@ export default function LandingSignatureProjectsEN() {
       buildWhatsAppUrl({
         message:
           "Hello, I would like to discuss a project with Golf en Casa | Signature Projects.",
-        attribution: {
-          ...attribution,
-          conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
-        },
-        location: "signature_contact",
+        phone: WHATSAPP_PHONE,
+        attribution,
+        pagePath: getCurrentBrowserPath(),
+        button: "signature_contact",
+        locale: "en",
       }),
     [attribution]
   );
@@ -444,10 +344,11 @@ export default function LandingSignatureProjectsEN() {
         body: JSON.stringify({
           ...form,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution: {
-            ...attribution,
-            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
-          },
+          privacyConsent:
+            e.currentTarget.elements.privacyConsent?.checked === true,
+          attribution: toLeadAttribution(attribution, {
+            conversionPage: getCurrentBrowserPath(),
+          }),
         }),
       });
 
@@ -457,6 +358,11 @@ export default function LandingSignatureProjectsEN() {
         throw new Error(result.error || "The project enquiry could not be sent.");
       }
 
+      if (result.filtered) {
+        setSubmitState("success");
+        return;
+      }
+
       // Count the lead only after the server confirms it has been received.
       pushDataLayer("signature_project_form_submit", "signature_form", {
         lead_type: "signature_project",
@@ -464,6 +370,15 @@ export default function LandingSignatureProjectsEN() {
         project_type: form.projectType,
         project_stage: form.stage,
         investment_range: form.investment,
+        source_declared: form.sourceDeclared,
+      });
+
+      pushDataLayer("form_submit", "signature_form", {
+        form_name: "signature_project_enquiry",
+        lead_type: "signature_project",
+        project_type: form.projectType,
+        budget_range: form.investment,
+        source_declared: form.sourceDeclared,
       });
 
       window.dataLayer = window.dataLayer || [];
@@ -475,6 +390,11 @@ export default function LandingSignatureProjectsEN() {
         project_type: form.projectType,
         project_stage: form.stage,
         investment_range: form.investment,
+        source_declared: form.sourceDeclared,
+        user_data: {
+          email_address: form.email.trim().toLowerCase(),
+          phone_number: form.phone.trim(),
+        },
         ...attributionEventData(attribution),
       });
 
@@ -503,10 +423,11 @@ export default function LandingSignatureProjectsEN() {
           leadType: "signature_technical_request",
           ...technicalForm,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution: {
-            ...attribution,
-            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
-          },
+          privacyConsent:
+            e.currentTarget.elements.privacyConsent?.checked === true,
+          attribution: toLeadAttribution(attribution, {
+            conversionPage: getCurrentBrowserPath(),
+          }),
         }),
       });
 
@@ -515,9 +436,25 @@ export default function LandingSignatureProjectsEN() {
         throw new Error(result.error || "The request could not be sent.");
       }
 
+      if (result.filtered) {
+        setTechnicalSubmitState("success");
+        return;
+      }
+
       pushDataLayer("signature_technical_request_submit", "professionals_technical_form", {
         lead_type: "signature_technical_request",
         client_profile: technicalForm.profile,
+        project_type: technicalForm.projectType,
+        investment_range: technicalForm.investment,
+        source_declared: technicalForm.sourceDeclared,
+      });
+
+      pushDataLayer("form_submit", "professionals_technical_form", {
+        form_name: "signature_technical_request",
+        lead_type: "signature_technical_request",
+        project_type: technicalForm.projectType,
+        budget_range: technicalForm.investment,
+        source_declared: technicalForm.sourceDeclared,
       });
 
       window.dataLayer = window.dataLayer || [];
@@ -526,6 +463,13 @@ export default function LandingSignatureProjectsEN() {
         form_name: "signature_technical_request",
         lead_type: "signature_technical_request",
         client_profile: technicalForm.profile,
+        project_type: technicalForm.projectType,
+        investment_range: technicalForm.investment,
+        source_declared: technicalForm.sourceDeclared,
+        user_data: {
+          email_address: technicalForm.email.trim().toLowerCase(),
+          phone_number: technicalForm.phone.trim(),
+        },
         ...attributionEventData(attribution),
       });
 
@@ -548,6 +492,9 @@ export default function LandingSignatureProjectsEN() {
           content="Golf en Casa | Signature Projects. Bespoke luxury golf simulator design and installation for private residences, villas, architecture studios and premium developments."
         />
         <link rel="canonical" href="https://www.golfencasa.net/en/signature" />
+        <link rel="alternate" hrefLang="es" href="https://www.golfencasa.net/signature" />
+        <link rel="alternate" hrefLang="en" href="https://www.golfencasa.net/en/signature" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.golfencasa.net/signature" />
         <meta property="og:title" content="Golf en Casa | Signature Projects" />
         <meta
           property="og:description"
@@ -1248,10 +1195,11 @@ export default function LandingSignatureProjectsEN() {
                   <Mail className="h-4 w-4" /> {EMAIL}
                 </a>
                 <a
-                  href={CALENDLY_URL}
+                  href={calendlyUrl}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => pushDataLayer("signature_calendly", "contact")}
+                  onPointerDown={refreshCalendlyLink}
+                  onClick={(event) => trackCalendlyClick(event, "contact")}
                   className="flex items-center gap-3 hover:text-[#9C7B4F]"
                 >
                   <CalendarDays className="h-4 w-4" /> Schedule a Conversation
@@ -1261,7 +1209,7 @@ export default function LandingSignatureProjectsEN() {
           </div>
 
           {submitState === "success" ? (
-            <div className="border-t border-[#C8AA7D] pt-10">
+            <div role="status" aria-live="polite" aria-atomic="true" className="border-t border-[#C8AA7D] pt-10">
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#9C7B4F]">
                 Project received
               </p>
@@ -1289,10 +1237,10 @@ export default function LandingSignatureProjectsEN() {
               <input required name="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="signature-input" />
             </FormField>
             <FormField label="Email *">
-              <input required type="email" name="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="signature-input" />
+              <input id={technicalOpen ? "signature-project-email" : "email"} required type="email" name="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="signature-input" />
             </FormField>
             <FormField label="Phone *">
-              <input required name="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="signature-input" />
+              <input id={technicalOpen ? "signature-project-phone" : "phone"} required type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="signature-input" />
             </FormField>
             <FormField label="Project location *">
               <input required name="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="signature-input" />
@@ -1331,27 +1279,51 @@ export default function LandingSignatureProjectsEN() {
               </select>
             </FormField>
 
-            <FormField label="Approximate dimensions">
+            <FormField label="Approximate dimensions *">
               <input
-                placeholder="Width × Depth × Height"
+                required
+                name="dimensions"
+                placeholder="Width × Depth × Height · or ‘Not sure yet’"
                 value={form.dimensions}
                 onChange={(e) => setForm({ ...form, dimensions: e.target.value })}
                 className="signature-input"
               />
             </FormField>
 
-            <FormField label="Expected project investment" className="sm:col-span-2">
+            <FormField label="Expected project investment *" className="sm:col-span-2">
               <select
+                required
+                name="investment"
                 value={form.investment}
                 onChange={(e) => setForm({ ...form, investment: e.target.value })}
                 className="signature-input"
               >
-                <option value="">To be defined</option>
+                <option value="">Select</option>
+                <option>To be defined</option>
                 <option>€20,000 – €35,000</option>
                 <option>€35,000 – €50,000</option>
                 <option>€50,000 – €75,000</option>
                 <option>€75,000 – €100,000</option>
                 <option>€100,000+</option>
+              </select>
+            </FormField>
+
+            <FormField label="How did you hear about us? *" className="sm:col-span-2">
+              <select
+                required
+                name="sourceDeclared"
+                value={form.sourceDeclared}
+                onChange={(e) => setForm({ ...form, sourceDeclared: e.target.value })}
+                className="signature-input"
+              >
+                <option value="">Select</option>
+                <option>Google</option>
+                <option>Instagram / Facebook</option>
+                <option>YouTube</option>
+                <option>Recommendation</option>
+                <option>I already knew Golf en Casa</option>
+                <option>Other</option>
+                <option>Not sure / Do not remember</option>
               </select>
             </FormField>
 
@@ -1367,6 +1339,7 @@ export default function LandingSignatureProjectsEN() {
             <label className="sm:col-span-2 flex items-start gap-3 text-xs leading-5 text-black/55">
               <input
                 type="checkbox"
+                name="privacyConsent"
                 required
                 className="mt-1 accent-[#0B0B0B]"
               />
@@ -1389,7 +1362,7 @@ export default function LandingSignatureProjectsEN() {
               </button>
 
               {submitState === "error" && (
-                <p className="mt-4 max-w-xl text-sm leading-6 text-red-700">
+                <p role="alert" aria-live="assertive" aria-atomic="true" className="mt-4 max-w-xl text-sm leading-6 text-red-700">
                   {submitError}
                 </p>
               )}
@@ -1421,7 +1394,7 @@ export default function LandingSignatureProjectsEN() {
             </button>
 
             {technicalSubmitState === "success" ? (
-              <div className="py-6">
+              <div role="status" aria-live="polite" aria-atomic="true" className="py-6">
                 <SectionLabel>Request received</SectionLabel>
                 <h3 id="technical-request-title" className="signature-serif mt-4 text-4xl leading-tight sm:text-5xl">
                   Thank you.<br /><span className="italic">We have received your request.</span>
@@ -1456,8 +1429,20 @@ export default function LandingSignatureProjectsEN() {
                   </FormField>
 
                   <FormField label="Professional email *">
-                    <input required type="email" value={technicalForm.email}
+                    <input id="email" required type="email" name="email" autoComplete="email" value={technicalForm.email}
                       onChange={(e) => setTechnicalForm({ ...technicalForm, email: e.target.value })}
+                      className="signature-input" />
+                  </FormField>
+
+                  <FormField label="Phone *">
+                    <input required type="tel" name="phone" autoComplete="tel" value={technicalForm.phone}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, phone: e.target.value })}
+                      className="signature-input" />
+                  </FormField>
+
+                  <FormField label="Project location *">
+                    <input required name="location" value={technicalForm.location}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, location: e.target.value })}
                       className="signature-input" />
                   </FormField>
 
@@ -1481,6 +1466,56 @@ export default function LandingSignatureProjectsEN() {
                     </select>
                   </FormField>
 
+                  <FormField label="Project type *">
+                    <select required name="projectType" value={technicalForm.projectType}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, projectType: e.target.value })}
+                      className="signature-input">
+                      <option value="">Select</option>
+                      <option>Private residence</option>
+                      <option>Villa</option>
+                      <option>Residential development</option>
+                      <option>Hotel / Resort</option>
+                      <option>Commercial</option>
+                      <option>Other</option>
+                    </select>
+                  </FormField>
+
+                  <FormField label="Approximate dimensions *">
+                    <input required name="dimensions" placeholder="Width × Depth × Height · or ‘Not sure yet’"
+                      value={technicalForm.dimensions}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, dimensions: e.target.value })}
+                      className="signature-input" />
+                  </FormField>
+
+                  <FormField label="Expected investment *">
+                    <select required name="investment" value={technicalForm.investment}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, investment: e.target.value })}
+                      className="signature-input">
+                      <option value="">Select</option>
+                      <option>To be defined</option>
+                      <option>€20,000 – €35,000</option>
+                      <option>€35,000 – €50,000</option>
+                      <option>€50,000 – €75,000</option>
+                      <option>€75,000 – €100,000</option>
+                      <option>€100,000+</option>
+                    </select>
+                  </FormField>
+
+                  <FormField label="How did you hear about us? *">
+                    <select required name="sourceDeclared" value={technicalForm.sourceDeclared}
+                      onChange={(e) => setTechnicalForm({ ...technicalForm, sourceDeclared: e.target.value })}
+                      className="signature-input">
+                      <option value="">Select</option>
+                      <option>Google</option>
+                      <option>Instagram / Facebook</option>
+                      <option>YouTube</option>
+                      <option>Recommendation</option>
+                      <option>I already knew Golf en Casa</option>
+                      <option>Other</option>
+                      <option>Not sure / Do not remember</option>
+                    </select>
+                  </FormField>
+
                   <FormField label="What information do you need?" className="sm:col-span-2">
                     <textarea rows={5} value={technicalForm.message}
                       onChange={(e) => setTechnicalForm({ ...technicalForm, message: e.target.value })}
@@ -1488,7 +1523,7 @@ export default function LandingSignatureProjectsEN() {
                   </FormField>
 
                   <label className="sm:col-span-2 flex items-start gap-3 text-xs leading-5 text-black/55">
-                    <input type="checkbox" required className="mt-1 accent-[#0B0B0B]" />
+                    <input type="checkbox" name="privacyConsent" required className="mt-1 accent-[#0B0B0B]" />
                     <span>
                       I have read and accept the{" "}
                       <a href="/en/privacy-policy"
@@ -1505,7 +1540,7 @@ export default function LandingSignatureProjectsEN() {
                       {technicalSubmitState !== "sending" && <ArrowRight className="h-4 w-4" />}
                     </button>
                     {technicalSubmitState === "error" && (
-                      <p className="mt-4 max-w-xl text-sm leading-6 text-red-700">{technicalSubmitError}</p>
+                      <p role="alert" aria-live="assertive" aria-atomic="true" className="mt-4 max-w-xl text-sm leading-6 text-red-700">{technicalSubmitError}</p>
                     )}
                   </div>
                 </form>
@@ -1574,7 +1609,10 @@ export default function LandingSignatureProjectsEN() {
             <FooterColumn title="Contact" links={[
               ["Email", `mailto:${EMAIL}`],
               ["WhatsApp", whatsappUrl],
-              ["Schedule a Conversation", CALENDLY_URL],
+              ["Schedule a Conversation", calendlyUrl, {
+                onPointerDown: refreshCalendlyLink,
+                onClick: (event) => trackCalendlyClick(event, "footer"),
+              }],
             ]} />
             <FooterColumn title="Legal" links={[
               ["Privacy", "/en/privacy-policy"],
@@ -1644,10 +1682,11 @@ function FooterColumn({ title, links }) {
     <div>
       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C8AA7D]">{title}</p>
       <div className="mt-5 space-y-3">
-        {links.map(([label, href]) => (
+        {links.map(([label, href, linkProps = {}]) => (
           <a
             key={label}
             href={href}
+            {...linkProps}
             className="block text-xs text-white/45 transition hover:text-white"
           >
             {label}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight,
   PercentCircle,
@@ -112,6 +113,15 @@ function AmazonButton({ children, position = 'cta', variant = 'primary' }) {
 export default function PrimeDayAmazonGolfEnCasa() {
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
+      <Helmet>
+        <title>Selección Amazon para golf indoor | Golf en Casa</title>
+        <meta
+          name="description"
+          content="Selección histórica de accesorios para golf indoor publicada por Golf en Casa durante Prime Day."
+        />
+        <meta name="robots" content="noindex,follow" />
+        <link rel="canonical" href="https://www.golfencasa.net/prime-day-amazon" />
+      </Helmet>
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.12),transparent_35%)]" />
         <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-28">

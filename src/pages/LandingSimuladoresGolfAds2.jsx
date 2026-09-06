@@ -34,234 +34,48 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import {
+  EMPTY_ATTRIBUTION,
+  appendAttributionToUrl,
+  attributionEventData as getAttributionEventData,
+  buildWhatsAppUrl as buildAttributedWhatsAppUrl,
+  captureAttribution,
+  getCurrentBrowserPath,
+  getWhatsAppReference,
+  prepareAttributedLink,
+  toLeadAttribution,
+} from "../lib/attribution";
 
 const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
-const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_attribution_v1";
-const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const LANDING_VERSION = "landing_2_clarity_v1";
 
-const EMPTY_ATTRIBUTION = {
-  source: "direct",
-  medium: "none",
-  campaign: "",
-  content: "",
-  term: "",
-  gclid: "",
-  fbclid: "",
-  landingPage: "",
-  referrer: "",
-  capturedAt: "",
-};
-
-const isInternalReferrer = (referrer) => {
-  if (!referrer) return false;
-  try {
-    const hostname = new URL(referrer).hostname.toLowerCase();
-    return (
-      hostname === "golfencasa.net" ||
-      hostname === "www.golfencasa.net" ||
-      hostname === "localhost" ||
-      hostname.endsWith(".vercel.app")
-    );
-  } catch {
-    return false;
-  }
-};
-
-const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
-  const sourceValue = (source || "").toLowerCase();
-  const mediumValue = (medium || "").toLowerCase();
-  const referrerValue = (referrer || "").toLowerCase();
-
-  if (
-    gclid ||
-    (sourceValue === "google" &&
-      ["cpc", "ppc", "paid", "paid_search"].includes(mediumValue))
-  ) {
-    return "Google Ads";
-  }
-
-  if (
-    fbclid ||
-    (["facebook", "instagram", "meta", "fb", "ig"].includes(sourceValue) &&
-      ["cpc", "paid", "paid_social", "social_paid"].includes(mediumValue))
-  ) {
-    return "Meta Ads";
-  }
-
-  if (
-    sourceValue === "youtube" ||
-    referrerValue.includes("youtube.com") ||
-    referrerValue.includes("youtu.be")
-  ) {
-    return "YouTube";
-  }
-
-  if (sourceValue === "google" || referrerValue.includes("google.")) {
-    return "Google orgánico";
-  }
-
-  if (sourceValue && sourceValue !== "direct") return sourceValue;
-  return "Acceso directo";
-};
-
-const readAttributionFromBrowser = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-
-  const params = new URLSearchParams(window.location.search);
-  const rawReferrer = document.referrer || "";
-  const externalReferrer = isInternalReferrer(rawReferrer) ? "" : rawReferrer;
-
-  const detected = {
-    source: params.get("utm_source") || "",
-    medium: params.get("utm_medium") || "",
-    campaign: params.get("utm_campaign") || "",
-    content: params.get("utm_content") || "",
-    term: params.get("utm_term") || "",
-    gclid: params.get("gclid") || "",
-    fbclid: params.get("fbclid") || "",
-    landingPage: `${window.location.pathname}${window.location.search}`,
-    referrer: externalReferrer,
-    capturedAt: new Date().toISOString(),
-  };
-
-  if (!detected.source) {
-    if (detected.gclid) {
-      detected.source = "google";
-      detected.medium = "cpc";
-    } else if (detected.fbclid) {
-      detected.source = "meta";
-      detected.medium = "paid_social";
-    } else if (
-      externalReferrer.includes("youtube.com") ||
-      externalReferrer.includes("youtu.be")
-    ) {
-      detected.source = "youtube";
-      detected.medium = "referral";
-    } else if (externalReferrer.includes("google.")) {
-      detected.source = "google";
-      detected.medium = "organic";
-    } else if (
-      externalReferrer.includes("facebook.com") ||
-      externalReferrer.includes("instagram.com")
-    ) {
-      detected.source = "meta";
-      detected.medium = "referral";
-    } else if (externalReferrer) {
-      try {
-        detected.source = new URL(externalReferrer).hostname.replace(/^www\./, "");
-        detected.medium = "referral";
-      } catch {
-        detected.source = "referral";
-        detected.medium = "referral";
-      }
-    } else {
-      detected.source = "direct";
-      detected.medium = "none";
-    }
-  }
-
-  return detected;
-};
-
-const getStoredAttribution = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-  try {
-    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
-  } catch {
-    return EMPTY_ATTRIBUTION;
-  }
-};
-
-const captureAttribution = () => {
-  const detected = readAttributionFromBrowser();
-  const stored = getStoredAttribution();
-
-  const storedCapturedAt = stored.capturedAt
-    ? new Date(stored.capturedAt).getTime()
-    : 0;
-  const storedIsFresh =
-    storedCapturedAt > 0 &&
-    Date.now() - storedCapturedAt <= ATTRIBUTION_TTL_MS;
-
-  const hasNewAcquisitionData = Boolean(
-    detected.gclid ||
-      detected.fbclid ||
-      detected.campaign ||
-      detected.source !== "direct"
-  );
-
-  const attribution =
-    storedIsFresh && !hasNewAcquisitionData ? stored : detected;
-
-  try {
-    window.localStorage.setItem(
-      ATTRIBUTION_STORAGE_KEY,
-      JSON.stringify(attribution)
-    );
-  } catch {
-    // El tracking continúa aunque localStorage esté bloqueado.
-  }
-
-  return attribution;
-};
-
 const getCurrentPage = () => {
-  if (typeof window === "undefined") return "/estudio-simulador-golf";
-  return `${window.location.pathname}${window.location.search}`;
+  return getCurrentBrowserPath({
+    includeSearch: true,
+    fallback: "/estudio-simulador-golf",
+  });
 };
 
 const attributionEventData = (attribution) => ({
-  traffic_source: attribution.source || "direct",
-  traffic_medium: attribution.medium || "none",
-  traffic_campaign: attribution.campaign || "",
-  traffic_content: attribution.content || "",
-  traffic_term: attribution.term || "",
-  landing_page: attribution.landingPage || "/estudio-simulador-golf",
-  conversion_page: getCurrentPage(),
-  source_label: classifyTrafficSource(attribution),
-  gclid_present: Boolean(attribution.gclid),
-  fbclid_present: Boolean(attribution.fbclid),
+  ...getAttributionEventData(attribution, {
+    landingFallback: "/estudio-simulador-golf",
+    conversionPage: getCurrentPage(),
+  }),
   landing_version: LANDING_VERSION,
 });
 
-const buildCalendlyUrl = (attribution) => {
-  try {
-    const url = new URL(CALENDLY_URL);
-    const params = {
-      utm_source: attribution.source,
-      utm_medium: attribution.medium,
-      utm_campaign: attribution.campaign,
-      utm_content: attribution.content,
-      utm_term: attribution.term,
-    };
-    Object.entries(params).forEach(([key, value]) => {
-      if (value && value !== "none") url.searchParams.set(key, value);
-    });
-    return url.toString();
-  } catch {
-    return CALENDLY_URL;
-  }
-};
+const buildCalendlyUrl = (attribution) =>
+  appendAttributionToUrl(CALENDLY_URL, attribution);
 
-const getWhatsAppReference = (attribution) => {
-  const sourceLabel = classifyTrafficSource(attribution);
-  if (sourceLabel === "Google Ads") return "GADS";
-  if (sourceLabel === "Meta Ads") return "META";
-  if (sourceLabel === "YouTube") return "YT";
-  if (sourceLabel === "Google orgánico") return "GORG";
-  if (sourceLabel === "Acceso directo") return "DIRECT";
-  return "WEB";
-};
-
-const buildWhatsAppUrl = ({ message, attribution }) => {
-  const reference = getWhatsAppReference(attribution);
-  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(
-    `Ref: ${reference}\n\n${message}`
-  )}`;
-};
+const buildWhatsAppUrl = ({ message, attribution, button }) =>
+  buildAttributedWhatsAppUrl({
+    phone: WHATSAPP_PHONE,
+    message,
+    attribution,
+    pagePath: getCurrentPage(),
+    button,
+  });
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -443,21 +257,25 @@ export default function LandingSimuladoresGolfAds2() {
         message:
           "Hola, quiero saber si mi espacio es apto para instalar un simulador de golf. Mis medidas aproximadas son:",
         attribution,
+        button: "floating_button",
       }),
       hero: buildWhatsAppUrl({
         message:
           "Hola, quiero comprobar si mi espacio es viable para instalar un simulador de golf.",
         attribution,
+        button: "hero",
       }),
       golf_studio_section: buildWhatsAppUrl({
         message:
           "Hola, he visto la opción Golf Studio y quiero estudiar la instalación de una caseta con simulador de golf en mi jardín. La parcela está en:",
         attribution,
+        button: "golf_studio_section",
       }),
       form_success: buildWhatsAppUrl({
         message:
           "Hola, acabo de solicitar el estudio gratuito y quiero enviar fotos de mi espacio.",
         attribution,
+        button: "form_success",
       }),
     }),
     [attribution]
@@ -476,15 +294,26 @@ export default function LandingSimuladoresGolfAds2() {
     }));
   };
 
-  const pushDataLayer = (event, location, extra = {}) => {
+  const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
     if (typeof window === "undefined") return;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
-      ...attributionEventData(attribution),
+      ...attributionEventData(attributionOverride),
       ...extra,
     });
+  };
+
+  const refreshCalendlyLink = (event) => {
+    const prepared = prepareAttributedLink(event, CALENDLY_URL, attribution);
+    setAttribution(prepared.attribution);
+    return prepared;
+  };
+
+  const trackCalendlyClick = (event, location, extra = {}) => {
+    const prepared = refreshCalendlyLink(event);
+    pushDataLayer("calendly_click", location, extra, prepared.attribution);
   };
 
   const trackWhatsAppClick = (location) => {
@@ -519,18 +348,21 @@ export default function LandingSimuladoresGolfAds2() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          privacyConsent: form.privacyConsent === true,
           companyWebsite:
             event.currentTarget.elements.companyWebsite?.value || "",
-          attribution: {
-            ...attribution,
-            conversionPage,
-          },
+          attribution: toLeadAttribution(attribution, { conversionPage }),
         }),
       });
 
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) {
         throw new Error(result.error || "No se pudo enviar la solicitud.");
+      }
+
+      if (result.filtered) {
+        setSubmitState("success");
+        return;
       }
 
       pushDataLayer("generate_lead", "hero_form", {
@@ -540,6 +372,10 @@ export default function LandingSimuladoresGolfAds2() {
         budget_range: form.budget,
         source_declared: form.sourceDeclared,
         crm_synced: Boolean(result.crmSynced),
+        user_data: {
+          email_address: form.email.trim().toLowerCase(),
+          phone_number: form.phone.trim(),
+        },
       });
 
       pushDataLayer("form_submit", "hero_form", {
@@ -1083,8 +919,9 @@ export default function LandingSimuladoresGolfAds2() {
                 href={calendlyUrl}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() =>
-                  pushDataLayer("calendly_click", "personal", {
+                onPointerDown={refreshCalendlyLink}
+                onClick={(event) =>
+                  trackCalendlyClick(event, "personal", {
                     contact_channel: "calendly",
                   })
                 }
@@ -1181,7 +1018,7 @@ function LeadForm({
 }) {
   if (submitState === "success") {
     return (
-      <div className="rounded-[2rem] border border-emerald-400/30 bg-zinc-900 p-7 shadow-2xl">
+      <div role="status" aria-live="polite" aria-atomic="true" className="rounded-[2rem] border border-emerald-400/30 bg-zinc-900 p-7 shadow-2xl">
         <CircleCheckBig className="h-14 w-14 text-emerald-300" />
         <h2 className="mt-5 text-3xl font-black">Solicitud enviada</h2>
         <p className="mt-4 leading-7 text-zinc-300">
@@ -1382,6 +1219,8 @@ function LeadForm({
       {submitState === "error" && submitError && (
         <div
           role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
           className="mt-4 rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-100"
         >
           {submitError}

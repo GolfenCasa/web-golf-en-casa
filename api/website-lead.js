@@ -1,7 +1,15 @@
+import {
+  getAttributionSummaryRows,
+  sanitizeLeadAttribution,
+} from "./_lib/lead-attribution.js";
+
 const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
   "Golf en Casa <info@golfencasa.net>";
+
+const CRM_TIMEOUT_MS = 2500;
+const PRIVACY_POLICY_VERSION = "2026-09-03";
 
 const clean = (value, max = 500) =>
   String(value ?? "")
@@ -26,11 +34,6 @@ export default async function handler(request, response) {
     return response.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    console.error("Missing RESEND_API_KEY");
-    return response.status(500).json({ ok: false, error: "Email service unavailable" });
-  }
-
   const body = request.body;
 
   if (!body || typeof body !== "object") {
@@ -39,7 +42,13 @@ export default async function handler(request, response) {
 
   // Honeypot antispam.
   if (clean(body.companyWebsite, 200)) {
-    return response.status(200).json({ ok: true });
+    return response.status(200).json({ ok: true, filtered: true });
+  }
+
+  if (body.privacyConsent !== true) {
+    return response
+      .status(400)
+      .json({ ok: false, error: "Privacy consent required" });
   }
 
   const data = {
@@ -47,25 +56,24 @@ export default async function handler(request, response) {
     name: clean(body.name, 120),
     email: clean(body.email, 254),
     phone: clean(body.phone, 80),
-    space: clean(body.space, 160),
+    city: clean(body.city, 160),
+    projectType: clean(body.projectType || body.space, 120),
     budget: clean(body.budget, 120),
+    dimensions: clean(body.dimensions, 200),
+    sourceDeclared: clean(body.sourceDeclared, 160),
     message: clean(body.message, 4000),
-    attribution: {
-      source: clean(body.attribution?.source, 120),
-      medium: clean(body.attribution?.medium, 120),
-      campaign: clean(body.attribution?.campaign, 200),
-      content: clean(body.attribution?.content, 200),
-      term: clean(body.attribution?.term, 300),
-      gclid: clean(body.attribution?.gclid, 300),
-      fbclid: clean(body.attribution?.fbclid, 300),
-      landingPage: clean(body.attribution?.landingPage, 500),
-      conversionPage: clean(body.attribution?.conversionPage, 500),
-      referrer: clean(body.attribution?.referrer, 500),
-      capturedAt: clean(body.attribution?.capturedAt, 80),
-    },
+    attribution: sanitizeLeadAttribution(body.attribution),
   };
 
-  for (const field of ["name", "email", "phone"]) {
+  for (const field of [
+    "name",
+    "email",
+    "phone",
+    "projectType",
+    "budget",
+    "dimensions",
+    "sourceDeclared",
+  ]) {
     if (!data[field]) {
       return response
         .status(400)
@@ -76,6 +84,22 @@ export default async function handler(request, response) {
   if (!isValidEmail(data.email)) {
     return response.status(400).json({ ok: false, error: "Invalid email" });
   }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error("Missing RESEND_API_KEY");
+    return response.status(500).json({ ok: false, error: "Email service unavailable" });
+  }
+
+  const consent = {
+    acceptedAt: new Date().toISOString(),
+    policyVersion: PRIVACY_POLICY_VERSION,
+  };
+
+  const consentRows = [
+    ["Consentimiento de privacidad", "Sí"],
+    ["acceptedAt", consent.acceptedAt],
+    ["policyVersion", consent.policyVersion],
+  ];
 
   const sourceLabel =
     [data.attribution.source, data.attribution.medium]
@@ -88,8 +112,11 @@ export default async function handler(request, response) {
     ["Nombre", data.name],
     ["Email", data.email],
     ["Teléfono", data.phone],
-    ["Tipo de espacio", data.space || "No indicado"],
-    ["Presupuesto estimado", data.budget || "Sin definir"],
+    ["Ciudad / provincia", data.city || "No indicado"],
+    ["Tipo de instalación", data.projectType],
+    ["Presupuesto aproximado", data.budget],
+    ["Medidas del espacio", data.dimensions],
+    ["Cómo nos ha conocido", data.sourceDeclared],
     ["Fuente / medio", sourceLabel],
     ["Campaña", data.attribution.campaign || "No disponible"],
     ["Contenido", data.attribution.content || "No disponible"],
@@ -98,7 +125,12 @@ export default async function handler(request, response) {
         ["Página de conversión", data.attribution.conversionPage || "No disponible"],
     ["Referrer", data.attribution.referrer || "No disponible"],
     ["GCLID", data.attribution.gclid || "No disponible"],
+    ["GBRAID", data.attribution.gbraid || "No disponible"],
+    ["WBRAID", data.attribution.wbraid || "No disponible"],
+    ["MSCLKID", data.attribution.msclkid || "No disponible"],
     ["FBCLID", data.attribution.fbclid || "No disponible"],
+    ...getAttributionSummaryRows(data.attribution),
+    ...consentRows,
   ];
 
   const htmlRows = rows
@@ -170,9 +202,11 @@ export default async function handler(request, response) {
     let crmLeadId = null;
 
     if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      const crmController = new AbortController();
+      const crmTimeout = setTimeout(() => crmController.abort(), CRM_TIMEOUT_MS);
+
       try {
         const notes = [
-          data.space ? `Tipo de espacio: ${data.space}` : "",
           data.message ? `Mensaje: ${data.message}` : "",
           data.attribution.landingPage
             ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
@@ -180,6 +214,9 @@ export default async function handler(request, response) {
           data.attribution.conversionPage
             ? `Página conversión: ${data.attribution.conversionPage}`
             : "",
+          "Consentimiento de privacidad: Sí",
+          `acceptedAt: ${consent.acceptedAt}`,
+          `policyVersion: ${consent.policyVersion}`,
         ]
           .filter(Boolean)
           .join(" | ");
@@ -189,17 +226,18 @@ export default async function handler(request, response) {
           headers: {
             "Content-Type": "application/json",
           },
+          signal: crmController.signal,
           body: JSON.stringify({
             secret: process.env.CRM_WEBHOOK_SECRET,
             leadType: data.leadType,
             name: data.name,
             email: data.email,
             phone: data.phone,
-            city: "",
-            projectType: "Instalación completa",
-            budget: data.budget || "Sin definir",
-            dimensions: "",
-            sourceDeclared: "",
+            city: data.city,
+            projectType: data.projectType,
+            budget: data.budget,
+            dimensions: data.dimensions,
+            sourceDeclared: data.sourceDeclared,
             message: notes,
             attribution: data.attribution,
           }),
@@ -214,7 +252,13 @@ export default async function handler(request, response) {
           console.error("CRM webhook error", crmResponse.status, crmData);
         }
       } catch (crmError) {
-        console.error("CRM webhook request failed", crmError);
+        if (crmError?.name === "AbortError") {
+          console.error(`CRM webhook timeout after ${CRM_TIMEOUT_MS} ms`);
+        } else {
+          console.error("CRM webhook request failed", crmError);
+        }
+      } finally {
+        clearTimeout(crmTimeout);
       }
     } else {
       console.error("Missing CRM_WEBHOOK_URL or CRM_WEBHOOK_SECRET");

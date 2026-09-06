@@ -1,7 +1,15 @@
+import {
+  getAttributionSummaryRows,
+  sanitizeLeadAttribution,
+} from "./_lib/lead-attribution.js";
+
 const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
   "Golf en Casa Signature <signature@golfencasa.net>";
+
+const CRM_TIMEOUT_MS = 2500;
+const PRIVACY_POLICY_VERSION = "2026-09-03";
 
 const projectRequiredFields = [
   "name",
@@ -11,6 +19,9 @@ const projectRequiredFields = [
   "profile",
   "projectType",
   "stage",
+  "dimensions",
+  "investment",
+  "sourceDeclared",
 ];
 
 const clean = (value, max = 500) =>
@@ -36,11 +47,6 @@ export default async function handler(request, response) {
     return response.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    console.error("Missing RESEND_API_KEY");
-    return response.status(500).json({ ok: false, error: "Email service unavailable" });
-  }
-
   let body;
   try {
     body = request.body;
@@ -54,7 +60,13 @@ export default async function handler(request, response) {
 
   // Honeypot: bots often fill hidden fields.
   if (clean(body.companyWebsite, 200)) {
-    return response.status(200).json({ ok: true });
+    return response.status(200).json({ ok: true, filtered: true });
+  }
+
+  if (body.privacyConsent !== true) {
+    return response
+      .status(400)
+      .json({ ok: false, error: "Privacy consent required" });
   }
 
   const data = {
@@ -72,25 +84,24 @@ export default async function handler(request, response) {
     stage: clean(body.stage, 120),
     dimensions: clean(body.dimensions, 160),
     investment: clean(body.investment, 120),
+    sourceDeclared: clean(body.sourceDeclared, 160),
     message: clean(body.message, 4000),
-    attribution: {
-      source: clean(body.attribution?.source, 120),
-      medium: clean(body.attribution?.medium, 120),
-      campaign: clean(body.attribution?.campaign, 200),
-      content: clean(body.attribution?.content, 200),
-      term: clean(body.attribution?.term, 300),
-      gclid: clean(body.attribution?.gclid, 300),
-      fbclid: clean(body.attribution?.fbclid, 300),
-      landingPage: clean(body.attribution?.landingPage, 500),
-      conversionPage: clean(body.attribution?.conversionPage, 500),
-      referrer: clean(body.attribution?.referrer, 500),
-      capturedAt: clean(body.attribution?.capturedAt, 80),
-    },
+    attribution: sanitizeLeadAttribution(body.attribution),
   };
 
   const requiredFields =
     data.leadType === "signature_technical_request"
-      ? ["name", "email", "profile"]
+      ? [
+          "name",
+          "email",
+          "phone",
+          "location",
+          "profile",
+          "projectType",
+          "dimensions",
+          "investment",
+          "sourceDeclared",
+        ]
       : projectRequiredFields;
 
   for (const field of requiredFields) {
@@ -104,6 +115,22 @@ export default async function handler(request, response) {
   if (!isValidEmail(data.email)) {
     return response.status(400).json({ ok: false, error: "Invalid email" });
   }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error("Missing RESEND_API_KEY");
+    return response.status(500).json({ ok: false, error: "Email service unavailable" });
+  }
+
+  const consent = {
+    acceptedAt: new Date().toISOString(),
+    policyVersion: PRIVACY_POLICY_VERSION,
+  };
+
+  const consentRows = [
+    ["Consentimiento de privacidad", "Sí"],
+    ["acceptedAt", consent.acceptedAt],
+    ["policyVersion", consent.policyVersion],
+  ];
 
   const sourceLabel = [data.attribution.source, data.attribution.medium]
     .filter(Boolean)
@@ -120,8 +147,14 @@ export default async function handler(request, response) {
         ["Tipo de solicitud", "Información técnica"],
         ["Nombre", data.name],
         ["Email", data.email],
+        ["Teléfono", data.phone],
+        ["Ubicación", data.location],
         ["Empresa / estudio", data.company || "No indicado"],
         ["Perfil profesional", data.profile],
+        ["Tipo de proyecto", data.projectType],
+        ["Dimensiones", data.dimensions],
+        ["Inversión prevista", data.investment],
+        ["Cómo nos ha conocido", data.sourceDeclared],
         ["Fuente / medio", sourceLabel],
         ["Campaña", data.attribution.campaign || "No disponible"],
         ["Contenido", data.attribution.content || "No disponible"],
@@ -129,7 +162,12 @@ export default async function handler(request, response) {
         ["Landing", data.attribution.landingPage || "/signature"],
         ["Página de conversión", data.attribution.conversionPage || "No disponible"],
         ["GCLID", data.attribution.gclid || "No disponible"],
+        ["GBRAID", data.attribution.gbraid || "No disponible"],
+        ["WBRAID", data.attribution.wbraid || "No disponible"],
+        ["MSCLKID", data.attribution.msclkid || "No disponible"],
         ["FBCLID", data.attribution.fbclid || "No disponible"],
+        ...getAttributionSummaryRows(data.attribution),
+        ...consentRows,
       ]
     : [
         ["Tipo de solicitud", "Signature Project"],
@@ -141,7 +179,8 @@ export default async function handler(request, response) {
         ["Tipo de proyecto", data.projectType],
         ["Estado", data.stage],
         ["Dimensiones", data.dimensions || "No indicado"],
-        ["Inversión prevista", data.investment || "Por definir"],
+        ["Inversión prevista", data.investment],
+        ["Cómo nos ha conocido", data.sourceDeclared],
         ["Fuente / medio", sourceLabel],
         ["Campaña", data.attribution.campaign || "No disponible"],
         ["Contenido", data.attribution.content || "No disponible"],
@@ -149,7 +188,12 @@ export default async function handler(request, response) {
         ["Landing", data.attribution.landingPage || "/signature"],
         ["Página de conversión", data.attribution.conversionPage || "No disponible"],
         ["GCLID", data.attribution.gclid || "No disponible"],
+        ["GBRAID", data.attribution.gbraid || "No disponible"],
+        ["WBRAID", data.attribution.wbraid || "No disponible"],
+        ["MSCLKID", data.attribution.msclkid || "No disponible"],
         ["FBCLID", data.attribution.fbclid || "No disponible"],
+        ...getAttributionSummaryRows(data.attribution),
+        ...consentRows,
       ];
 
   const htmlRows = rows
@@ -227,6 +271,9 @@ export default async function handler(request, response) {
     let crmLeadId = null;
 
     if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      const crmController = new AbortController();
+      const crmTimeout = setTimeout(() => crmController.abort(), CRM_TIMEOUT_MS);
+
       try {
         const isTechnical = data.leadType === "signature_technical_request";
 
@@ -242,10 +289,10 @@ export default async function handler(request, response) {
             email: data.email,
             phone: data.phone || "",
             city: data.location || "",
-            projectType: isTechnical ? "Colaboración / B2B" : data.projectType,
-            budget: data.investment || "Sin definir",
-            dimensions: data.dimensions || "",
-            sourceDeclared: "",
+            projectType: data.projectType,
+            budget: data.investment,
+            dimensions: data.dimensions,
+            sourceDeclared: data.sourceDeclared,
             message: isTechnical
               ? [
                   data.company ? `Empresa / estudio: ${data.company}` : "",
@@ -257,6 +304,9 @@ export default async function handler(request, response) {
                   data.attribution.conversionPage
                     ? `Página conversión: ${data.attribution.conversionPage}`
                     : "",
+                  "Consentimiento de privacidad: Sí",
+                  `acceptedAt: ${consent.acceptedAt}`,
+                  `policyVersion: ${consent.policyVersion}`,
                 ].filter(Boolean).join(" | ")
               : [
                   data.profile ? `Perfil: ${data.profile}` : "",
@@ -268,9 +318,13 @@ export default async function handler(request, response) {
                   data.attribution.conversionPage
                     ? `Página conversión: ${data.attribution.conversionPage}`
                     : "",
+                  "Consentimiento de privacidad: Sí",
+                  `acceptedAt: ${consent.acceptedAt}`,
+                  `policyVersion: ${consent.policyVersion}`,
                 ].filter(Boolean).join(" | "),
             attribution: data.attribution,
           }),
+          signal: crmController.signal,
         });
 
         const crmData = await crmResponse.json().catch(() => ({}));
@@ -282,7 +336,13 @@ export default async function handler(request, response) {
           console.error("CRM webhook error", crmResponse.status, crmData);
         }
       } catch (crmError) {
-        console.error("CRM webhook request failed", crmError);
+        if (crmError?.name === "AbortError") {
+          console.error(`CRM webhook timeout after ${CRM_TIMEOUT_MS} ms`);
+        } else {
+          console.error("CRM webhook request failed", crmError);
+        }
+      } finally {
+        clearTimeout(crmTimeout);
       }
     } else {
       console.error("Missing CRM_WEBHOOK_URL or CRM_WEBHOOK_SECRET");

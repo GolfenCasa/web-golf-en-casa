@@ -32,182 +32,27 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import {
+  EMPTY_ATTRIBUTION,
+  appendAttributionToUrl,
+  attributionEventData as getAttributionEventData,
+  buildWhatsAppUrl,
+  captureAttribution,
+  getCurrentBrowserPath,
+  getWhatsAppReference,
+  prepareAttributedLink,
+  toLeadAttribution,
+} from "../lib/attribution";
 
 const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 const EMAIL = "info@golfencasa.net";
-const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_attribution_v1";
 
-const EMPTY_ATTRIBUTION = {
-  source: "direct",
-  medium: "none",
-  campaign: "",
-  content: "",
-  term: "",
-  gclid: "",
-  fbclid: "",
-  landingPage: "",
-  referrer: "",
-  capturedAt: "",
-};
+const attributionEventData = (attribution) =>
+  getAttributionEventData(attribution, { landingFallback: "" });
 
-const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
-  const sourceValue = (source || "").toLowerCase();
-  const mediumValue = (medium || "").toLowerCase();
-  const referrerValue = (referrer || "").toLowerCase();
-
-  if (gclid || sourceValue === "google" && ["cpc", "ppc", "paid"].includes(mediumValue)) {
-    return "Google Ads";
-  }
-
-  if (
-    fbclid ||
-    ["facebook", "instagram", "meta", "fb", "ig"].includes(sourceValue) &&
-      ["cpc", "paid", "paid_social", "social_paid"].includes(mediumValue)
-  ) {
-    return "Meta Ads";
-  }
-
-  if (sourceValue === "youtube" || referrerValue.includes("youtube.com")) {
-    return "YouTube";
-  }
-
-  if (sourceValue === "google" || referrerValue.includes("google.")) {
-    return "Google orgánico";
-  }
-
-  if (sourceValue && sourceValue !== "direct") {
-    return sourceValue;
-  }
-
-  return "Acceso directo";
-};
-
-const readAttributionFromBrowser = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-
-  const params = new URLSearchParams(window.location.search);
-  const referrer = document.referrer || "";
-  const detected = {
-    source: params.get("utm_source") || "",
-    medium: params.get("utm_medium") || "",
-    campaign: params.get("utm_campaign") || "",
-    content: params.get("utm_content") || "",
-    term: params.get("utm_term") || "",
-    gclid: params.get("gclid") || "",
-    fbclid: params.get("fbclid") || "",
-    landingPage: `${window.location.pathname}${window.location.search}`,
-    referrer,
-    capturedAt: new Date().toISOString(),
-  };
-
-  if (!detected.source) {
-    if (detected.gclid) {
-      detected.source = "google";
-      detected.medium = "cpc";
-    } else if (detected.fbclid) {
-      detected.source = "meta";
-      detected.medium = "paid_social";
-    } else if (referrer.includes("google.")) {
-      detected.source = "google";
-      detected.medium = "organic";
-    } else if (referrer.includes("facebook.com") || referrer.includes("instagram.com")) {
-      detected.source = "meta";
-      detected.medium = "referral";
-    } else if (referrer) {
-      try {
-        detected.source = new URL(referrer).hostname.replace(/^www\./, "");
-        detected.medium = "referral";
-      } catch {
-        detected.source = "referral";
-        detected.medium = "referral";
-      }
-    } else {
-      detected.source = "direct";
-      detected.medium = "none";
-    }
-  }
-
-  return detected;
-};
-
-const getStoredAttribution = () => {
-  if (typeof window === "undefined") return EMPTY_ATTRIBUTION;
-
-  try {
-    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
-  } catch {
-    return EMPTY_ATTRIBUTION;
-  }
-};
-
-const captureAttribution = () => {
-  const detected = readAttributionFromBrowser();
-  const stored = getStoredAttribution();
-  const hasCampaignData = Boolean(
-    detected.gclid ||
-      detected.fbclid ||
-      detected.campaign ||
-      detected.source !== "direct"
-  );
-
-  // Conservamos el primer origen conocido para atribuir el lead a su canal de captación.
-  const attribution = stored.capturedAt && !hasCampaignData ? stored : detected;
-
-  try {
-    window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution));
-  } catch {
-    // La medición continúa aunque el navegador bloquee localStorage.
-  }
-
-  return attribution;
-};
-
-const attributionEventData = (attribution) => ({
-  traffic_source: attribution.source || "direct",
-  traffic_medium: attribution.medium || "none",
-  traffic_campaign: attribution.campaign || "",
-  traffic_content: attribution.content || "",
-  traffic_term: attribution.term || "",
-  landing_page: attribution.landingPage || "",
-  source_label: classifyTrafficSource(attribution),
-  gclid_present: Boolean(attribution.gclid),
-  fbclid_present: Boolean(attribution.fbclid),
-});
-
-
-const buildCalendlyUrl = (attribution) => {
-  const url = new URL(CALENDLY_URL);
-  const params = {
-    utm_source: attribution.source,
-    utm_medium: attribution.medium,
-    utm_campaign: attribution.campaign,
-    utm_content: attribution.content,
-    utm_term: attribution.term,
-  };
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value && value !== "none") url.searchParams.set(key, value);
-  });
-
-  return url.toString();
-};
-
-const getWhatsAppReference = (attribution) => {
-  const sourceLabel = classifyTrafficSource(attribution);
-
-  if (sourceLabel === "Google Ads") return "GADS";
-  if (sourceLabel === "Meta Ads") return "META";
-  if (sourceLabel === "YouTube") return "YT";
-  if (sourceLabel === "Google orgánico") return "GORG";
-  if (sourceLabel === "Acceso directo") return "DIRECT";
-
-  return "WEB";
-};
-
-const buildWhatsAppUrl = ({ message }) =>
-  `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+const buildCalendlyUrl = (attribution) =>
+  appendAttributionToUrl(CALENDLY_URL, attribution);
 
 const technologies = [
   { name: "GSPro", logo: "/logos/gspro.png" },
@@ -350,19 +195,26 @@ export default function LandingSimuladoresGolf() {
 
   const whatsappUrls = useMemo(
     () => {
-      const whatsappReference = getWhatsAppReference(attribution);
       const whatsappMessage =
-        `Ref: ${whatsappReference}\n\nHola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son: `;
+        "Hola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son: ";
+      const buildUrl = (button) =>
+        buildWhatsAppUrl({
+          phone: WHATSAPP_PHONE,
+          message: whatsappMessage,
+          attribution,
+          pagePath: getCurrentBrowserPath(),
+          button,
+        });
 
       return {
-        floating_button: buildWhatsAppUrl({ message: whatsappMessage }),
-        header: buildWhatsAppUrl({ message: whatsappMessage }),
-        hero: buildWhatsAppUrl({ message: whatsappMessage }),
-        golf_studio_section: buildWhatsAppUrl({ message: whatsappMessage }),
-        projects_section: buildWhatsAppUrl({ message: whatsappMessage }),
-        pricing: buildWhatsAppUrl({ message: whatsappMessage }),
-        contact_section: buildWhatsAppUrl({ message: whatsappMessage }),
-        final_cta: buildWhatsAppUrl({ message: whatsappMessage }),
+        floating_button: buildUrl("floating_button"),
+        header: buildUrl("header"),
+        hero: buildUrl("hero"),
+        golf_studio_section: buildUrl("golf_studio_section"),
+        projects_section: buildUrl("projects_section"),
+        pricing: buildUrl("pricing"),
+        contact_section: buildUrl("contact_section"),
+        final_cta: buildUrl("final_cta"),
       };
     },
     [attribution]
@@ -377,14 +229,30 @@ export default function LandingSimuladoresGolf() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const pushDataLayer = (event, location, extra = {}) => {
+  const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
-      ...attributionEventData(attribution),
+      ...attributionEventData(attributionOverride),
       ...extra,
     });
+  };
+
+  const refreshCalendlyLink = (event) => {
+    const prepared = prepareAttributedLink(event, CALENDLY_URL, attribution);
+    setAttribution(prepared.attribution);
+    return prepared;
+  };
+
+  const trackCalendlyClick = (event, location) => {
+    const prepared = refreshCalendlyLink(event);
+    pushDataLayer(
+      "click_calendly",
+      location,
+      {},
+      prepared.attribution,
+    );
   };
 
   const trackWhatsAppClick = (location) => {
@@ -407,12 +275,21 @@ export default function LandingSimuladoresGolf() {
         body: JSON.stringify({
           ...form,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
-          attribution,
+          privacyConsent:
+            e.currentTarget.elements.privacyConsent?.checked === true,
+          attribution: toLeadAttribution(attribution, {
+            conversionPage: getCurrentBrowserPath(),
+          }),
         }),
       });
 
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "No se pudo enviar la solicitud.");
+
+      if (result.filtered) {
+        setSubmitState("success");
+        return;
+      }
 
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
@@ -422,6 +299,10 @@ export default function LandingSimuladoresGolf() {
         project_type: form.projectType,
         budget_range: form.budget,
         source_declared: form.sourceDeclared,
+        user_data: {
+          email_address: form.email.trim().toLowerCase(),
+          phone_number: form.phone.trim(),
+        },
         ...attributionEventData(attribution),
       });
       window.dataLayer.push({
@@ -483,37 +364,24 @@ export default function LandingSimuladoresGolf() {
           name: "Golf en Casa",
           url: "https://www.golfencasa.net",
           logo: "https://www.golfencasa.net/logo-mail4.png",
-          sameAs: [
-            "https://youtube.com/@Golf_en_Casa",
-            "https://instagram.com/golf.en.casa/",
-            "https://www.facebook.com/GolfenCasaSimuladores/",
-            "https://www.tiktok.com/@golf_en_casa"
-          ]
-        },
-        {
-          "@type": "HomeAndConstructionBusiness",
-          "@id": "https://www.golfencasa.net/#business",
-          name: "Golf en Casa",
-          url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo-mail4.png",
-          image: [
-            "https://www.golfencasa.net/francisco-golf-en-casa.webp",
-            "https://www.golfencasa.net/despues_1.webp",
-            "https://www.golfencasa.net/despues_2.webp"
-          ],
           description:
-            "Diseño e instalación llave en mano de simuladores de golf a medida para viviendas, jardines, academias y negocios indoor en toda España, incluida la solución Golf Studio.",
+            "Diseño, consultoría e instalación de simuladores de golf a medida en España.",
           telephone: "+34678107234",
           email: "info@golfencasa.net",
           areaServed: {
             "@type": "Country",
             name: "España"
           },
-          priceRange: "€€€",
           founder: {
             "@type": "Person",
             name: "Francisco Menacho"
-          }
+          },
+          sameAs: [
+            "https://youtube.com/@Golf_en_Casa",
+            "https://instagram.com/golf.en.casa/",
+            "https://www.facebook.com/GolfenCasaSimuladores/",
+            "https://www.tiktok.com/@golf_en_casa"
+          ]
         },
         {
           "@type": "WebPage",
@@ -534,7 +402,7 @@ export default function LandingSimuladoresGolf() {
             "https://www.golfencasa.net/instalacion-simuladores-golf/#service",
           name: "Diseño e instalación de simuladores de golf",
           provider: {
-            "@id": "https://www.golfencasa.net/#business"
+            "@id": "https://www.golfencasa.net/#organization"
           },
           areaServed: {
             "@type": "Country",
@@ -991,8 +859,9 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
                 href={calendlyUrl}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() =>
-                  pushDataLayer("click_calendly", "personal_section")
+                onPointerDown={refreshCalendlyLink}
+                onClick={(event) =>
+                  trackCalendlyClick(event, "personal_section")
                 }
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
@@ -1404,7 +1273,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
       {/* FORMULARIO */}
       <section
         id="formulario"
-        className="bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8"
+        className="scroll-mt-24 bg-zinc-950 px-4 py-20 text-white sm:px-6 lg:px-8"
       
         style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
       >
@@ -1442,7 +1311,7 @@ Descubre si tu espacio es apto antes de invertir en material
           </div>
 
           {submitState === "success" ? (
-            <div className="rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-8 shadow-2xl">
+            <div role="status" aria-live="polite" aria-atomic="true" className="rounded-[2rem] border border-emerald-400/20 bg-emerald-400/10 p-8 shadow-2xl">
               <CheckCircle2 className="h-12 w-12 text-emerald-300" />
               <p className="mt-6 font-semibold uppercase tracking-[0.22em] text-emerald-300">Solicitud recibida</p>
               <h3 className="mt-3 text-3xl font-black text-white sm:text-4xl">Gracias. Ya tenemos los datos de tu proyecto.</h3>
@@ -1634,7 +1503,7 @@ Descubre si tu espacio es apto antes de invertir en material
             </button>
 
             {submitState === "error" && (
-              <p className="mt-4 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm leading-6 text-red-200">{submitError}</p>
+              <p role="alert" aria-live="assertive" aria-atomic="true" className="mt-4 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-sm leading-6 text-red-200">{submitError}</p>
             )}
 
             <p className="mt-4 text-center text-xs text-zinc-400">
@@ -1813,7 +1682,8 @@ Enviar medidas por WhatsApp
               href={calendlyUrl}
               target="_blank"
               rel="noreferrer"
-              onClick={() => pushDataLayer("click_calendly", "final_cta")}
+              onPointerDown={refreshCalendlyLink}
+              onClick={(event) => trackCalendlyClick(event, "final_cta")}
               className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-semibold hover:bg-emerald-300"
             >
               <CalendarDays className="mr-2 h-5 w-5" />
@@ -1841,6 +1711,17 @@ Enviar medidas por WhatsApp
           <p className="mt-3 text-zinc-400">
             Simuladores de Golf · Consultoría · Instalación · Formación
           </p>
+
+          <nav aria-label="Planificar un simulador de golf" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-zinc-300">
+            <a href="/precio-simulador-golf" className="hover:text-white">Precios</a>
+            <a href="/medidas-simulador-golf" className="hover:text-white">Medidas</a>
+            <a href="/consultoria-simulador-golf" className="hover:text-white">Consultoría</a>
+            <a href="/simulador-golf-jardin" className="hover:text-white">Golf Studio</a>
+            <a href="/simulador-golf-negocio" className="hover:text-white">Negocios</a>
+            <a href="/proyectos" className="hover:text-white">Proyectos</a>
+            <a href="/care" className="hover:text-white">CARE</a>
+            <a href="/signature" className="hover:text-white">Signature</a>
+          </nav>
 
           <div className="mt-8 flex justify-center gap-8 text-4xl">
             <a

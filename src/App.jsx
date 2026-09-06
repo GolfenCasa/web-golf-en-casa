@@ -9,6 +9,17 @@ import {
   FaWhatsapp
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import {
+  EMPTY_ATTRIBUTION,
+  appendAttributionToUrl,
+  attributionEventData as getAttributionEventData,
+  buildWhatsAppUrl as buildAttributedWhatsAppUrl,
+  captureAttribution,
+  getCurrentBrowserPath,
+  getWhatsAppReference,
+  prepareAttributedLink,
+  toLeadAttribution,
+} from "./lib/attribution";
 
 
 
@@ -20,233 +31,22 @@ const whatsappNumber = '34678107234';
 const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
 const amazonStoreUrl = 'https://amzn.eu/d/0ihONIw7';
 
+const attributionEventData = (attribution) =>
+  getAttributionEventData(attribution, {
+    conversionPage: getCurrentBrowserPath(),
+  });
 
-// Attribution shared with the conventional campaign landing.
-// This lets a visitor keep the original acquisition source when navigating
-// between the main website and other pages that use the same storage key.
-const ATTRIBUTION_STORAGE_KEY = 'golf_en_casa_attribution_v1';
-const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 días
+const buildCalendlyUrl = (baseUrl, attribution) =>
+  appendAttributionToUrl(baseUrl, attribution);
 
-const EMPTY_ATTRIBUTION = {
-  source: 'direct',
-  medium: 'none',
-  campaign: '',
-  content: '',
-  term: '',
-  gclid: '',
-  fbclid: '',
-  landingPage: '',
-  referrer: '',
-  capturedAt: '',
-};
-
-const isInternalReferrer = (referrer) => {
-  if (!referrer) return false;
-
-  try {
-    const hostname = new URL(referrer).hostname.replace(/^www\./, '').toLowerCase();
-    const currentHostname =
-      typeof window !== 'undefined'
-        ? window.location.hostname.replace(/^www\./, '').toLowerCase()
-        : '';
-
-    return (
-      hostname === 'golfencasa.net' ||
-      hostname === currentHostname ||
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1'
-    );
-  } catch {
-    return false;
-  }
-};
-
-const classifyTrafficSource = ({ source, medium, gclid, fbclid, referrer }) => {
-  const sourceValue = (source || '').toLowerCase();
-  const mediumValue = (medium || '').toLowerCase();
-  const referrerValue = (referrer || '').toLowerCase();
-
-  if (gclid || (sourceValue === 'google' && ['cpc', 'ppc', 'paid'].includes(mediumValue))) {
-    return 'Google Ads';
-  }
-
-  if (
-    fbclid ||
-    (['facebook', 'instagram', 'meta', 'fb', 'ig'].includes(sourceValue) &&
-      ['cpc', 'paid', 'paid_social', 'social_paid'].includes(mediumValue))
-  ) {
-    return 'Meta Ads';
-  }
-
-  if (sourceValue === 'youtube' || referrerValue.includes('youtube.com')) {
-    return 'YouTube';
-  }
-
-  if (sourceValue === 'google' || referrerValue.includes('google.')) {
-    return 'Google orgánico';
-  }
-
-  if (sourceValue && sourceValue !== 'direct') {
-    return sourceValue;
-  }
-
-  return 'Acceso directo';
-};
-
-const readAttributionFromBrowser = () => {
-  if (typeof window === 'undefined') return EMPTY_ATTRIBUTION;
-
-  const params = new URLSearchParams(window.location.search);
-  const rawReferrer = document.referrer || '';
-  const externalReferrer = isInternalReferrer(rawReferrer) ? '' : rawReferrer;
-
-  const detected = {
-    source: params.get('utm_source') || '',
-    medium: params.get('utm_medium') || '',
-    campaign: params.get('utm_campaign') || '',
-    content: params.get('utm_content') || '',
-    term: params.get('utm_term') || '',
-    gclid: params.get('gclid') || '',
-    fbclid: params.get('fbclid') || '',
-    landingPage: `${window.location.pathname}${window.location.search}`,
-    referrer: externalReferrer,
-    capturedAt: new Date().toISOString(),
-  };
-
-  if (!detected.source) {
-    if (detected.gclid) {
-      detected.source = 'google';
-      detected.medium = 'cpc';
-    } else if (detected.fbclid) {
-      detected.source = 'meta';
-      detected.medium = 'paid_social';
-    } else if (externalReferrer.includes('youtube.com') || externalReferrer.includes('youtu.be')) {
-      detected.source = 'youtube';
-      detected.medium = 'referral';
-    } else if (externalReferrer.includes('google.')) {
-      detected.source = 'google';
-      detected.medium = 'organic';
-    } else if (externalReferrer.includes('facebook.com') || externalReferrer.includes('instagram.com')) {
-      detected.source = 'meta';
-      detected.medium = 'referral';
-    } else if (externalReferrer) {
-      try {
-        detected.source = new URL(externalReferrer).hostname.replace(/^www\./, '');
-        detected.medium = 'referral';
-      } catch {
-        detected.source = 'referral';
-        detected.medium = 'referral';
-      }
-    } else {
-      detected.source = 'direct';
-      detected.medium = 'none';
-    }
-  }
-
-  return detected;
-};
-
-const getStoredAttribution = () => {
-  if (typeof window === 'undefined') return EMPTY_ATTRIBUTION;
-
-  try {
-    const stored = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : EMPTY_ATTRIBUTION;
-  } catch {
-    return EMPTY_ATTRIBUTION;
-  }
-};
-
-const captureAttribution = () => {
-  const detected = readAttributionFromBrowser();
-  const stored = getStoredAttribution();
-
-  const storedCapturedAt = stored.capturedAt
-    ? new Date(stored.capturedAt).getTime()
-    : 0;
-
-  const storedIsFresh =
-    storedCapturedAt > 0 &&
-    Date.now() - storedCapturedAt <= ATTRIBUTION_TTL_MS;
-
-  const hasNewAcquisitionData = Boolean(
-    detected.gclid ||
-      detected.fbclid ||
-      detected.campaign ||
-      detected.source !== 'direct'
-  );
-
-  // Conservamos el origen previo solo durante 30 días y únicamente
-  // cuando la visita actual es directa/interna.
-  // Una nueva adquisición etiquetada o por referencia sustituye la anterior.
-  const attribution =
-    storedIsFresh && !hasNewAcquisitionData ? stored : detected;
-
-  try {
-    window.localStorage.setItem(
-      ATTRIBUTION_STORAGE_KEY,
-      JSON.stringify(attribution)
-    );
-  } catch {
-    // El tracking continúa aunque localStorage esté bloqueado.
-  }
-
-  return attribution;
-};
-
-const attributionEventData = (attribution) => ({
-  traffic_source: attribution.source || 'direct',
-  traffic_medium: attribution.medium || 'none',
-  traffic_campaign: attribution.campaign || '',
-  traffic_content: attribution.content || '',
-  traffic_term: attribution.term || '',
-  landing_page: attribution.landingPage || '/',
-  conversion_page: typeof window !== "undefined" ? window.location.pathname : "",
-  source_label: classifyTrafficSource(attribution),
-  gclid_present: Boolean(attribution.gclid),
-  fbclid_present: Boolean(attribution.fbclid),
-});
-
-const buildCalendlyUrl = (baseUrl, attribution) => {
-  try {
-    const url = new URL(baseUrl);
-    const params = {
-      utm_source: attribution.source,
-      utm_medium: attribution.medium,
-      utm_campaign: attribution.campaign,
-      utm_content: attribution.content,
-      utm_term: attribution.term,
-    };
-
-    Object.entries(params).forEach(([key, value]) => {
-      if (value && value !== 'none') url.searchParams.set(key, value);
-    });
-
-    return url.toString();
-  } catch {
-    return baseUrl;
-  }
-};
-
-const getWhatsAppReference = (attribution) => {
-  const sourceLabel = classifyTrafficSource(attribution);
-
-  if (sourceLabel === 'Google Ads') return 'GADS';
-  if (sourceLabel === 'Meta Ads') return 'META';
-  if (sourceLabel === 'YouTube') return 'YT';
-  if (sourceLabel === 'Google orgánico') return 'GORG';
-  if (sourceLabel === 'Acceso directo') return 'DIRECT';
-
-  return 'WEB';
-};
-
-const buildWhatsAppUrl = ({ message, attribution }) => {
-  const whatsappReference = getWhatsAppReference(attribution);
-
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Ref: ${whatsappReference}\n\n${message}`
-  )}`;
-};
+const buildWhatsAppUrl = ({ message, attribution, button = "" }) =>
+  buildAttributedWhatsAppUrl({
+    phone: whatsappNumber,
+    message,
+    attribution,
+    pagePath: getCurrentBrowserPath(),
+    button,
+  });
 
 const services = [
   {
@@ -424,7 +224,17 @@ export default function GolfSimulatorLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', space: '', budget: '', message: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    city: '',
+    projectType: '',
+    dimensions: '',
+    budget: '',
+    sourceDeclared: '',
+    message: '',
+  });
   const [submitState, setSubmitState] = useState('idle');
   const [submitError, setSubmitError] = useState('');
 
@@ -442,14 +252,33 @@ export default function GolfSimulatorLanding() {
     });
   }, []);
 
-  const pushDataLayer = (event, location, extra = {}) => {
+  const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event,
       location,
-      ...attributionEventData(attribution),
+      ...attributionEventData(attributionOverride),
       ...extra,
     });
+  };
+
+  const refreshCalendlyLink = (event, baseUrl = calendlyUrl) => {
+    const prepared = prepareAttributedLink(event, baseUrl, attribution);
+    setAttribution(prepared.attribution);
+    return prepared;
+  };
+
+  const trackCalendlyClick = (
+    event,
+    location,
+    extra = {},
+    baseUrl = calendlyUrl,
+  ) => {
+    const prepared = refreshCalendlyLink(event, baseUrl);
+    pushDataLayer('calendly_click', location, {
+      contact_channel: 'calendly',
+      ...extra,
+    }, prepared.attribution);
   };
 
   const trackedCalendlyUrl = useMemo(
@@ -461,10 +290,8 @@ export default function GolfSimulatorLanding() {
     () =>
       buildWhatsAppUrl({
         message: whatsappMessage,
-        attribution: {
-          ...attribution,
-          conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
-        },
+        attribution,
+        button: "floating_whatsapp",
       }),
     [attribution]
   );
@@ -472,15 +299,15 @@ export default function GolfSimulatorLanding() {
   const getPackageUrl = (pkg) =>
     pkg.url.includes('calendly.com') ? buildCalendlyUrl(pkg.url, attribution) : pkg.url;
 
-  const handlePackageClick = (pkg) => {
+  const handlePackageClick = (event, pkg) => {
     if (pkg.url.includes('calendly.com')) {
-      pushDataLayer(
-        'calendly_click',
+      trackCalendlyClick(
+        event,
         `package_${pkg.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`,
         {
-          contact_channel: 'calendly',
           package_name: pkg.name,
-        }
+        },
+        pkg.url,
       );
       return;
     }
@@ -510,11 +337,12 @@ export default function GolfSimulatorLanding() {
         body: JSON.stringify({
           leadType: 'website_general_enquiry',
           ...form,
-          attribution: {
-            ...attribution,
-            conversionPage: typeof window !== "undefined" ? window.location.pathname : "",
-          },
+          attribution: toLeadAttribution(attribution, {
+            conversionPage: getCurrentBrowserPath(),
+          }),
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || '',
+          privacyConsent:
+            e.currentTarget.elements.privacyConsent?.checked === true,
         }),
       });
 
@@ -524,10 +352,25 @@ export default function GolfSimulatorLanding() {
         throw new Error(result.error || 'No se pudo enviar la solicitud.');
       }
 
+      if (result.filtered) {
+        setSubmitState('success');
+        return;
+      }
+
       pushDataLayer('website_form_submit', 'home_contact_form', {
         lead_type: 'website_general_enquiry',
-        space_type: form.space,
+        project_type: form.projectType,
         budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+        crm_synced: Boolean(result.crmSynced),
+      });
+
+      pushDataLayer('form_submit', 'home_contact_form', {
+        form_name: 'website_general_enquiry',
+        lead_type: 'website_general_enquiry',
+        project_type: form.projectType,
+        budget_range: form.budget,
+        source_declared: form.sourceDeclared,
       });
 
       window.dataLayer = window.dataLayer || [];
@@ -535,13 +378,28 @@ export default function GolfSimulatorLanding() {
         event: 'generate_lead',
         form_name: 'website_general_enquiry',
         lead_type: 'website_general_enquiry',
-        space_type: form.space,
+        project_type: form.projectType,
         budget_range: form.budget,
+        source_declared: form.sourceDeclared,
+        user_data: {
+          email_address: form.email.trim().toLowerCase(),
+          phone_number: form.phone.trim(),
+        },
         ...attributionEventData(attribution),
       });
 
       setSubmitState('success');
-      setForm({ name: '', email: '', phone: '', space: '', budget: '', message: '' });
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        city: '',
+        projectType: '',
+        dimensions: '',
+        budget: '',
+        sourceDeclared: '',
+        message: '',
+      });
     } catch (error) {
       console.error(error);
       setSubmitError(
@@ -550,9 +408,6 @@ export default function GolfSimulatorLanding() {
       setSubmitState('error');
     }
   };
-  
-
-
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
@@ -562,6 +417,14 @@ export default function GolfSimulatorLanding() {
         name="description"
         content="Diseño, consultoría e instalación de simuladores de golf para casa, academias y negocios indoor. Te ayudamos a elegir monitor, pantalla, proyector, software y componentes."
       />
+      <meta property="og:title" content="Golf en Casa | Simuladores de golf y consultoría" />
+      <meta
+        property="og:description"
+        content="Diseño, consultoría e instalación de simuladores de golf a medida en España."
+      />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://www.golfencasa.net/" />
+      <meta property="og:image" content="https://www.golfencasa.net/despues_1.webp" />
 
       <script type="application/ld+json">
         {JSON.stringify({
@@ -610,7 +473,7 @@ export default function GolfSimulatorLanding() {
     >
       <FaWhatsapp />
     </a>
-      <div className="fixed right-4 top-24 z-[999] md:right-6 lg:right-8">
+      <div className="fixed right-4 top-24 z-[999] md:right-6 lg:hidden">
   <button
     onClick={() => setMenuOpen(!menuOpen)}
     className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-zinc-900/90 text-2xl text-white shadow-2xl backdrop-blur transition hover:bg-zinc-800"
@@ -620,7 +483,7 @@ export default function GolfSimulatorLanding() {
   </button>
 
   {menuOpen && (
-    <div className="mt-3 w-56 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur">
+    <div className="mt-3 max-h-[calc(100dvh-10rem)] w-56 overflow-x-hidden overflow-y-auto rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur">
       <a
         href="#inicio"
         onClick={() => setMenuOpen(false)}
@@ -635,6 +498,30 @@ export default function GolfSimulatorLanding() {
         className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
       >
         Servicios
+      </a>
+
+      <a
+        href="/instalacion-simuladores-golf"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Instalación a medida
+      </a>
+
+      <a
+        href="/precio-simulador-golf"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Precios orientativos
+      </a>
+
+      <a
+        href="/medidas-simulador-golf"
+        onClick={() => setMenuOpen(false)}
+        className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
+      >
+        Medidas y viabilidad
       </a>
 
       <a
@@ -662,11 +549,11 @@ export default function GolfSimulatorLanding() {
 </a>
 
       <a
-        href="#paquetes"
+        href="#consultoria"
         onClick={() => setMenuOpen(false)}
         className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white"
       >
-        Paquetes
+        Consultoría
       </a>
 
       <a
@@ -677,7 +564,7 @@ export default function GolfSimulatorLanding() {
         Contacto
       </a>
 
-      <a href="#tienda-amazon" 
+      <a href="#tienda-amazon"
       onClick={() => setMenuOpen(false)}
       className="block px-5 py-3 text-sm text-zinc-200 transition hover:bg-white/10 hover:text-white">
   Tienda
@@ -687,8 +574,9 @@ export default function GolfSimulatorLanding() {
         href={trackedCalendlyUrl}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => {
-          pushDataLayer('calendly_click', 'mobile_menu', { contact_channel: 'calendly' });
+        onPointerDown={(event) => refreshCalendlyLink(event)}
+        onClick={(event) => {
+          trackCalendlyClick(event, 'mobile_menu');
           setMenuOpen(false);
         }}
         className="block bg-emerald-500 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-400"
@@ -713,8 +601,16 @@ export default function GolfSimulatorLanding() {
             </div>
           </a>
          <nav className="hidden items-center gap-6 text-sm text-zinc-300 lg:flex">
-  <a href="#servicios" className="transition hover:text-white">
+ <a href="#servicios" className="transition hover:text-white">
     Servicios
+  </a>
+
+  <a href="/instalacion-simuladores-golf" className="transition hover:text-white">
+    Instalación
+  </a>
+
+  <a href="/precio-simulador-golf" className="transition hover:text-white">
+    Precios
   </a>
 
   <a href="#proceso" className="transition hover:text-white">
@@ -729,8 +625,8 @@ export default function GolfSimulatorLanding() {
   Vídeos
 </a>
 
-  <a href="#paquetes" className="transition hover:text-white">
-    Paquetes
+  <a href="#consultoria" className="transition hover:text-white">
+    Consultoría
   </a>
 
   <a href="#contacto" className="transition hover:text-white">
@@ -785,7 +681,8 @@ export default function GolfSimulatorLanding() {
     href={trackedCalendlyUrl}
     target="_blank"
     rel="noopener noreferrer"
-    onClick={() => pushDataLayer('calendly_click', 'header', { contact_channel: 'calendly' })}
+    onPointerDown={(event) => refreshCalendlyLink(event)}
+    onClick={(event) => trackCalendlyClick(event, 'header')}
     className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-3 py-2 text-xs font-bold text-zinc-950 transition hover:bg-emerald-400 sm:px-5 sm:py-2.5 sm:text-sm"
   >
     <span className="hidden sm:inline">
@@ -815,7 +712,7 @@ export default function GolfSimulatorLanding() {
                 Te ayudo a diseñar, comprar e instalar un simulador de golf en casa o negocio: desde la elección del launch monitor hasta la pantalla, proyector, PC, software, seguridad y configuración final.
               </p>
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-                <a href={trackedCalendlyUrl} target="_blank" rel="noopener noreferrer" onClick={() => pushDataLayer('calendly_click', 'hero_primary', { contact_channel: 'calendly' })} className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-7 py-4 text-base font-bold text-zinc-950 transition hover:bg-emerald-400">Empezar mi proyecto <ArrowRight className="ml-2 h-5 w-5" /></a>
+                <a href={trackedCalendlyUrl} target="_blank" rel="noopener noreferrer" onPointerDown={(event) => refreshCalendlyLink(event)} onClick={(event) => trackCalendlyClick(event, 'hero_primary')} className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-7 py-4 text-base font-bold text-zinc-950 transition hover:bg-emerald-400">Empezar mi proyecto <ArrowRight className="ml-2 h-5 w-5" /></a>
                 <a href={youtubeCourseUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-7 py-4 text-base text-white transition hover:bg-white/10"><PlayCircle className="mr-2 h-5 w-5" /> Ver curso gratuito</a>
               </div>
               <div className="mt-10 grid max-w-2xl gap-4 sm:grid-cols-3">
@@ -825,9 +722,9 @@ export default function GolfSimulatorLanding() {
                   </div>
                 ))}
               </div>
-            
+
               </motion.div>
-              
+
              <div className="mt-8 flex flex-col items-center gap-5 sm:items-start">
 
   <video
@@ -877,10 +774,10 @@ export default function GolfSimulatorLanding() {
   </div>
 
 </div>
-  
+
 </div>
-            
-          
+
+
         </section>
 
         <section id="servicios" className="mx-auto max-w-7xl px-5 py-20">
@@ -892,7 +789,7 @@ export default function GolfSimulatorLanding() {
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {services.map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-3xl border border-white/10 bg-white/[0.04] text-white shadow-xl">
-            
+
                  <Icon className="mx-5 mt-3 mb-4 h-10 w-10 text-emerald-400" />
 
       <h3 className="mx-5 mb-3 text-xl font-bold">
@@ -1003,8 +900,8 @@ export default function GolfSimulatorLanding() {
           </div>
 <div className="mt-12 flex justify-center">
 <div className="w-full max-w-4xl mx-auto overflow-hidden rounded-[2rem] shadow-2xl">
- 
-   
+
+
   </div>
 </div>
 
@@ -1029,18 +926,20 @@ export default function GolfSimulatorLanding() {
     <div className="mt-12 grid gap-6 lg:grid-cols-2">
       {[
         {
-          title: 'Simulador en vivienda particular',
-          location: 'Proyecto residencial',
+          title: 'Simulador de golf residencial en Écija',
+          location: 'Écija, Sevilla',
           before: '/antes_1.jpg',
           after: '/despues_1.JPEG',
+          path: '/proyectos/simulador-golf-ecija',
           description:
             'Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación.',
         },
         {
-          title: 'Proyecto personalizado a medida',
-          location: 'Diseño adaptado al espacio',
+          title: 'Instalación de simulador de golf en Jerez',
+          location: 'Jerez, Cádiz',
           before: '/antes_2.JPEG',
           after: '/despues_2.JPEG',
+          path: '/proyectos/simulador-golf-jerez',
           description:
             'Diseño de una solución personalizada según las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador.',
         },
@@ -1067,6 +966,14 @@ export default function GolfSimulatorLanding() {
             <p className="mt-4 leading-7 text-zinc-600">
               {project.description}
             </p>
+
+            <a
+              href={project.path}
+              className="mt-6 inline-flex items-center font-bold text-emerald-800 transition hover:text-emerald-700"
+            >
+              Ver proyecto completo
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </a>
           </div>
         </article>
       ))}
@@ -1166,10 +1073,10 @@ export default function GolfSimulatorLanding() {
   </div>
 </section>
 
-        <section id="paquetes" className="bg-zinc-900 py-20">
+        <section id="consultoria" className="bg-zinc-900 py-20">
           <div className="mx-auto max-w-7xl px-5">
             <div className="max-w-3xl">
-              <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">Paquetes</p>
+              <p className="font-semibold uppercase tracking-[0.25em] text-emerald-400">Consultoría</p>
               <h2 className="mt-3 text-4xl font-black md:text-5xl">Elige el nivel de ayuda que necesitas.</h2>
             </div>
             <div className="mt-12 grid gap-6 lg:grid-cols-3">
@@ -1189,13 +1096,18 @@ export default function GolfSimulatorLanding() {
                     href={getPackageUrl(pkg)}
                     target={pkg.internal ? undefined : '_blank'}
                     rel={pkg.internal ? undefined : 'noopener noreferrer'}
-                    onClick={() => handlePackageClick(pkg)}
+                    onPointerDown={
+                      pkg.url.includes('calendly.com')
+                        ? (event) => refreshCalendlyLink(event, pkg.url)
+                        : undefined
+                    }
+                    onClick={(event) => handlePackageClick(event, pkg)}
                     className={`mt-8 inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 font-semibold transition ${pkg.featured ? 'bg-zinc-950 text-white hover:bg-zinc-800' : 'bg-emerald-500 text-zinc-950 hover:bg-emerald-400'}`}
                   >
                     {pkg.cta}
                   </a>
                 </div>
-                
+
               ))}
             </div>
           </div>
@@ -1239,30 +1151,52 @@ export default function GolfSimulatorLanding() {
 >
               <div className="grid gap-4 md:grid-cols-2">
                 <input name="name" value={form.name} onChange={handleChange} placeholder="Nombre" autoComplete="name" required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
-                <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" autoComplete="email" required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
-                <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="Teléfono" autoComplete="tel" required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
-                <select name="space" value={form.space} onChange={handleChange} className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500">
-                  <option value="">Tipo de espacio</option>
-                  <option>Garaje</option>
-                  <option>Habitación en casa</option>
-                  <option>Negocio / academia</option>
+                <input id="email" type="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" autoComplete="email" aria-label="Correo electrónico" required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
+                <input id="phone" type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="Teléfono" autoComplete="tel" aria-label="Teléfono" required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
+                <input name="city" value={form.city} onChange={handleChange} placeholder="Ciudad / provincia" autoComplete="address-level2" className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500" />
+                <select name="projectType" value={form.projectType} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500">
+                  <option value="">Tipo de instalación</option>
+                  <option>Vivienda particular</option>
+                  <option>Garaje / sótano</option>
+                  <option>Golf Studio en jardín</option>
+                  <option>Academia / club</option>
+                  <option>Negocio indoor</option>
                   <option>Otro</option>
                 </select>
-                <select name="budget" value={form.budget} onChange={handleChange} className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
-                  <option value="">Presupuesto estimado</option>
+                <input
+                  name="dimensions"
+                  value={form.dimensions}
+                  onChange={handleChange}
+                  required
+                  placeholder="Medidas aproximadas: ancho × fondo × alto · o «Aún no las sé»"
+                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2"
+                />
+                <select name="budget" value={form.budget} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
+                  <option value="">Presupuesto aproximado</option>
                   <option>Menos de 5.000 €</option>
                   <option>5.000 € - 10.000 €</option>
                   <option>10.000 € - 20.000 €</option>
                   <option>Más de 20.000 €</option>
+                  <option>Aún no lo sé</option>
+                </select>
+                <select name="sourceDeclared" value={form.sourceDeclared} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
+                  <option value="">¿Cómo nos has conocido?</option>
+                  <option>Google</option>
+                  <option>Instagram / Facebook</option>
+                  <option>YouTube</option>
+                  <option>Recomendación</option>
+                  <option>Ya conocía Golf en Casa</option>
+                  <option>Otro</option>
+                  <option>No sabe / No recuerda</option>
                 </select>
                 <textarea
-  name="message"
-  value={form.message}
-  onChange={handleChange}
-  placeholder="Medidas del espacio, objetivo del simulador y dudas principales"
-  rows="5"
-  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2"
-/>
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  placeholder="Información adicional: objetivo del simulador, dudas o material que ya tienes"
+                  rows="5"
+                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2"
+                />
 </div>
 
 <input
@@ -1277,6 +1211,7 @@ export default function GolfSimulatorLanding() {
 <label className="mt-4 flex items-start gap-3 text-sm text-zinc-600">
   <input
     type="checkbox"
+    name="privacyConsent"
     required
     className="mt-1"
   />
@@ -1305,7 +1240,8 @@ export default function GolfSimulatorLanding() {
     href={trackedCalendlyUrl}
     target="_blank"
     rel="noopener noreferrer"
-    onClick={() => pushDataLayer('calendly_click', 'contact_form_secondary', { contact_channel: 'calendly' })}
+    onPointerDown={(event) => refreshCalendlyLink(event)}
+    onClick={(event) => trackCalendlyClick(event, 'contact_form_secondary')}
     className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 px-5 py-3 font-semibold transition hover:bg-zinc-100"
   >
     Reservar llamada Gratuita
@@ -1313,13 +1249,13 @@ export default function GolfSimulatorLanding() {
 </div>
 
 {submitState === 'success' && (
-  <p className="mt-4 text-sm font-medium text-emerald-700">
+  <p role="status" aria-live="polite" aria-atomic="true" className="mt-4 text-sm font-medium text-emerald-700">
     Solicitud recibida. Revisaremos tu proyecto y nos pondremos en contacto contigo.
   </p>
 )}
 
 {submitState === 'error' && (
-  <p className="mt-4 text-sm leading-6 text-red-700">
+  <p role="alert" aria-live="assertive" aria-atomic="true" className="mt-4 text-sm leading-6 text-red-700">
     {submitError}
   </p>
 )}
@@ -1334,7 +1270,7 @@ export default function GolfSimulatorLanding() {
           <p>© 2026 Golf en Casa · Simuladores de golf y consultoría</p>
           <div className="flex gap-5">
             <a href={youtubeCourseUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">Curso gratuito</a>
-            <a href={trackedCalendlyUrl} target="_blank" rel="noopener noreferrer" onClick={() => pushDataLayer('calendly_click', 'footer', { contact_channel: 'calendly' })} className="hover:text-white">Consultoría</a>
+            <a href={trackedCalendlyUrl} target="_blank" rel="noopener noreferrer" onPointerDown={(event) => refreshCalendlyLink(event)} onClick={(event) => trackCalendlyClick(event, 'footer')} className="hover:text-white">Consultoría</a>
             <a href={`mailto:${email}`} className="hover:text-white">Contacto</a>
           </div>
         </div>
@@ -1353,6 +1289,18 @@ export default function GolfSimulatorLanding() {
     <p className="mt-3 text-zinc-400">
       Simuladores de Golf · Consultoría · Instalación · Formación
     </p>
+
+    <nav aria-label="Servicios de Golf en Casa" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-zinc-300">
+      <a href="/instalacion-simuladores-golf" className="hover:text-white">Instalación</a>
+      <a href="/precio-simulador-golf" className="hover:text-white">Precios</a>
+      <a href="/medidas-simulador-golf" className="hover:text-white">Medidas</a>
+      <a href="/consultoria-simulador-golf" className="hover:text-white">Consultoría</a>
+      <a href="/simulador-golf-jardin" className="hover:text-white">Golf Studio</a>
+      <a href="/simulador-golf-negocio" className="hover:text-white">Negocios</a>
+      <a href="/proyectos" className="hover:text-white">Proyectos</a>
+      <a href="/care" className="hover:text-white">CARE</a>
+      <a href="/signature" className="hover:text-white">Signature</a>
+    </nav>
 
     <div className="mt-8 flex justify-center gap-8 text-4xl">
 
@@ -1412,7 +1360,7 @@ export default function GolfSimulatorLanding() {
 
   </div>
       </footer>
-      
+
     </div>
   );
 }
