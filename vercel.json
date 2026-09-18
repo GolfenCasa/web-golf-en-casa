@@ -3,59 +3,112 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/*.js": { "maxDuration": 30 }
+    "api/*.js": {
+      "maxDuration": 30
+    }
   },
   "headers": [
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)\\.(webp|avif|png|jpg|jpeg|svg|woff2|mp4)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=86400"
+        }
       ]
     },
     {
       "source": "/estudio-simulador-golf",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     },
     {
       "source": "/simulador-golf",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     },
     {
       "source": "/admin/(.*)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive, nosnippet" },
-        { "key": "Cache-Control", "value": "private, no-store" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive, nosnippet"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
       ]
     },
     {
       "source": "/(aviso-legal|politica-privacidad|politica-cookies|prime-day-amazon)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     },
     {
       "source": "/en/(privacy-policy|cookie-policy|legal-notice)",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, follow" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
       ]
     }
   ],
   "redirects": [
     {
       "source": "/:slug",
-      "has": [{ "type": "host", "value": "go.golfencasa.net" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "go.golfencasa.net"
+        }
+      ],
       "destination": "/api/redirect?slug=:slug",
       "permanent": false
+    },
+    {
+      "source": "/:path((?!api(?:/|$)|admin(?:/|$)|assets(?:/|$)|\\.well-known(?:/|$)).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "golfencasa.net"
+        }
+      ],
+      "destination": "https://aquigolf.es/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path((?!api(?:/|$)|admin(?:/|$)|assets(?:/|$)|\\.well-known(?:/|$)).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.golfencasa.net"
+        }
+      ],
+      "destination": "https://aquigolf.es/:path*",
+      "permanent": true
     }
   ]
 }
