@@ -1,3 +1,4 @@
+import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -34,7 +35,7 @@ import {
 
 const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
-const EMAIL = "info@golfencasa.net";
+const EMAIL = "info@aquigolf.es";
 
 const COLORS = {
   black: "#0B0B0B",
@@ -178,8 +179,8 @@ function IconCard({ icon, title, text, dark = false }) {
 function SignatureLogo({ compact = false }) {
   return (
     <img
-      src={compact ? "/signature/isotipo-gold.png" : "/signature/logo-signature-light.png"}
-      alt={compact ? "Golf en Casa Signature Projects" : "Golf en Casa | Signature Projects"}
+      src={compact ? "/signature/ag-gold.svg" : "/signature/aqui-golf-light.svg"}
+      alt={compact ? "Aquí Golf Signature Projects" : "Aquí Golf | Signature Projects"}
       className={compact ? "h-10 w-auto" : "h-12 w-auto sm:h-14"}
       loading="eager"
       decoding="async"
@@ -234,7 +235,7 @@ export default function LandingSignatureProjectsEN() {
   }, []);
 
   useEffect(() => {
-    const faviconHref = "/signature/favicon-signature.png?v=20260810";
+    const faviconHref = "/signature/ag-favicon.png?v=20260916";
 
     const existingIcons = Array.from(
       document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
@@ -317,7 +318,7 @@ export default function LandingSignatureProjectsEN() {
     () =>
       buildWhatsAppUrl({
         message:
-          "Hello, I would like to discuss a project with Golf en Casa | Signature Projects.",
+          "Hello, I would like to discuss a project with Aquí Golf | Signature Projects.",
         phone: WHATSAPP_PHONE,
         attribution,
         pagePath: getCurrentBrowserPath(),
@@ -391,10 +392,10 @@ export default function LandingSignatureProjectsEN() {
         project_stage: form.stage,
         investment_range: form.investment,
         source_declared: form.sourceDeclared,
-        user_data: {
+        user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        },
+        }),
         ...attributionEventData(attribution),
       });
 
@@ -466,10 +467,10 @@ export default function LandingSignatureProjectsEN() {
         project_type: technicalForm.projectType,
         investment_range: technicalForm.investment,
         source_declared: technicalForm.sourceDeclared,
-        user_data: {
+        user_data: enhancedConversionData({
           email_address: technicalForm.email.trim().toLowerCase(),
           phone_number: technicalForm.phone.trim(),
-        },
+        }),
         ...attributionEventData(attribution),
       });
 
@@ -489,21 +490,21 @@ export default function LandingSignatureProjectsEN() {
         <title>Luxury Golf Simulators | Bespoke Signature Projects</title>
         <meta
           name="description"
-          content="Golf en Casa | Signature Projects. Bespoke luxury golf simulator design and installation for private residences, villas, architecture studios and premium developments."
+          content="Aquí Golf | Signature Projects. Bespoke luxury golf simulator design and installation for private residences, villas, architecture studios and premium developments."
         />
-        <link rel="canonical" href="https://www.golfencasa.net/en/signature" />
-        <link rel="alternate" hrefLang="es" href="https://www.golfencasa.net/signature" />
-        <link rel="alternate" hrefLang="en" href="https://www.golfencasa.net/en/signature" />
-        <link rel="alternate" hrefLang="x-default" href="https://www.golfencasa.net/signature" />
-        <meta property="og:title" content="Golf en Casa | Signature Projects" />
+        <link rel="canonical" href="https://aquigolf.es/en/signature" />
+        <link rel="alternate" hrefLang="es" href="https://aquigolf.es/signature" />
+        <link rel="alternate" hrefLang="en" href="https://aquigolf.es/en/signature" />
+        <link rel="alternate" hrefLang="x-default" href="https://aquigolf.es/signature" />
+        <meta property="og:title" content="Aquí Golf | Signature Projects" />
         <meta
           property="og:description"
           content="Bespoke golf simulator design and integration. Private golf simulators conceived around architecture, experience and space."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.golfencasa.net/en/signature" />
-        <meta property="og:image" content="https://www.golfencasa.net/signature/hero-1280.webp" />
-        <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
+        <meta property="og:url" content="https://aquigolf.es/en/signature" />
+        <meta property="og:image" content="https://aquigolf.es/signature/hero-1280.webp" />
+        <link rel="icon" type="image/png" href="/signature/ag-favicon.png?v=20260916" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -518,13 +519,13 @@ export default function LandingSignatureProjectsEN() {
             "@graph": [
               {
                 "@type": "Service",
-                "@id": "https://www.golfencasa.net/en/signature/#service",
-                name: "Golf en Casa | Signature Projects",
+                "@id": "https://aquigolf.es/en/signature/#service",
+                name: "Aquí Golf | Signature Projects",
                 serviceType: "Bespoke Golf Simulator Design & Integration",
                 provider: {
                   "@type": "Organization",
-                  name: "Golf en Casa",
-                  url: "https://www.golfencasa.net",
+                  name: "Aquí Golf",
+                  url: "https://aquigolf.es",
                   email: EMAIL,
                   telephone: "+34678107234",
                 },
@@ -555,7 +556,7 @@ export default function LandingSignatureProjectsEN() {
       {/* HEADER */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#0B0B0B]/85 backdrop-blur-xl">
         <div className="mx-auto flex h-[76px] max-w-[1440px] items-center justify-between px-5 lg:px-8">
-          <a href="#top" aria-label="Golf en Casa Signature Projects">
+          <a href="#top" aria-label="Aquí Golf Signature Projects">
             <SignatureLogo />
           </a>
 
@@ -638,7 +639,7 @@ export default function LandingSignatureProjectsEN() {
 
         <div className="relative mx-auto w-full max-w-[1440px] px-6 pb-14 pt-24 sm:pb-16 lg:px-10 lg:pb-16">
           <div className="max-w-[760px]">
-            <SectionLabel dark>Golf en Casa | Signature Projects</SectionLabel>
+            <SectionLabel dark>Aquí Golf | Signature Projects</SectionLabel>
             <h1 className="signature-serif mt-5 text-[50px] font-normal leading-[0.96] tracking-[-0.03em] sm:text-[68px] md:text-[76px] lg:text-[88px]">
               Private Golf Simulators.
               <span className="mt-1 block italic">Designed Around You.</span>
@@ -1321,7 +1322,7 @@ export default function LandingSignatureProjectsEN() {
                 <option>Instagram / Facebook</option>
                 <option>YouTube</option>
                 <option>Recommendation</option>
-                <option>I already knew Golf en Casa</option>
+                <option>I already knew Aquí Golf</option>
                 <option>Other</option>
                 <option>Not sure / Do not remember</option>
               </select>
@@ -1510,7 +1511,7 @@ export default function LandingSignatureProjectsEN() {
                       <option>Instagram / Facebook</option>
                       <option>YouTube</option>
                       <option>Recommendation</option>
-                      <option>I already knew Golf en Casa</option>
+                      <option>I already knew Aquí Golf</option>
                       <option>Other</option>
                       <option>Not sure / Do not remember</option>
                     </select>
@@ -1556,7 +1557,7 @@ export default function LandingSignatureProjectsEN() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage: 'url("/signature/signature-pattern.png")',
+            backgroundImage: 'url("/signature/ag-gold.svg")',
             backgroundRepeat: "repeat",
             backgroundPosition: "center",
             backgroundSize: "320px auto",
@@ -1564,7 +1565,7 @@ export default function LandingSignatureProjectsEN() {
         />
         <div className="relative mx-auto max-w-4xl">
           <img
-            src="/signature/isotipo-gold.png"
+            src="/signature/ag-gold.svg"
             alt=""
             aria-hidden="true"
             className="mx-auto mb-8 h-16 w-auto"
@@ -1621,7 +1622,7 @@ export default function LandingSignatureProjectsEN() {
             ]} />
           </div>
           <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-[10px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:justify-between">
-            <p>© 2026 Golf en Casa</p>
+            <p>© 2026 Aquí Golf</p>
             <p>Spain · Projects across Europe</p>
           </div>
         </div>
@@ -1652,7 +1653,7 @@ function ProjectCard({ image, eyebrow, title, meta, className = "" }) {
     <article className={`group relative min-h-[500px] overflow-hidden ${className}`}>
       <img
         src={image}
-        alt={`${title} — Golf en Casa Signature Projects`}
+        alt={`${title} — Aquí Golf Signature Projects`}
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.02]"
       />

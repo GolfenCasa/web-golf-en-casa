@@ -31,7 +31,7 @@ import {
 
 const WHATSAPP_PHONE = "34678107234";
 const WHATSAPP_MESSAGE =
-  "Hola, quiero información sobre los planes Golf en Casa CARE y CARE+ para mi simulador.";
+  "Hola, quiero información sobre los planes Aquí Golf CARE y CARE+ para mi simulador.";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
 
 const buildCareWhatsAppUrl = (attribution, button) =>
@@ -109,9 +109,9 @@ const faqs = [
       "No necesariamente. CARE y CARE+ son servicios opcionales con facturación anual. El alcance se concreta según el equipamiento, el software, las licencias y las necesidades de la instalación.",
   },
   {
-    question: "¿Puedo contratarlo si Golf en Casa no instaló mi simulador?",
+    question: "¿Puedo contratarlo si Aquí Golf no instaló mi simulador?",
     answer:
-      "Sí, siempre que la instalación sea compatible y supere una revisión inicial. Podemos estudiar simuladores instalados por Golf en Casa o por otros proveedores.",
+      "Sí, siempre que la instalación sea compatible y supere una revisión inicial. Podemos estudiar simuladores instalados por Aquí Golf o por otros proveedores.",
   },
   {
     question: "¿CARE incluye visitas presenciales?",
@@ -222,15 +222,15 @@ export default function GolfEnCasaCARE() {
           name="description"
           content="Planes CARE y CARE+ para soporte remoto, actualizaciones, licencias, mantenimiento preventivo, calibración y revisión anual de simuladores de golf."
         />
-        <link rel="canonical" href="https://www.golfencasa.net/care" />
+        <link rel="canonical" href="https://aquigolf.es/care" />
         <meta property="og:title" content="CARE y CARE+ | Mantenimiento de simuladores de golf" />
         <meta
           property="og:description"
           content="Soporte, mantenimiento preventivo, calibración y revisión de simuladores de golf en España."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.golfencasa.net/care" />
-        <meta property="og:image" content="https://www.golfencasa.net/logo.png" />
+        <meta property="og:url" content="https://aquigolf.es/care" />
+        <meta property="og:image" content="https://aquigolf.es/brand/aqui-golf-circular.png" />
 
         <script type="application/ld+json">
           {JSON.stringify({
@@ -238,26 +238,26 @@ export default function GolfEnCasaCARE() {
             "@graph": [
               {
                 "@type": "Service",
-                "@id": "https://www.golfencasa.net/care/#service",
-                name: "Golf en Casa CARE",
+                "@id": "https://aquigolf.es/care/#service",
+                name: "Aquí Golf CARE",
                 serviceType:
                   "Soporte técnico y mantenimiento de simuladores de golf",
                 provider: {
                   "@type": "Organization",
-                  name: "Golf en Casa",
-                  url: "https://www.golfencasa.net",
+                  name: "Aquí Golf",
+                  url: "https://aquigolf.es",
                 },
                 areaServed: {
                   "@type": "Country",
                   name: "España",
                 },
-                url: "https://www.golfencasa.net/care",
+                url: "https://aquigolf.es/care",
                 description:
                   "Planes anuales CARE y CARE+ para soporte técnico remoto, actualizaciones, gestión de licencias, mantenimiento preventivo y revisión presencial.",
                 offers: [
                   {
                     "@type": "Offer",
-                    name: "Golf en Casa CARE",
+                    name: "Aquí Golf CARE",
                     price: "390",
                     priceCurrency: "EUR",
                     description:
@@ -265,7 +265,7 @@ export default function GolfEnCasaCARE() {
                   },
                   {
                     "@type": "Offer",
-                    name: "Golf en Casa CARE+",
+                    name: "Aquí Golf CARE+",
                     price: "790",
                     priceCurrency: "EUR",
                     description:
@@ -275,7 +275,7 @@ export default function GolfEnCasaCARE() {
               },
               {
                 "@type": "FAQPage",
-                "@id": "https://www.golfencasa.net/care/#faq",
+                "@id": "https://aquigolf.es/care/#faq",
                 mainEntity: faqs.map((item) => ({
                   "@type": "Question",
                   name: item.question,
@@ -315,10 +315,10 @@ export default function GolfEnCasaCARE() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4">
           <a href="/" className="flex min-w-0 items-center gap-3">
-            <img src="/logo-mail4.png" alt="Golf en Casa" className="h-16 w-auto" />
+            <img src="/brand/aqui-golf-circular.png" alt="Aquí Golf" className="h-16 w-auto" />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-wide">
-                Golf en Casa
+                Aquí Golf
               </p>
               <p className="truncate text-xs text-zinc-400">
                 CARE · Soporte y mantenimiento
@@ -505,7 +505,7 @@ export default function GolfEnCasaCARE() {
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <p className="font-semibold uppercase tracking-[0.25em] text-amber-300">
-              Golf en Casa CARE+
+              Aquí Golf CARE+
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
               Programa anual de mantenimiento preventivo
@@ -719,7 +719,7 @@ export default function GolfEnCasaCARE() {
 
             <div className="grid gap-4 sm:grid-cols-3">
               <AudienceCard
-                title="Clientes Golf en Casa"
+                title="Clientes Aquí Golf"
                 text="Continuidad de servicio después de la instalación y puesta en marcha."
               />
               <AudienceCard
@@ -914,11 +914,11 @@ export default function GolfEnCasaCARE() {
       {/* FOOTER */}
       <footer className="bg-zinc-950 px-6 py-12 text-center">
         <img
-          src="/logo-mail4.png"
-          alt="Golf en Casa"
+          src="/brand/aqui-golf-circular.png"
+          alt="Aquí Golf"
           className="mx-auto h-24 w-auto"
         />
-        <p className="mt-5 text-xl font-bold">Golf en Casa CARE</p>
+        <p className="mt-5 text-xl font-bold">Aquí Golf CARE</p>
         <p className="mt-2 text-zinc-400">
           Soporte remoto · Actualizaciones · Licencias · Mantenimiento
         </p>

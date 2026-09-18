@@ -1,3 +1,4 @@
+import { enhancedConversionData } from "./lib/consent.js";
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Ruler, Monitor, Wrench, Video, Home, Building2, Warehouse, Phone, Mail, MapPin, Star, ShieldCheck, ClipboardCheck, PlayCircle } from 'lucide-react';
@@ -26,7 +27,7 @@ import {
 
 const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
 const youtubeCourseUrl = 'https://youtube.com/playlist?list=PLfYDa4ADpRpYQ8iuZZrYMbw1-5TRONady';
-const email = 'info@golfencasa.net';
+const email = 'info@aquigolf.es';
 const whatsappNumber = '34678107234';
 const whatsappMessage = 'Hola, estoy interesado en montar un simulador de golf y me gustaría recibir información.';
 const amazonStoreUrl = 'https://amzn.eu/d/0ihONIw7';
@@ -381,10 +382,10 @@ export default function GolfSimulatorLanding() {
         project_type: form.projectType,
         budget_range: form.budget,
         source_declared: form.sourceDeclared,
-        user_data: {
+        user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        },
+        }),
         ...attributionEventData(attribution),
       });
 
@@ -412,19 +413,19 @@ export default function GolfSimulatorLanding() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
 <Helmet>
-      <title>Golf en Casa | Simuladores de golf y consultoría</title>
+      <title>Aquí Golf | Simuladores de golf y consultoría</title>
       <meta
         name="description"
         content="Diseño, consultoría e instalación de simuladores de golf para casa, academias y negocios indoor. Te ayudamos a elegir monitor, pantalla, proyector, software y componentes."
       />
-      <meta property="og:title" content="Golf en Casa | Simuladores de golf y consultoría" />
+      <meta property="og:title" content="Aquí Golf | Simuladores de golf y consultoría" />
       <meta
         property="og:description"
         content="Diseño, consultoría e instalación de simuladores de golf a medida en España."
       />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://www.golfencasa.net/" />
-      <meta property="og:image" content="https://www.golfencasa.net/despues_1.webp" />
+      <meta property="og:url" content="https://aquigolf.es/" />
+      <meta property="og:image" content="https://aquigolf.es/despues_1.webp" />
 
       <script type="application/ld+json">
         {JSON.stringify({
@@ -432,10 +433,10 @@ export default function GolfSimulatorLanding() {
           "@graph": [
             {
               "@type": "Organization",
-              "@id": "https://www.golfencasa.net/#organization",
-              name: "Golf en Casa",
-              url: "https://www.golfencasa.net",
-              logo: "https://www.golfencasa.net/logo-mail4.png",
+              "@id": "https://aquigolf.es/#organization",
+              name: "Aquí Golf",
+              url: "https://aquigolf.es",
+              logo: "https://aquigolf.es/brand/aqui-golf-circular.png",
               sameAs: [
                 "https://youtube.com/@Golf_en_Casa",
                 "https://instagram.com/golf.en.casa/",
@@ -445,17 +446,17 @@ export default function GolfSimulatorLanding() {
             },
             {
               "@type": "WebSite",
-              "@id": "https://www.golfencasa.net/#website",
-              url: "https://www.golfencasa.net",
-              name: "Golf en Casa",
+              "@id": "https://aquigolf.es/#website",
+              url: "https://aquigolf.es",
+              name: "Aquí Golf",
               publisher: {
-                "@id": "https://www.golfencasa.net/#organization",
+                "@id": "https://aquigolf.es/#organization",
               },
             },
           ],
         })}
       </script>
-        <link rel="canonical" href="https://www.golfencasa.net/" />
+        <link rel="canonical" href="https://aquigolf.es/" />
     </Helmet>
 
         <a
@@ -590,13 +591,13 @@ export default function GolfSimulatorLanding() {
          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <a href="#inicio" className="flex items-center gap-3">
             <img
- src="/logo-mail4.png"
-    alt="Golf en Casa"
+ src="/brand/aqui-golf-circular.png"
+    alt="Aquí Golf"
   className="h-20 w-auto"
 />
 
             <div>
-              <p className="text-sm font-semibold tracking-wide">Golf en Casa</p>
+              <p className="text-sm font-semibold tracking-wide">Aquí Golf</p>
               <p className="text-xs text-zinc-400">Simuladores & Consultoría</p>
             </div>
           </a>
@@ -990,7 +991,7 @@ export default function GolfSimulatorLanding() {
         </p>
 
         <h2 className="mt-3 text-4xl font-black md:text-5xl">
-          Aprende más en el canal Golf en Casa
+          Aprende más en el canal Aquí Golf
         </h2>
 
         <p className="mt-5 text-lg leading-8 text-zinc-300">
@@ -1185,7 +1186,7 @@ export default function GolfSimulatorLanding() {
                   <option>Instagram / Facebook</option>
                   <option>YouTube</option>
                   <option>Recomendación</option>
-                  <option>Ya conocía Golf en Casa</option>
+                  <option>Ya conocía Aquí Golf</option>
                   <option>Otro</option>
                   <option>No sabe / No recuerda</option>
                 </select>
@@ -1267,7 +1268,7 @@ export default function GolfSimulatorLanding() {
 
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-10">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-5 text-sm text-zinc-400 md:flex-row">
-          <p>© 2026 Golf en Casa · Simuladores de golf y consultoría</p>
+          <p>© 2026 Aquí Golf · Simuladores de golf y consultoría</p>
           <div className="flex gap-5">
             <a href={youtubeCourseUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">Curso gratuito</a>
             <a href={trackedCalendlyUrl} target="_blank" rel="noopener noreferrer" onPointerDown={(event) => refreshCalendlyLink(event)} onClick={(event) => trackCalendlyClick(event, 'footer')} className="hover:text-white">Consultoría</a>
@@ -1277,20 +1278,20 @@ export default function GolfSimulatorLanding() {
           <div className="mx-auto max-w-7xl px-5 text-center">
 
     <img
-      src="/logo-mail4.png"
-      alt="Golf en Casa"
+      src="/brand/aqui-golf-circular.png"
+      alt="Aquí Golf"
       className="mx-auto mt-4 h-24 w-auto"
     />
 
     <h3 className="mt-6 text-2xl font-bold">
-      Golf en Casa
+      Aquí Golf
     </h3>
 
     <p className="mt-3 text-zinc-400">
       Simuladores de Golf · Consultoría · Instalación · Formación
     </p>
 
-    <nav aria-label="Servicios de Golf en Casa" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-zinc-300">
+    <nav aria-label="Servicios de Aquí Golf" className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-zinc-300">
       <a href="/instalacion-simuladores-golf" className="hover:text-white">Instalación</a>
       <a href="/precio-simulador-golf" className="hover:text-white">Precios</a>
       <a href="/medidas-simulador-golf" className="hover:text-white">Medidas</a>
@@ -1355,7 +1356,7 @@ export default function GolfSimulatorLanding() {
   </a>
 </div>
     <p className="mt-8 text-sm text-zinc-500">
-      © 2026 Golf en Casa. Todos los derechos reservados.
+      © 2026 Aquí Golf. Todos los derechos reservados.
     </p>
 
   </div>

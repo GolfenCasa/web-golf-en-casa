@@ -1,3 +1,4 @@
+import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
@@ -46,7 +47,7 @@ import {
 
 const WHATSAPP_PHONE = "34678107234";
 const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
-const EMAIL = "info@golfencasa.net";
+const EMAIL = "info@aquigolf.es";
 
 const attributionEventData = (attribution) =>
   getAttributionEventData(attribution, { landingFallback: "" });
@@ -299,10 +300,10 @@ export default function LandingSimuladoresGolf() {
         project_type: form.projectType,
         budget_range: form.budget,
         source_declared: form.sourceDeclared,
-        user_data: {
+        user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        },
+        }),
         ...attributionEventData(attribution),
       });
       window.dataLayer.push({
@@ -324,18 +325,18 @@ export default function LandingSimuladoresGolf() {
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <Helmet>
-  <title>Instalación de simuladores de golf en España | Golf en Casa</title>
+  <title>Instalación de simuladores de golf en España | Aquí Golf</title>
   <meta
     name="description"
     content="Diseño e instalación de simuladores de golf a medida para viviendas, jardines, academias y negocios indoor en toda España. Descubre Golf Studio: un espacio independiente para tu simulador."
   />
   <link
     rel="canonical"
-    href="https://www.golfencasa.net/instalacion-simuladores-golf"
+    href="https://aquigolf.es/instalacion-simuladores-golf"
   />
   <meta
     property="og:title"
-    content="Instalación de simuladores de golf en España | Golf en Casa"
+    content="Instalación de simuladores de golf en España | Aquí Golf"
   />
   <meta
     property="og:description"
@@ -347,11 +348,11 @@ export default function LandingSimuladoresGolf() {
   />
   <meta
     property="og:url"
-    content="https://www.golfencasa.net/instalacion-simuladores-golf"
+    content="https://aquigolf.es/instalacion-simuladores-golf"
   />
   <meta
     property="og:image"
-    content="https://www.golfencasa.net/despues_1.webp"
+    content="https://aquigolf.es/despues_1.webp"
   />
 
   <script type="application/ld+json">
@@ -360,14 +361,14 @@ export default function LandingSimuladoresGolf() {
       "@graph": [
         {
           "@type": "Organization",
-          "@id": "https://www.golfencasa.net/#organization",
-          name: "Golf en Casa",
-          url: "https://www.golfencasa.net",
-          logo: "https://www.golfencasa.net/logo-mail4.png",
+          "@id": "https://aquigolf.es/#organization",
+          name: "Aquí Golf",
+          url: "https://aquigolf.es",
+          logo: "https://aquigolf.es/brand/aqui-golf-circular.png",
           description:
             "Diseño, consultoría e instalación de simuladores de golf a medida en España.",
           telephone: "+34678107234",
-          email: "info@golfencasa.net",
+          email: "info@aquigolf.es",
           areaServed: {
             "@type": "Country",
             name: "España"
@@ -386,23 +387,23 @@ export default function LandingSimuladoresGolf() {
         {
           "@type": "WebPage",
           "@id":
-            "https://www.golfencasa.net/instalacion-simuladores-golf/#webpage",
-          url: "https://www.golfencasa.net/instalacion-simuladores-golf",
+            "https://aquigolf.es/instalacion-simuladores-golf/#webpage",
+          url: "https://aquigolf.es/instalacion-simuladores-golf",
           name: "Instalación de simuladores de golf en España",
           description:
             "Servicio de diseño e instalación llave en mano de simuladores de golf para viviendas, jardines, academias y negocios indoor en toda España.",
           primaryImageOfPage: {
             "@type": "ImageObject",
-            url: "https://www.golfencasa.net/despues_1.webp"
+            url: "https://aquigolf.es/despues_1.webp"
           }
         },
         {
           "@type": "Service",
           "@id":
-            "https://www.golfencasa.net/instalacion-simuladores-golf/#service",
+            "https://aquigolf.es/instalacion-simuladores-golf/#service",
           name: "Diseño e instalación de simuladores de golf",
           provider: {
-            "@id": "https://www.golfencasa.net/#organization"
+            "@id": "https://aquigolf.es/#organization"
           },
           areaServed: {
             "@type": "Country",
@@ -416,12 +417,12 @@ export default function LandingSimuladoresGolf() {
             priceCurrency: "EUR",
             price: "3000",
             availability: "https://schema.org/InStock",
-            url: "https://www.golfencasa.net/instalacion-simuladores-golf"
+            url: "https://aquigolf.es/instalacion-simuladores-golf"
           }
         },
         {
           "@type": "FAQPage",
-          "@id": "https://www.golfencasa.net/instalacion-simuladores-golf/#faq",
+          "@id": "https://aquigolf.es/instalacion-simuladores-golf/#faq",
           mainEntity: [
             {
               "@type": "Question",
@@ -447,7 +448,7 @@ export default function LandingSimuladoresGolf() {
               acceptedAnswer: {
                 "@type": "Answer",
                 text:
-                  "Sí. Golf en Casa ofrece consultoría, diseño, selección de componentes e instalación completa de simuladores de golf según la ubicación y el tipo de proyecto."
+                  "Sí. Aquí Golf ofrece consultoría, diseño, selección de componentes e instalación completa de simuladores de golf según la ubicación y el tipo de proyecto."
               }
             },
             {
@@ -481,11 +482,11 @@ export default function LandingSimuladoresGolf() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo-mail4.png" alt="Golf en Casa" width="64" height="64" className="h-16 w-auto" />
+            <img src="/brand/aqui-golf-circular.png" alt="Aquí Golf" width="64" height="64" className="h-16 w-auto" />
 
             <div>
               <p className="text-sm font-semibold tracking-wide">
-                Golf en Casa
+                Aquí Golf
               </p>
               <p className="text-xs text-zinc-400">
                 Simuladores & Consultoría
@@ -500,7 +501,7 @@ export default function LandingSimuladoresGolf() {
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-red-500"
-                aria-label="YouTube Golf en Casa"
+                aria-label="YouTube Aquí Golf"
               >
                 <FaYoutube />
               </a>
@@ -510,7 +511,7 @@ export default function LandingSimuladoresGolf() {
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-pink-500"
-                aria-label="Instagram Golf en Casa"
+                aria-label="Instagram Aquí Golf"
               >
                 <FaInstagram />
               </a>
@@ -520,7 +521,7 @@ export default function LandingSimuladoresGolf() {
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-blue-500"
-                aria-label="Facebook Golf en Casa"
+                aria-label="Facebook Aquí Golf"
               >
                 <FaFacebook />
               </a>
@@ -530,7 +531,7 @@ export default function LandingSimuladoresGolf() {
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-white"
-                aria-label="TikTok Golf en Casa"
+                aria-label="TikTok Aquí Golf"
               >
                 <FaTiktok />
               </a>
@@ -793,13 +794,13 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2.5rem] bg-emerald-400/10 blur-2xl" />
             <img
-              src="/francisco-golf-en-casa.webp"
+              src="/francisco-aqui-golf.webp"
               width="768"
               height="1024"
               loading="lazy"
               decoding="async"
               fetchPriority="low"
-              alt="Francisco Menacho, fundador de Golf en Casa"
+              alt="Francisco Menacho, fundador de Aquí Golf"
               className="relative h-auto w-full rounded-[2rem] object-cover shadow-2xl"
             />
           </div>
@@ -810,11 +811,11 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
             </p>
 
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              Soy Francisco Menacho, fundador de Golf en Casa
+              Soy Francisco Menacho, fundador de Aquí Golf
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              Soy ingeniero, creador de contenido especializado en simuladores de golf y responsable directo de cada proyecto de Golf en Casa. Mi objetivo no es venderte un monitor concreto, sino diseñar la solución que mejor encaje con tu espacio, presupuesto y forma de jugar.
+              Soy ingeniero, creador de contenido especializado en simuladores de golf y responsable directo de cada proyecto de Aquí Golf. Mi objetivo no es venderte un monitor concreto, sino diseñar la solución que mejor encaje con tu espacio, presupuesto y forma de jugar.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -873,14 +874,14 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
         </div>
       </section>
 
-      {/* POR QUÉ GOLF EN CASA */}
+      {/* POR QUÉ AQUÍ GOLF */}
       <section className="mx-auto max-w-7xl px-6 py-20"
         style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
       >
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="font-semibold uppercase tracking-[0.25em] text-emerald-300">
-              Por qué Golf en Casa
+              Por qué Aquí Golf
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
               No vendemos cajas: diseñamos tu simulador ideal
@@ -1036,7 +1037,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
 
         <p className="mx-auto mt-6 max-w-4xl px-6 text-center text-xs leading-5 text-zinc-400">
           Marcas mencionadas como tecnologías compatibles o habituales en
-          proyectos de simuladores. Golf en Casa no representa oficialmente a
+          proyectos de simuladores. Aquí Golf no representa oficialmente a
           estas marcas salvo indicación expresa.
         </p>
 
@@ -1199,7 +1200,7 @@ Simuladores para viviendas, jardines, academias y negocios
             </p>
 
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-Clientes que ya han confiado en Golf en Casa
+Clientes que ya han confiado en Aquí Golf
             </h2>
 
             <p className="mt-5 text-zinc-300">
@@ -1459,7 +1460,7 @@ Descubre si tu espacio es apto antes de invertir en material
                 <option>Instagram / Facebook</option>
                 <option>YouTube</option>
                 <option>Recomendación</option>
-                <option>Ya conocía Golf en Casa</option>
+                <option>Ya conocía Aquí Golf</option>
                 <option>Otro</option>
                 <option>No sabe / No recuerda</option>
               </select>
@@ -1542,7 +1543,7 @@ Descubre si tu espacio es apto antes de invertir en material
         </div>
       </section>
 
-      {/* GOLF EN CASA CARE */}
+      {/* AQUÍ GOLF CARE */}
       <section className="border-y border-white/10 bg-white/[0.03]">
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
@@ -1551,7 +1552,7 @@ Descubre si tu espacio es apto antes de invertir en material
             </p>
 
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              Tu simulador seguirá acompañado con Golf en Casa CARE
+              Tu simulador seguirá acompañado con Aquí Golf CARE
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-300">
@@ -1595,7 +1596,7 @@ Descubre si tu espacio es apto antes de invertir en material
               onClick={() => pushDataLayer("click_care", "care_section")}
               className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300"
             >
-              Conoce Golf en Casa CARE
+              Conoce Aquí Golf CARE
               <ArrowRight className="ml-2 h-5 w-5" />
             </a>
           </div>
@@ -1697,8 +1698,8 @@ Enviar medidas por WhatsApp
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-12 text-center">
         <div className="mx-auto max-w-7xl">
           <img
-            src="/logo-mail4.png"
-            alt="Golf en Casa"
+            src="/brand/aqui-golf-circular.png"
+            alt="Aquí Golf"
             width="96"
             height="96"
             loading="lazy"
@@ -1706,7 +1707,7 @@ Enviar medidas por WhatsApp
             className="mx-auto h-24 w-auto"
           />
 
-          <h3 className="mt-6 text-2xl font-bold text-white">Golf en Casa</h3>
+          <h3 className="mt-6 text-2xl font-bold text-white">Aquí Golf</h3>
 
           <p className="mt-3 text-zinc-400">
             Simuladores de Golf · Consultoría · Instalación · Formación
@@ -1728,7 +1729,7 @@ Enviar medidas por WhatsApp
               href="https://youtube.com/@Golf_en_Casa"
               target="_blank"
               rel="noreferrer"
-              aria-label="YouTube Golf en Casa"
+              aria-label="YouTube Aquí Golf"
               className="text-zinc-400 transition hover:text-red-500"
             >
               <FaYoutube />
@@ -1738,7 +1739,7 @@ Enviar medidas por WhatsApp
               href="https://instagram.com/golf.en.casa/"
               target="_blank"
               rel="noreferrer"
-              aria-label="Instagram Golf en Casa"
+              aria-label="Instagram Aquí Golf"
               className="text-zinc-400 transition hover:text-pink-500"
             >
               <FaInstagram />
@@ -1748,7 +1749,7 @@ Enviar medidas por WhatsApp
               href="https://www.facebook.com/GolfenCasaSimuladores/"
               target="_blank"
               rel="noreferrer"
-              aria-label="Facebook Golf en Casa"
+              aria-label="Facebook Aquí Golf"
               className="text-zinc-400 transition hover:text-blue-500"
             >
               <FaFacebook />
@@ -1758,7 +1759,7 @@ Enviar medidas por WhatsApp
               href="https://www.tiktok.com/@golf_en_casa"
               target="_blank"
               rel="noreferrer"
-              aria-label="TikTok Golf en Casa"
+              aria-label="TikTok Aquí Golf"
               className="text-zinc-400 transition hover:text-white"
             >
               <FaTiktok />
@@ -1780,7 +1781,7 @@ Enviar medidas por WhatsApp
           </div>
 
           <p className="mt-8 text-sm text-zinc-400">
-            © 2026 Golf en Casa. Todos los derechos reservados.
+            © 2026 Aquí Golf. Todos los derechos reservados.
           </p>
         </div>
       </footer>
@@ -1856,7 +1857,7 @@ function HeroVideo() {
           src="/video_promocion3-poster.webp"
           width="406"
           height="720"
-          alt="Vista previa de una instalación de simulador de golf realizada por Golf en Casa"
+          alt="Vista previa de una instalación de simulador de golf realizada por Aquí Golf"
           loading="lazy"
           decoding="async"
           fetchPriority="low"

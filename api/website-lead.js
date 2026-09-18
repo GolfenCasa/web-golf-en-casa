@@ -1,3 +1,4 @@
+import { toCrmSource } from "./_lib/crm-source.js";
 import {
   getAttributionSummaryRows,
   sanitizeLeadAttribution,
@@ -6,9 +7,10 @@ import {
 const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
-  "Golf en Casa <info@golfencasa.net>";
+  "Aquí Golf <info@golfencasa.net>";
 
-const CRM_TIMEOUT_MS = 2500;
+// Sheets may finish after several seconds. Never retry an uncertain write.
+const CRM_TIMEOUT_MS = 15000;
 const PRIVACY_POLICY_VERSION = "2026-09-03";
 
 const clean = (value, max = 500) =>
@@ -106,7 +108,7 @@ export default async function handler(request, response) {
       .filter(Boolean)
       .join(" / ") || "direct / none";
 
-  const subject = `Web Golf en Casa — Nueva solicitud — ${data.name}`;
+  const subject = `Web Aquí Golf — Nueva solicitud — ${data.name}`;
 
   const rows = [
     ["Nombre", data.name],
@@ -147,7 +149,7 @@ export default async function handler(request, response) {
     <div style="font-family:Arial,sans-serif;background:#f5f3ef;padding:32px;color:#0b0b0b">
       <div style="max-width:760px;margin:0 auto;background:white;border:1px solid #e8e5df">
         <div style="background:#0b0b0b;padding:24px 28px">
-          <div style="font-size:12px;letter-spacing:2px;color:#34d399">GOLF EN CASA</div>
+          <div style="font-size:12px;letter-spacing:2px;color:#34d399">AQUÍ GOLF</div>
           <h1 style="margin:10px 0 0;color:#f5f3ef;font-size:24px;font-weight:500">Nueva solicitud desde la web</h1>
         </div>
         <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -161,7 +163,7 @@ export default async function handler(request, response) {
     </div>`;
 
   const text = [
-    "GOLF EN CASA — NUEVA SOLICITUD WEB",
+    "AQUÍ GOLF — NUEVA SOLICITUD WEB",
     "",
     ...rows.map(([label, value]) => `${label}: ${value}`),
     "",
@@ -171,6 +173,7 @@ export default async function handler(request, response) {
 
   try {
     const resendResponse = await fetch("https://api.resend.com/emails", {
+      signal: AbortSignal.timeout(10000),
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -199,9 +202,11 @@ export default async function handler(request, response) {
     }
 
     let crmSynced = false;
+    let crmStatus = "not_configured";
     let crmLeadId = null;
 
     if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      crmStatus = "unconfirmed";
       const crmController = new AbortController();
       const crmTimeout = setTimeout(() => crmController.abort(), CRM_TIMEOUT_MS);
 
@@ -209,7 +214,7 @@ export default async function handler(request, response) {
         const notes = [
           data.message ? `Mensaje: ${data.message}` : "",
           data.attribution.landingPage
-            ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+            ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://aquigolf.es").pathname}`
             : "",
           data.attribution.conversionPage
             ? `Página conversión: ${data.attribution.conversionPage}`
@@ -237,7 +242,7 @@ export default async function handler(request, response) {
             projectType: data.projectType,
             budget: data.budget,
             dimensions: data.dimensions,
-            sourceDeclared: data.sourceDeclared,
+            sourceDeclared: toCrmSource(data.sourceDeclared),
             message: notes,
             attribution: data.attribution,
           }),
@@ -247,8 +252,10 @@ export default async function handler(request, response) {
 
         if (crmResponse.ok && crmData.ok) {
           crmSynced = true;
+          crmStatus = "confirmed";
           crmLeadId = crmData.leadId || null;
         } else {
+          crmStatus = crmResponse.ok && crmData.ok === false ? "rejected" : "unconfirmed";
           console.error("CRM webhook error", crmResponse.status, crmData);
         }
       } catch (crmError) {
@@ -268,6 +275,7 @@ export default async function handler(request, response) {
       ok: true,
       id: resendData.id || null,
       crmSynced,
+      crmStatus,
       crmLeadId,
     });
   } catch (error) {

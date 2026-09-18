@@ -28,7 +28,7 @@ assert.equal(ATTRIBUTION_TTL_MS, 30 * DAY);
 
 for (const referrer of [
   "https://golfencasa.net/proyectos",
-  "https://www.golfencasa.net/",
+  "https://aquigolf.es/",
   "https://go.golfencasa.net/oferta",
   "http://localhost:5173/test",
   "http://127.0.0.1:4173/test",
@@ -40,8 +40,16 @@ for (const referrer of [
 }
 assert.equal(isInternalReferrer("https://www.google.es/", "www.golfencasa.net"), false);
 
+// The transition must not invent referral traffic between owned domains.
+for (const referrer of ["https://www.golfencasa.net/", "https://aquigolf.es/", "https://www.aquigolf.es/", "https://aquigolf.com/", "https://go.golfencasa.net/oferta"]) {
+  assert.equal(isInternalReferrer(referrer, "aquigolf.es"), true, referrer);
+}
+for (const referrer of ["https://aquigolf.es.example.org/", "https://noaquigolf.es/"]) {
+  assert.equal(isInternalReferrer(referrer, "aquigolf.es"), false, referrer);
+}
+
 const googleTouch = detectAttributionTouch({
-  url: "https://www.golfencasa.net/estudio-simulador-golf?utm_source=google&utm_medium=cpc&utm_campaign=leads&utm_content=hero&utm_term=simulador&gclid=G-1&gbraid=GB-1&wbraid=WB-1",
+  url: "https://aquigolf.es/estudio-simulador-golf?utm_source=google&utm_medium=cpc&utm_campaign=leads&utm_content=hero&utm_term=simulador&gclid=G-1&gbraid=GB-1&wbraid=WB-1",
   referrer: "https://www.google.es/search?q=simulador",
   now: START,
 });
@@ -58,7 +66,7 @@ assert.equal(toLeadAttribution(googleTouch).gbraid, "GB-1");
 assert.equal(toLeadAttribution(googleTouch).wbraid, "WB-1");
 
 const organicTouch = detectAttributionTouch({
-  url: "https://www.golfencasa.net/medidas-simulador-golf",
+  url: "https://aquigolf.es/medidas-simulador-golf",
   referrer: "https://www.google.es/search?q=medidas+simulador",
   now: START,
 });
@@ -66,7 +74,7 @@ assert.equal(organicTouch.source, "google");
 assert.equal(organicTouch.medium, "organic");
 
 const metaTouch = detectAttributionTouch({
-  url: "https://www.golfencasa.net/signature?fbclid=FB-1&utm_content=video",
+  url: "https://aquigolf.es/signature?fbclid=FB-1&utm_content=video",
   now: START + DAY,
 });
 assert.equal(metaTouch.source, "meta");
@@ -74,7 +82,7 @@ assert.equal(metaTouch.medium, "paid_social");
 assert.equal(classifyTrafficSource(metaTouch), "Meta Ads");
 
 const microsoftTouch = detectAttributionTouch({
-  url: "https://www.golfencasa.net/?msclkid=MS-1",
+  url: "https://aquigolf.es/?msclkid=MS-1",
   now: START + 2 * DAY,
 });
 assert.equal(microsoftTouch.source, "bing");
@@ -83,7 +91,7 @@ assert.equal(classifyTrafficSource(microsoftTouch), "Microsoft Ads");
 assert.equal(toLeadAttribution(microsoftTouch).msclkid, "MS-1");
 
 const directTouch = detectAttributionTouch({
-  url: "https://www.golfencasa.net/care",
+  url: "https://aquigolf.es/care",
   referrer: "https://preview-123.vercel.app/previous?utm_source=ignore",
   now: START + 3 * DAY,
 });
@@ -95,7 +103,7 @@ const retainedOnDirect = mergeAttribution(firstCapture, directTouch, { now: STAR
 assert.deepEqual(retainedOnDirect, firstCapture);
 
 const repeatedSpaReferrer = detectAttributionTouch({
-  url: "https://www.golfencasa.net/precio-simulador-golf",
+  url: "https://aquigolf.es/precio-simulador-golf",
   referrer: "https://www.google.es/search?q=simulador",
   now: START + DAY,
 });
@@ -178,7 +186,7 @@ const SECRET_CLICK_IDS = {
 };
 const sensitiveTouch = detectAttributionTouch({
   url:
-    "https://www.golfencasa.net/estudio-simulador-golf" +
+    "https://aquigolf.es/estudio-simulador-golf" +
     "?utm_source=google&utm_medium=cpc&utm_campaign=leads" +
     `&gclid=${SECRET_CLICK_IDS.gclid}` +
     `&gbraid=${SECRET_CLICK_IDS.gbraid}` +
@@ -189,7 +197,7 @@ const sensitiveTouch = detectAttributionTouch({
 });
 const sensitiveEvent = attributionEventData(sensitiveTouch, {
   conversionPage:
-    `https://www.golfencasa.net/contacto?gclid=${SECRET_CLICK_IDS.gclid}` +
+    `https://aquigolf.es/contacto?gclid=${SECRET_CLICK_IDS.gclid}` +
     `&fbclid=${SECRET_CLICK_IDS.fbclid}#enviado`,
   includeExtended: true,
 });
@@ -219,7 +227,7 @@ assert.equal(
 );
 
 assert.equal(
-  sanitisePathForWhatsApp("https://www.golfencasa.net/estudio-simulador-golf?gclid=secret#form"),
+  sanitisePathForWhatsApp("https://aquigolf.es/estudio-simulador-golf?gclid=secret#form"),
   "/estudio-simulador-golf",
 );
 assert.equal(sanitisePathForWhatsApp("/signature?utm_source=meta"), "/signature");
@@ -313,8 +321,9 @@ browserStorage.set("golf_en_casa_signature_attribution_v1", JSON.stringify(googl
 let reads = 0;
 let writes = 0;
 globalThis.window = {
+  getCkyConsent: () => ({ isUserActionCompleted: true, categories: { analytics: true, advertisement: true } }),
   location: {
-    href: "https://www.golfencasa.net/signature",
+    href: "https://aquigolf.es/signature",
     hostname: "www.golfencasa.net",
   },
   localStorage: {
@@ -326,6 +335,7 @@ globalThis.window = {
       writes += 1;
       browserStorage.set(key, value);
     },
+    removeItem(key) { browserStorage.delete(key); },
   },
 };
 globalThis.document = { referrer: "" };
@@ -336,7 +346,7 @@ assert.equal(reads, 2);
 assert.equal(writes, 1);
 
 window.location.href =
-  "https://www.golfencasa.net/signature?utm_source=meta&utm_medium=paid_social" +
+  "https://aquigolf.es/signature?utm_source=meta&utm_medium=paid_social" +
   "&utm_campaign=retargeting&utm_content=hero&fbclid=LIVE-FBCLID";
 const browserTarget = { href: "https://calendly.com/example/30min" };
 const preparedAtClick = prepareAttributedLink(

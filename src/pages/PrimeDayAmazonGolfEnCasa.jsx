@@ -49,7 +49,7 @@ const reasons = [
   'Selección enfocada a simuladores de golf en casa.',
   'Productos útiles para montar, proteger y mejorar tu zona de práctica.',
   'Acceso directo a la tienda de Amazon con ofertas Prime Day.',
-  'Recomendaciones pensadas desde la experiencia real de Golf en Casa.',
+  'Recomendaciones pensadas desde la experiencia real de Aquí Golf.',
 ];
 
 const steps = [
@@ -114,13 +114,13 @@ export default function PrimeDayAmazonGolfEnCasa() {
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <Helmet>
-        <title>Selección Amazon para golf indoor | Golf en Casa</title>
+        <title>Selección Amazon para golf indoor | Aquí Golf</title>
         <meta
           name="description"
-          content="Selección histórica de accesorios para golf indoor publicada por Golf en Casa durante Prime Day."
+          content="Selección histórica de accesorios para golf indoor publicada por Aquí Golf durante Prime Day."
         />
         <meta name="robots" content="noindex,follow" />
-        <link rel="canonical" href="https://www.golfencasa.net/prime-day-amazon" />
+        <link rel="canonical" href="https://aquigolf.es/prime-day-amazon" />
       </Helmet>
       <section className="relative overflow-hidden border-b border-white/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(34,197,94,0.12),transparent_35%)]" />
@@ -163,7 +163,7 @@ export default function PrimeDayAmazonGolfEnCasa() {
                 <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-5">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Prime Day</p>
-                    <h2 className="mt-2 text-2xl font-bold">Selección Golf en Casa</h2>
+                    <h2 className="mt-2 text-2xl font-bold">Selección Aquí Golf</h2>
                   </div>
                   <div className="rounded-2xl bg-emerald-400 p-3 text-zinc-950">
                     <PercentCircle className="h-7 w-7" />
@@ -267,7 +267,7 @@ export default function PrimeDayAmazonGolfEnCasa() {
             <Zap className="h-7 w-7 text-emerald-300" />
             <h3 className="mt-4 text-lg font-bold">Sin coste extra</h3>
             <p className="mt-3 text-sm leading-6 text-zinc-400">
-              Usar mis enlaces de afiliado no aumenta el precio para ti y ayuda a apoyar el contenido de Golf en Casa.
+              Usar mis enlaces de afiliado no aumenta el precio para ti y ayuda a apoyar el contenido de Aquí Golf.
             </p>
           </div>
         </div>
@@ -288,7 +288,7 @@ export default function PrimeDayAmazonGolfEnCasa() {
             <AmazonButton position="final_cta">Ver ofertas en mi tienda de Amazon</AmazonButton>
           </div>
           <p className="mx-auto mt-5 max-w-2xl text-xs leading-6 text-zinc-500">
-            Esta página contiene enlaces de afiliado. Golf en Casa puede recibir una comisión por compras realizadas desde estos enlaces.
+            Esta página contiene enlaces de afiliado. Aquí Golf puede recibir una comisión por compras realizadas desde estos enlaces.
             Amazon y el logo de Amazon son marcas de Amazon.com, Inc. o sus afiliados.
           </p>
         </div>

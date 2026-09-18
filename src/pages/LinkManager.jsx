@@ -21,7 +21,7 @@ const emptyForm = {
   id: '',
   name: '',
   slug: '',
-  destination: 'https://www.golfencasa.net/instalacion-simuladores-golf',
+  destination: 'https://aquigolf.es/instalacion-simuladores-golf',
   folder: 'Marketing',
   notes: '',
   active: true,
@@ -215,7 +215,7 @@ export default function LinkManager() {
         <div className="flex h-full items-center justify-between px-5 lg:px-7">
           <div className="flex items-center gap-3">
             <button className="rounded-xl p-2 text-slate-300 hover:bg-white/5 lg:hidden" onClick={() => setMobileNav(true)}><Menu /></button>
-            <div><p className="text-sm font-medium tracking-wide text-emerald-400">GOLF EN CASA</p><h1 className="text-xl font-semibold">Gestor de enlaces y QR</h1></div>
+            <div><p className="text-sm font-medium tracking-wide text-emerald-400">AQUÍ GOLF</p><h1 className="text-xl font-semibold">Gestor de enlaces y QR</h1></div>
           </div>
           <button onClick={logout} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-sm hover:bg-white/5"><LogOut size={17}/>Salir</button>
         </div>
@@ -287,7 +287,7 @@ export default function LinkManager() {
 }
 
 function AdminHead() {
-  return <Helmet><title>Gestor de enlaces | Golf en Casa</title><meta name="description" content="Acceso privado al gestor de enlaces y códigos QR de Golf en Casa."/><meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/><link rel="canonical" href="https://www.golfencasa.net/admin/enlaces"/></Helmet>;
+  return <Helmet><title>Gestor de enlaces | Aquí Golf</title><meta name="description" content="Acceso privado al gestor de enlaces y códigos QR de Aquí Golf."/><meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/><link rel="canonical" href="https://aquigolf.es/admin/enlaces"/></Helmet>;
 }
 
 function CreateChoice({ onClose, onCorporate, onPhysical }) {
@@ -338,7 +338,7 @@ function Sidebar({ open, onClose }) {
 }
 
 function Login({ password, setPassword, onSubmit, busy, message }) {
-  return <Centered><form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-7"><p className="text-sm text-emerald-400">GOLF EN CASA</p><h1 className="mt-1 text-2xl font-semibold">Acceso al gestor</h1><p className="mt-2 text-sm text-slate-400">Administra los enlaces de tus QR dinámicos.</p><label className="mt-6 block text-sm">Contraseña<input autoFocus type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-3 outline-none focus:border-emerald-500"/></label>{message && <p className="mt-3 text-sm text-red-300">{message}</p>}<button disabled={busy} className="mt-5 w-full rounded-xl bg-emerald-500 py-3 font-medium text-slate-950 disabled:opacity-60">{busy ? 'Accediendo…' : 'Entrar'}</button></form></Centered>;
+  return <Centered><form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-7"><p className="text-sm text-emerald-400">AQUÍ GOLF</p><h1 className="mt-1 text-2xl font-semibold">Acceso al gestor</h1><p className="mt-2 text-sm text-slate-400">Administra los enlaces de tus QR dinámicos.</p><label className="mt-6 block text-sm">Contraseña<input autoFocus type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-900 px-3 py-3 outline-none focus:border-emerald-500"/></label>{message && <p className="mt-3 text-sm text-red-300">{message}</p>}<button disabled={busy} className="mt-5 w-full rounded-xl bg-emerald-500 py-3 font-medium text-slate-950 disabled:opacity-60">{busy ? 'Accediendo…' : 'Entrar'}</button></form></Centered>;
 }
 function Centered({ children }) { return <div className="flex min-h-screen items-center justify-center bg-[#020817] p-5 text-white">{children}</div>; }
 function Metric({ label, value, icon }) { return <div className="rounded-2xl border border-white/10 bg-[#0a1122] p-6"><div className="flex items-center justify-between text-slate-400"><span>{label}</span><span className="text-emerald-400 [&_svg]:h-7 [&_svg]:w-7">{icon}</span></div><p className="mt-4 text-4xl font-semibold">{value}</p></div>; }
@@ -412,7 +412,7 @@ function Editor({ mode = 'corporate', form, setForm, onClose, onSave, busy, mess
 
         <div className={`grid gap-7 p-6 ${physicalMode ? 'lg:grid-cols-[1fr_440px]' : 'lg:grid-cols-[1fr_380px]'}`}>
           <div>
-            <Field label="Nombre (opcional)"><input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder={physicalMode ? 'Marcador Golf en Casa' : 'QR camiseta corporativa'}/></Field>
+            <Field label="Nombre (opcional)"><input value={form.name} onChange={(e) => update('name', e.target.value)} placeholder={physicalMode ? 'Marcador Aquí Golf' : 'QR camiseta corporativa'}/></Field>
             <Field label="Alias *"><input required value={form.slug} onChange={(e) => update('slug', slugify(e.target.value))} placeholder={physicalMode ? 'marcador' : 'camiseta'}/></Field>
             <p className="-mt-1 break-all text-sm text-emerald-400">{publicUrl}</p>
             <Field label="Carpeta"><select value={form.folder} onChange={(e) => update('folder', e.target.value)}><option>Marketing</option><option>Clientes</option><option>Eventos</option><option>Redes sociales</option><option>Otros</option></select></Field>
@@ -466,7 +466,7 @@ function Editor({ mode = 'corporate', form, setForm, onClose, onSave, busy, mess
               <p className="mb-3 font-medium">Vista previa del QR</p>
               <div className="rounded-2xl bg-white p-2">{qrBusy || !qrData ? <div className="flex aspect-square items-center justify-center text-slate-600">Generando vista previa…</div> : <img src={qrData} alt="Vista previa del QR corporativo" className="h-auto w-full rounded-xl"/>}</div>
               <div className="mt-4 rounded-xl border border-white/10 bg-[#08101f] p-4 text-sm text-slate-400">
-                {['Corrección de errores: Nivel H (30%)', 'Formato: PNG (1600×1600 px) y SVG vectorial', 'Color: Verde Golf en Casa', 'Logo: Centro integrado', 'Marco y franja inferior incluidos'].map((item) => <p key={item} className="mb-2 flex items-start gap-2 last:mb-0"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>{item}</p>)}
+                {['Corrección de errores: Nivel H (30%)', 'Formato: PNG (1600×1600 px) y SVG vectorial', 'Color: Verde Aquí Golf', 'Logo: Centro integrado', 'Marco y franja inferior incluidos'].map((item) => <p key={item} className="mb-2 flex items-start gap-2 last:mb-0"><Check size={16} className="mt-0.5 shrink-0 text-emerald-400"/>{item}</p>)}
               </div>
             </> : <>
               <p className="mb-3 font-medium">Vista previa de la pieza</p>

@@ -80,13 +80,13 @@ export default function ABLandingRouter() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
       <Helmet>
-        <title>Estudio de simulador de golf | Golf en Casa</title>
+        <title>Estudio de simulador de golf | Aquí Golf</title>
         <meta
           name="description"
           content="Acceso al estudio de viabilidad para diseñar e instalar un simulador de golf a medida."
         />
         <meta name="robots" content="noindex,follow" />
-        <link rel="canonical" href="https://www.golfencasa.net/instalacion-simuladores-golf" />
+        <link rel="canonical" href="https://aquigolf.es/instalacion-simuladores-golf" />
       </Helmet>
       <div className="text-center">
         <div

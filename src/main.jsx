@@ -4,6 +4,10 @@ import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
 import AppRouter from "./AppRouter.jsx";
+import { observeAttributionConsent } from "./lib/attribution.js";
+
+const stopObservingConsent = observeAttributionConsent();
+if (import.meta.hot) import.meta.hot.dispose(stopObservingConsent);
 
 hydrateRoot(
   document.getElementById("root"),

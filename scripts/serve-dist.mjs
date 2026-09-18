@@ -88,7 +88,7 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`Golf en Casa SSG disponible en http://${host}:${port}`);
+  console.log(`Aquí Golf SSG disponible en http://${host}:${port}`);
 });
 
 function resolveRequest(pathname) {

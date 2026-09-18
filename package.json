@@ -16,8 +16,9 @@
     "test:seo": "node scripts/validate-seo-build.mjs",
     "test:attribution": "node scripts/attribution-test.mjs",
     "test:tracking": "node scripts/tracking-contract-test.mjs",
+    "test:consent": "node --test scripts/consent-attribution-test.mjs",
     "test:api": "node --test scripts/api-lead-test.mjs",
-    "verify:local": "npm run test:attribution && npm run test:api && npm run test:tracking && npm run build && npm run test:seo"
+    "verify:local": "npm run test:attribution && npm run test:api && npm run test:tracking && npm run test:consent && npm run build && npm run test:seo"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",

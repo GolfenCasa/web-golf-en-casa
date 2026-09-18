@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://www.golfencasa.net/sitemap.xml
+Sitemap: https://aquigolf.es/sitemap.xml

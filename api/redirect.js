@@ -7,7 +7,7 @@ export async function GET(request) {
 
   const link = await getLinkBySlug(slug);
   if (!link || !link.active) {
-    return Response.redirect('https://www.golfencasa.net/', 302);
+    return Response.redirect('https://aquigolf.es/', 302);
   }
 
   // El contador no debe impedir la redirección si Redis falla temporalmente.

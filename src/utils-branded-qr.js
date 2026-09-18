@@ -389,7 +389,7 @@ export async function createTokenLogoSvg(options = {}) {
   const y = 0;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${normalized.diameterMm}mm" height="${normalized.diameterMm}mm" viewBox="0 0 ${normalized.diameterMm} ${normalized.diameterMm}">
-  <title>Logo Golf en Casa para marcador 3D</title>
+  <title>Logo Aquí Golf para marcador 3D</title>
   <svg xmlns="http://www.w3.org/2000/svg" x="${x.toFixed(3)}" y="${y.toFixed(3)}" width="${logoSizeMm.toFixed(3)}" height="${logoSizeMm.toFixed(3)}" viewBox="${esc(viewBox)}" preserveAspectRatio="xMidYMid meet">
     ${body}
   </svg>

@@ -1,3 +1,4 @@
+import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -372,10 +373,10 @@ export default function LandingSimuladoresGolfAds2() {
         budget_range: form.budget,
         source_declared: form.sourceDeclared,
         crm_synced: Boolean(result.crmSynced),
-        user_data: {
+        user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        },
+        }),
       });
 
       pushDataLayer("form_submit", "hero_form", {
@@ -406,7 +407,7 @@ export default function LandingSimuladoresGolfAds2() {
         <meta name="robots" content="noindex,follow" />
         <link
           rel="canonical"
-          href="https://www.golfencasa.net/instalacion-simuladores-golf"
+          href="https://aquigolf.es/instalacion-simuladores-golf"
         />
       </Helmet>
 
@@ -423,16 +424,16 @@ export default function LandingSimuladoresGolfAds2() {
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-5 sm:py-3">
-          <a href="/" className="flex items-center gap-3" aria-label="Golf en Casa">
+          <a href="/" className="flex items-center gap-3" aria-label="Aquí Golf">
             <img
-              src="/logo-mail4.png"
-              alt="Golf en Casa"
+              src="/brand/aqui-golf-circular.png"
+              alt="Aquí Golf"
               width="56"
               height="56"
               className="h-11 w-auto sm:h-14"
             />
             <div className="hidden sm:block">
-              <p className="text-sm font-bold">Golf en Casa</p>
+              <p className="text-sm font-bold">Aquí Golf</p>
               <p className="text-xs text-zinc-400">Diseño · Instalación · Soporte</p>
             </div>
           </a>
@@ -798,7 +799,7 @@ export default function LandingSimuladoresGolfAds2() {
           </div>
         </div>
         <p className="mx-auto mt-5 max-w-4xl px-6 text-center text-xs leading-5 text-zinc-500">
-          Marcas mostradas como tecnologías compatibles o habituales. Golf en Casa selecciona soluciones de forma independiente y no representa oficialmente a estas marcas salvo indicación expresa.
+          Marcas mostradas como tecnologías compatibles o habituales. Aquí Golf selecciona soluciones de forma independiente y no representa oficialmente a estas marcas salvo indicación expresa.
         </p>
         <style>{`
           @keyframes marquee {
@@ -881,8 +882,8 @@ export default function LandingSimuladoresGolfAds2() {
           <div className="relative">
             <div className="absolute -inset-5 rounded-[3rem] bg-emerald-400/10 blur-3xl" />
             <img
-              src="/francisco-golf-en-casa.webp"
-              alt="Francisco Menacho, fundador de Golf en Casa"
+              src="/francisco-aqui-golf.webp"
+              alt="Francisco Menacho, fundador de Aquí Golf"
               width="768"
               height="1024"
               loading="lazy"
@@ -898,7 +899,7 @@ export default function LandingSimuladoresGolfAds2() {
               Soy Francisco Menacho y seré tu interlocutor durante todo el proyecto
             </h2>
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              Soy ingeniero, creador de contenido especializado en simuladores de golf y responsable de Golf en Casa. Mi trabajo no consiste en venderte una marca concreta, sino en diseñar una solución coherente que funcione de verdad en tu espacio.
+              Soy ingeniero, creador de contenido especializado en simuladores de golf y responsable de Aquí Golf. Mi trabajo no consiste en venderte una marca concreta, sino en diseñar una solución coherente que funcione de verdad en tu espacio.
             </p>
             <div className="mt-7 grid gap-4 sm:grid-cols-2">
               <PersonalPoint text="Diseño independiente" />
@@ -976,15 +977,15 @@ export default function LandingSimuladoresGolfAds2() {
 
       <footer className="border-t border-white/10 bg-zinc-950 px-5 py-10 text-center">
         <img
-          src="/logo-mail4.png"
-          alt="Golf en Casa"
+          src="/brand/aqui-golf-circular.png"
+          alt="Aquí Golf"
           width="88"
           height="88"
           loading="lazy"
           decoding="async"
           className="mx-auto h-20 w-auto"
         />
-        <p className="mt-5 font-bold">Golf en Casa</p>
+        <p className="mt-5 font-bold">Aquí Golf</p>
         <p className="mt-2 text-sm text-zinc-400">
           Diseño e instalación de simuladores de golf a medida en España
         </p>
@@ -1174,7 +1175,7 @@ function LeadForm({
               <option>Instagram / Facebook</option>
               <option>YouTube</option>
               <option>Recomendación</option>
-              <option>Ya conocía Golf en Casa</option>
+              <option>Ya conocía Aquí Golf</option>
               <option>Otro</option>
               <option>No sabe / No recuerda</option>
             </select>

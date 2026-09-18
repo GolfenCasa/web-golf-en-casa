@@ -1,17 +1,18 @@
 /**
- * Shared acquisition attribution for Golf en Casa.
+ * Shared acquisition attribution for Aquí Golf.
  *
- * Browser I/O is deliberately limited to `readStoredAttribution`,
- * `captureAttribution` and the interaction-time `prepareAttributedLink`.
- * Every other export is pure and can be used while prerendering or
- * server-side rendering.
+ * Browser storage and submission helpers enforce the current CMP consent.
+ * Detection, normalisation and merge helpers also work during prerendering;
+ * browser-specific entry points safely handle server-side rendering.
  */
+
+import { getMeasurementConsent } from "./consent.js";
 
 export const ATTRIBUTION_STORAGE_KEY = "golf_en_casa_attribution_v1";
 export const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 export const ATTRIBUTION_SCHEMA_VERSION = 2;
 
-const SITE_ORIGIN = "https://www.golfencasa.net";
+const SITE_ORIGIN = "https://aquigolf.es";
 const LEGACY_ATTRIBUTION_STORAGE_KEYS = ["golf_en_casa_signature_attribution_v1"];
 const GOOGLE_CLICK_IDS = ["gclid", "gbraid", "wbraid"];
 const CLICK_ID_FIELDS = [...GOOGLE_CLICK_IDS, "fbclid", "msclkid"];
@@ -100,7 +101,9 @@ const isLocalHostname = (hostname) => {
 
 const isGolfEnCasaHostname = (hostname) => {
   const host = normaliseHostname(hostname);
-  return host === "golfencasa.net" || host.endsWith(".golfencasa.net");
+  return ["golfencasa.net", "aquigolf.es", "aquigolf.com"].some(
+    (domain) => host === domain || host.endsWith(`.${domain}`),
+  );
 };
 
 const isVercelPreviewHostname = (hostname) => {
@@ -411,6 +414,8 @@ export const toLeadAttribution = (
   attribution,
   { model = "last", conversionPage = "" } = {},
 ) => {
+  // Re-read at submission: the initial React state may predate consent or its withdrawal.
+  if (isBrowserEnvironment()) attribution = captureAttribution();
   const selectedModel = model === "first" ? "first" : "last";
   const otherModel = selectedModel === "first" ? "last" : "first";
   const touch = getAttributionTouch(attribution, selectedModel);
@@ -450,22 +455,61 @@ export const readAttributionFromBrowser = ({ now = Date.now() } = {}) => {
   });
 };
 
-/** Reads localStorage only when a real browser environment is present. */
+const applyConsentToAttribution = (attribution) => {
+  if (!isBrowserEnvironment()) return attribution;
+  const { analytics, advertising } = getMeasurementConsent();
+  if (!analytics && !advertising) return createEmptyAttribution();
+  if (advertising) return attribution;
+  const scrubUrl = (value) => {
+    if (!value) return value;
+    try {
+      const parsed = new URL(value, SITE_ORIGIN);
+      CLICK_ID_FIELDS.forEach((field) => parsed.searchParams.delete(field));
+      return value.startsWith('/') ? `${parsed.pathname}${parsed.search}` : parsed.toString();
+    } catch { return ''; }
+  };
+  const scrubTouch = (touch) => ({
+    ...touch,
+    ...Object.fromEntries(CLICK_ID_FIELDS.map(field => [field, ''])),
+    landingPage: scrubUrl(touch.landingPage),
+    referrer: scrubUrl(touch.referrer),
+  });
+  if (isEnvelope(attribution)) return {
+    ...attribution,
+    firstTouch: scrubTouch(getAttributionTouch(attribution, 'first')),
+    lastTouch: scrubTouch(getAttributionTouch(attribution, 'last')),
+  };
+  return scrubTouch(getAttributionTouch(attribution));
+};
+
+export const clearStoredAttribution = () => {
+  if (!isBrowserEnvironment()) return;
+  for (const key of [ATTRIBUTION_STORAGE_KEY, ...LEGACY_ATTRIBUTION_STORAGE_KEYS]) {
+    try { window.localStorage.removeItem(key); } catch { /* Storage may be unavailable. */ }
+  }
+};
+
+/** Reads attribution storage only after consent to analytics or advertising. */
 export const readStoredAttribution = ({ now = Date.now() } = {}) => {
   if (!isBrowserEnvironment()) return createEmptyAttribution();
+  const consent = getMeasurementConsent();
+  if (!consent.analytics && !consent.advertising) {
+    clearStoredAttribution();
+    return createEmptyAttribution();
+  }
 
   try {
     const primary = normaliseStoredAttribution(
       window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY),
       { now },
     );
-    if (primary.lastTouch.capturedAt) return primary;
+    if (primary.lastTouch.capturedAt) return applyConsentToAttribution(primary);
 
     for (const storageKey of LEGACY_ATTRIBUTION_STORAGE_KEYS) {
       const legacy = normaliseStoredAttribution(window.localStorage.getItem(storageKey), {
         now,
       });
-      if (legacy.lastTouch.capturedAt) return legacy;
+      if (legacy.lastTouch.capturedAt) return applyConsentToAttribution(legacy);
     }
 
     return createEmptyAttribution();
@@ -484,18 +528,34 @@ export const getCurrentBrowserPath = ({ includeSearch = false, fallback = "" } =
 /** Captures and persists attribution only in the browser. */
 export const captureAttribution = ({ now = Date.now() } = {}) => {
   if (!isBrowserEnvironment()) return createEmptyAttribution();
+  const consent = getMeasurementConsent();
+  if (!consent.analytics && !consent.advertising) {
+    clearStoredAttribution();
+    return createEmptyAttribution();
+  }
 
   const current = readAttributionFromBrowser({ now });
   const stored = readStoredAttribution({ now });
-  const attribution = mergeAttribution(stored, current, { now });
+  const attribution = applyConsentToAttribution(mergeAttribution(stored, current, { now }));
 
   try {
     window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution));
+    // Retire older copies, including click IDs no longer covered by consent.
+    LEGACY_ATTRIBUTION_STORAGE_KEYS.forEach(key => window.localStorage.removeItem(key));
   } catch {
     // Measurement remains available in memory if storage is blocked.
   }
 
   return attribution;
+};
+
+export const observeAttributionConsent = () => {
+  if (!isBrowserEnvironment()) return () => {};
+  const onConsent = () => captureAttribution();
+  const events = ['cookieyes_banner_load', 'cookieyes_banner_loaded', 'cookieyes_consent_update'];
+  events.forEach(name => document.addEventListener(name, onConsent));
+  onConsent();
+  return () => events.forEach(name => document.removeEventListener(name, onConsent));
 };
 
 export const classifyTrafficSource = (attribution, model = "last", locale = "es") => {
@@ -549,6 +609,7 @@ export const classifyTrafficSource = (attribution, model = "last", locale = "es"
 };
 
 export const attributionEventData = (attribution, options = {}) => {
+  attribution = applyConsentToAttribution(attribution);
   const {
     model = "last",
     conversionPage,

@@ -1,3 +1,4 @@
+import { toCrmSource } from "./_lib/crm-source.js";
 import {
   getAttributionSummaryRows,
   sanitizeLeadAttribution,
@@ -6,9 +7,10 @@ import {
 const EMAIL_TO = process.env.SIGNATURE_LEAD_TO || "info@golfencasa.net";
 const EMAIL_FROM =
   process.env.SIGNATURE_LEAD_FROM ||
-  "Golf en Casa | Estudio de viabilidad <signature@golfencasa.net>";
+  "Aquí Golf | Estudio de viabilidad <signature@golfencasa.net>";
 
-const CRM_TIMEOUT_MS = 2500;
+// Sheets may finish after several seconds. Never retry an uncertain write.
+const CRM_TIMEOUT_MS = 15000;
 const PRIVACY_POLICY_VERSION = "2026-09-03";
 
 const requiredFields = [
@@ -145,7 +147,7 @@ export default async function handler(request, response) {
     <div style="font-family:Arial,sans-serif;background:#f5f3ef;padding:32px;color:#0b0b0b">
       <div style="max-width:760px;margin:0 auto;background:white;border:1px solid #e8e5df">
         <div style="background:#0b0b0b;padding:24px 28px">
-          <div style="font-size:12px;letter-spacing:2px;color:#c8aa7d">GOLF EN CASA | ESTUDIO DE VIABILIDAD</div>
+          <div style="font-size:12px;letter-spacing:2px;color:#c8aa7d">AQUÍ GOLF | ESTUDIO DE VIABILIDAD</div>
           <h1 style="margin:10px 0 0;color:#f5f3ef;font-size:24px;font-weight:500">Nueva solicitud de estudio gratuito</h1>
         </div>
 
@@ -161,7 +163,7 @@ export default async function handler(request, response) {
     </div>`;
 
   const text = [
-    "GOLF EN CASA | ESTUDIO DE VIABILIDAD",
+    "AQUÍ GOLF | ESTUDIO DE VIABILIDAD",
     "",
     ...rows.map(([label, value]) => `${label}: ${value}`),
     "",
@@ -171,6 +173,7 @@ export default async function handler(request, response) {
 
   try {
     const resendResponse = await fetch("https://api.resend.com/emails", {
+      signal: AbortSignal.timeout(10000),
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -203,9 +206,11 @@ export default async function handler(request, response) {
     // El email es la fuente de seguridad: si el CRM falla, no perdemos el lead
     // ni mostramos un falso error al usuario después de haber recibido el correo.
     let crmSynced = false;
+    let crmStatus = "not_configured";
     let crmLeadId = null;
 
     if (process.env.CRM_WEBHOOK_URL && process.env.CRM_WEBHOOK_SECRET) {
+      crmStatus = "unconfirmed";
       const crmController = new AbortController();
       const crmTimeout = setTimeout(() => crmController.abort(), CRM_TIMEOUT_MS);
 
@@ -225,11 +230,11 @@ export default async function handler(request, response) {
             projectType: data.projectType,
             budget: data.budget,
             dimensions: data.dimensions,
-            sourceDeclared: data.sourceDeclared,
+            sourceDeclared: toCrmSource(data.sourceDeclared),
             message: [
               data.message || "",
               data.attribution.landingPage
-                ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://www.golfencasa.net").pathname}`
+                ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://aquigolf.es").pathname}`
                 : "",
               data.attribution.conversionPage
                 ? `Página conversión: ${data.attribution.conversionPage}`
@@ -246,8 +251,10 @@ export default async function handler(request, response) {
 
         if (crmResponse.ok && crmData.ok) {
           crmSynced = true;
+          crmStatus = "confirmed";
           crmLeadId = crmData.leadId || null;
         } else {
+          crmStatus = crmResponse.ok && crmData.ok === false ? "rejected" : "unconfirmed";
           console.error("CRM webhook error", crmResponse.status, crmData);
         }
       } catch (crmError) {
@@ -267,6 +274,7 @@ export default async function handler(request, response) {
       ok: true,
       id: resendData.id || null,
       crmSynced,
+      crmStatus,
       crmLeadId,
     });
   } catch (error) {

@@ -11,7 +11,7 @@ import {
 const pageConfigs = {
   price: {
     path: "/precio-simulador-golf",
-    title: "Precio de un simulador de golf en casa | Golf en Casa",
+    title: "Precio de un simulador de golf en casa | Aquí Golf",
     description: "Rangos orientativos y partidas que determinan el precio de un simulador de golf en casa. Compara alcance, tecnología e instalación antes de pedir presupuesto.",
     eyebrow: "Presupuesto y alcance",
     h1: "¿Cuánto cuesta un simulador de golf en casa?",
@@ -41,9 +41,9 @@ const pageConfigs = {
       },
     ],
     faqs: [
-      { question: "¿Cuál es el precio mínimo de un simulador de golf en casa?", answer: "Como orientación publicada por Golf en Casa, una configuración esencial puede partir de unos 3.000 euros. La viabilidad y el alcance deben revisarse para saber qué incluye realmente." },
+      { question: "¿Cuál es el precio mínimo de un simulador de golf en casa?", answer: "Como orientación publicada por Aquí Golf, una configuración esencial puede partir de unos 3.000 euros. La viabilidad y el alcance deben revisarse para saber qué incluye realmente." },
       { question: "¿Qué encarece más un simulador de golf?", answer: "Suelen influir el monitor de lanzamiento, la proyección, la protección de la sala, el PC, las licencias, los acabados y la complejidad de la instalación." },
-      { question: "¿El presupuesto incluye instalación y configuración?", answer: "Debe indicarse expresamente en cada propuesta. Golf en Casa prepara soluciones a medida y detalla las partidas incluidas antes de contratar." },
+      { question: "¿El presupuesto incluye instalación y configuración?", answer: "Debe indicarse expresamente en cada propuesta. Aquí Golf prepara soluciones a medida y detalla las partidas incluidas antes de contratar." },
     ],
     related: [
       ["Comprueba las medidas de tu espacio", "/medidas-simulador-golf"],
@@ -54,7 +54,7 @@ const pageConfigs = {
   },
   measures: {
     path: "/medidas-simulador-golf",
-    title: "Medidas para un simulador de golf en casa | Golf en Casa",
+    title: "Medidas para un simulador de golf en casa | Aquí Golf",
     description: "Aprende qué altura, ancho y fondo hay que comprobar antes de instalar un simulador de golf. Solicita un estudio de viabilidad de tu espacio.",
     eyebrow: "Viabilidad del espacio",
     h1: "Medidas para un simulador de golf: comprueba si tu espacio es viable",
@@ -97,12 +97,12 @@ const pageConfigs = {
   },
   consulting: {
     path: "/consultoria-simulador-golf",
-    title: "Consultoría para simuladores de golf | Golf en Casa",
+    title: "Consultoría para simuladores de golf | Aquí Golf",
     description: "Asesoramiento independiente para elegir componentes, validar medidas y planificar tu simulador de golf antes de comprar o instalar.",
     eyebrow: "Asesoramiento independiente",
     h1: "Consultoría para diseñar tu simulador de golf sin comprar a ciegas",
     intro: "Si quieres montar parte del proyecto por tu cuenta, una revisión técnica previa puede evitar incompatibilidades, compras duplicadas y problemas de espacio.",
-    image: "/francisco-golf-en-casa.webp",
+    image: "/francisco-aqui-golf.webp",
     serviceType: "Consultoría para simuladores de golf",
     icon: Settings,
     highlights: [
@@ -145,11 +145,11 @@ const pageConfigs = {
     sections: [
       { title: "Qué hay que estudiar antes", paragraphs: ["La parcela determina mucho más que el tamaño exterior. Orientación, drenaje, acceso de materiales, ruido, electricidad y distancia a la vivienda afectan al proyecto."], bullets: ["Normativa y permisos aplicables", "Dimensiones interiores útiles", "Cimentación, humedad y aislamiento", "Climatización y renovación de aire", "Electricidad, datos e iluminación"] },
       { title: "Diseñar de dentro hacia fuera", paragraphs: ["La posición de bola, la pantalla, el proyector, la zona segura y el acceso se definen antes de cerrar la envolvente. Así se evita construir un espacio que después obligue a comprometer el swing o la imagen." ] },
-      { title: "Alcance coordinado y presupuesto", paragraphs: ["Cada Golf Studio requiere definir quién proyecta y ejecuta la construcción, qué suministra Golf en Casa y qué trabajos corresponden a profesionales locales. La propuesta debe separar obra, tecnología, instalación y mantenimiento." ] },
+      { title: "Alcance coordinado y presupuesto", paragraphs: ["Cada Golf Studio requiere definir quién proyecta y ejecuta la construcción, qué suministra Aquí Golf y qué trabajos corresponden a profesionales locales. La propuesta debe separar obra, tecnología, instalación y mantenimiento." ] },
     ],
     faqs: [
       { question: "¿Necesito permiso para construir un Golf Studio?", answer: "Depende de la parcela, el municipio y la solución constructiva. La viabilidad urbanística debe confirmarse con el ayuntamiento o un técnico competente antes de ejecutar." },
-      { question: "¿Golf en Casa instala también la tecnología del simulador?", answer: "Golf en Casa puede estudiar la integración del simulador, seleccionar componentes y definir la instalación según el alcance acordado para cada proyecto." },
+      { question: "¿Aquí Golf instala también la tecnología del simulador?", answer: "Aquí Golf puede estudiar la integración del simulador, seleccionar componentes y definir la instalación según el alcance acordado para cada proyecto." },
       { question: "¿Cómo sé si mi jardín tiene espacio suficiente?", answer: "Necesitamos dimensiones de parcela, accesos, fotografías, ubicación propuesta y datos de los jugadores. Con esa información se realiza un primer estudio." },
     ],
     related: [
@@ -161,7 +161,7 @@ const pageConfigs = {
   },
   business: {
     path: "/simulador-golf-negocio",
-    title: "Simuladores de golf para negocios y academias | Golf en Casa",
+    title: "Simuladores de golf para negocios y academias | Aquí Golf",
     description: "Diseño de simuladores de golf para academias, clubes, hoteles y centros indoor: uso, capacidad, tecnología, operación, instalación y soporte.",
     eyebrow: "Soluciones profesionales",
     h1: "Simuladores de golf para negocios, academias, clubes y hoteles",
@@ -177,12 +177,12 @@ const pageConfigs = {
     sections: [
       { title: "El briefing comercial y operativo", paragraphs: ["Antes de hablar de marcas, hay que definir público, tarifa, horas de uso, servicios asociados y quién operará el espacio. Esto permite dimensionar el proyecto y evita promesas de retorno sin datos."], bullets: ["Academia y análisis de swing", "Centro indoor con reserva por horas", "Club o campo de golf", "Hotel, resort o experiencia corporativa", "Tienda, fitting o showroom"] },
       { title: "Decisiones técnicas que afectan al negocio", paragraphs: ["La lateralidad, el ritmo de usuarios, la facilidad para reiniciar el sistema, las licencias comerciales, la acústica y la protección de superficies influyen en la operación diaria."], bullets: ["Capacidad y distribución de bahías", "Tecnología y licencias para uso comercial", "Red, PC, proyección y mantenimiento", "Formación del equipo", "Plan de soporte y contingencia"] },
-      { title: "Presupuesto con hipótesis visibles", paragraphs: ["Una propuesta profesional debe separar inversión inicial, suscripciones, consumibles, soporte y posibles obras. Golf en Casa puede aportar el diseño técnico; la viabilidad económica depende de datos reales del negocio y no se garantiza con una cifra genérica." ] },
+      { title: "Presupuesto con hipótesis visibles", paragraphs: ["Una propuesta profesional debe separar inversión inicial, suscripciones, consumibles, soporte y posibles obras. Aquí Golf puede aportar el diseño técnico; la viabilidad económica depende de datos reales del negocio y no se garantiza con una cifra genérica." ] },
     ],
     faqs: [
       { question: "¿Qué tipo de simulador necesita una academia?", answer: "Depende del análisis que realice el profesional, la precisión requerida, el volumen de alumnos, el espacio y el software. Se estudia antes de seleccionar tecnología." },
       { question: "¿Se pueden cobrar reservas por horas?", answer: "El modelo es posible, pero requiere definir software de reservas, licencias, operación, soporte y normativa. Esos elementos deben evaluarse en el proyecto comercial." },
-      { question: "¿Golf en Casa trabaja en toda España?", answer: "Sí, se estudian proyectos profesionales en España según ubicación, alcance, calendario y necesidades de instalación." },
+      { question: "¿Aquí Golf trabaja en toda España?", answer: "Sí, se estudian proyectos profesionales en España según ubicación, alcance, calendario y necesidades de instalación." },
     ],
     related: [
       ["Solicitar estudio de instalación", "/instalacion-simuladores-golf#formulario"],

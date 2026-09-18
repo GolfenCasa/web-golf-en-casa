@@ -4,10 +4,10 @@ export default function NotFound() {
   return (
     <main className="flex min-h-screen items-center bg-zinc-950 px-6 py-20 text-white">
       <Helmet>
-        <title>Página no encontrada | Golf en Casa</title>
+        <title>Página no encontrada | Aquí Golf</title>
         <meta
           name="description"
-          content="La página solicitada no existe. Vuelve a Golf en Casa o consulta nuestros servicios de simuladores de golf."
+          content="La página solicitada no existe. Vuelve a Aquí Golf o consulta nuestros servicios de simuladores de golf."
         />
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>

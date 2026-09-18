@@ -12,13 +12,13 @@ export default function AvisoLegal() {
   return (
     <main className="min-h-screen bg-zinc-950 px-5 py-16 text-white">
       <Helmet>
-        <title>Aviso legal | Golf en Casa</title>
+        <title>Aviso legal | Aquí Golf</title>
         <meta
           name="description"
-          content="Información legal sobre la titularidad y las condiciones de uso del sitio web de Golf en Casa."
+          content="Información legal sobre la titularidad y las condiciones de uso del sitio web de Aquí Golf."
         />
         <meta name="robots" content="noindex,follow" />
-        <link rel="canonical" href="https://www.golfencasa.net/aviso-legal" />
+        <link rel="canonical" href="https://aquigolf.es/aviso-legal" />
       </Helmet>
       <div className="mx-auto max-w-4xl">
         <button
@@ -35,11 +35,11 @@ export default function AvisoLegal() {
           <p>
             Titular: Francisco Menacho Valle
             <br />
-            Nombre comercial: Golf en Casa
+            Nombre comercial: Aquí Golf
             <br />
-            Correo electrónico: info@golfencasa.net
+            Correo electrónico: info@aquigolf.es
             <br />
-            Sitio web: https://www.golfencasa.net
+            Sitio web: https://aquigolf.es
           </p>
 
           <h2 className="text-2xl font-bold text-white">Objeto</h2>
@@ -51,13 +51,13 @@ export default function AvisoLegal() {
           <h2 className="text-2xl font-bold text-white">Propiedad intelectual</h2>
           <p>
             Todos los contenidos de esta web, incluyendo textos, imágenes,
-            logotipos, vídeos y diseños son propiedad de Golf en Casa o de sus
+            logotipos, vídeos y diseños son propiedad de Aquí Golf o de sus
             respectivos titulares.
           </p>
 
           <h2 className="text-2xl font-bold text-white">Responsabilidad</h2>
           <p>
-            Golf en Casa no se responsabiliza del uso indebido de los contenidos
+            Aquí Golf no se responsabiliza del uso indebido de los contenidos
             publicados ni de posibles daños derivados del acceso a la web.
           </p>
         </div>

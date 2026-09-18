@@ -12,13 +12,13 @@ export default function PoliticaPrivacidad() {
   return (
     <main className="min-h-screen bg-zinc-950 px-5 py-16 text-white">
       <Helmet>
-        <title>Política de privacidad | Golf en Casa</title>
+        <title>Política de privacidad | Aquí Golf</title>
         <meta
           name="description"
-          content="Información sobre el tratamiento de datos personales realizado por Golf en Casa."
+          content="Información sobre el tratamiento de datos personales realizado por Aquí Golf."
         />
         <meta name="robots" content="noindex,follow" />
-        <link rel="canonical" href="https://www.golfencasa.net/politica-privacidad" />
+        <link rel="canonical" href="https://aquigolf.es/politica-privacidad" />
       </Helmet>
       <div className="mx-auto max-w-4xl">
         <button
@@ -39,7 +39,7 @@ export default function PoliticaPrivacidad() {
           <p>
             Responsable del tratamiento: Francisco Menacho
             <br />
-            Email: info@golfencasa.net
+            Email: info@aquigolf.es
           </p>
 
           <h2 className="text-2xl font-bold text-white">Finalidad</h2>
@@ -66,7 +66,7 @@ export default function PoliticaPrivacidad() {
           <p>
             Puedes ejercer tus derechos de acceso, rectificación, supresión,
             oposición, limitación y portabilidad escribiendo a:
-            info@golfencasa.net.
+            info@aquigolf.es.
           </p>
         </div>
       </div>

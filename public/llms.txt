@@ -1,20 +1,20 @@
-# Golf en Casa
+# Aquí Golf
 
-Golf en Casa diseña, asesora e instala simuladores de golf a medida para viviendas, jardines, academias y negocios en España.
+Aquí Golf diseña, asesora e instala simuladores de golf a medida para viviendas, jardines, academias y negocios en España.
 
 ## Páginas principales
 
-- Inicio: https://www.golfencasa.net/
-- Instalación de simuladores de golf: https://www.golfencasa.net/instalacion-simuladores-golf
-- Precio y partidas: https://www.golfencasa.net/precio-simulador-golf
-- Medidas y viabilidad: https://www.golfencasa.net/medidas-simulador-golf
-- Consultoría: https://www.golfencasa.net/consultoria-simulador-golf
-- Golf Studio en jardín: https://www.golfencasa.net/simulador-golf-jardin
-- Soluciones para negocios y academias: https://www.golfencasa.net/simulador-golf-negocio
-- Proyectos realizados: https://www.golfencasa.net/proyectos
-- Mantenimiento CARE y CARE+: https://www.golfencasa.net/care
-- Proyectos privados Signature: https://www.golfencasa.net/signature
-- Signature Projects in English: https://www.golfencasa.net/en/signature
+- Inicio: https://aquigolf.es/
+- Instalación de simuladores de golf: https://aquigolf.es/instalacion-simuladores-golf
+- Precio y partidas: https://aquigolf.es/precio-simulador-golf
+- Medidas y viabilidad: https://aquigolf.es/medidas-simulador-golf
+- Consultoría: https://aquigolf.es/consultoria-simulador-golf
+- Golf Studio en jardín: https://aquigolf.es/simulador-golf-jardin
+- Soluciones para negocios y academias: https://aquigolf.es/simulador-golf-negocio
+- Proyectos realizados: https://aquigolf.es/proyectos
+- Mantenimiento CARE y CARE+: https://aquigolf.es/care
+- Proyectos privados Signature: https://aquigolf.es/signature
+- Signature Projects in English: https://aquigolf.es/en/signature
 
 ## Contacto
 
@@ -22,4 +22,4 @@ Golf en Casa diseña, asesora e instala simuladores de golf a medida para vivien
 - Teléfono y WhatsApp: +34 678 107 234
 - Cobertura principal: España
 
-La viabilidad y el presupuesto de cada simulador dependen del espacio, el swing, el uso previsto, la tecnología y los acabados. Golf en Casa recomienda validar esos factores antes de comprar componentes.
+La viabilidad y el presupuesto de cada simulador dependen del espacio, el swing, el uso previsto, la tecnología y los acabados. Aquí Golf recomienda validar esos factores antes de comprar componentes.

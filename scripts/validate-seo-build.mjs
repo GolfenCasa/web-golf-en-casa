@@ -6,7 +6,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { indexableRoutes, prerenderRoutes } from "../src/routeManifest.js";
 
-const SITE_ORIGIN = "https://www.golfencasa.net";
+const SITE_ORIGIN = "https://aquigolf.es";
 
 const OPTIONAL_NOINDEX_ROUTES = ["/admin/enlaces"];
 const REDIRECT_ONLY_ROUTES = [];
@@ -412,7 +412,7 @@ async function validateLlms() {
   const content = await readFile(file, "utf8");
   assert(!/<html\b/i.test(content), "llms.txt: no es el shell HTML");
   assert(content.trim().length >= 150, "llms.txt: contiene información útil (>=150 caracteres)");
-  assert(/golf en casa/i.test(content), "llms.txt: identifica Golf en Casa");
+  assert(/aquí golf/i.test(content), "llms.txt: identifica Aquí Golf");
   assert(content.includes(SITE_ORIGIN), `llms.txt: usa el origen canónico ${SITE_ORIGIN}`);
   assert(
     content.includes(`${SITE_ORIGIN}/instalacion-simuladores-golf`),

@@ -50,7 +50,7 @@ const projects = {
       "Entrega de la solución lista para utilizar",
     ],
     challenge: "El espacio debía albergar una experiencia de juego completa sin perder seguridad ni comodidad. La selección de cada componente tenía que responder al tamaño de la estancia, al tipo de jugador y al uso previsto.",
-    solution: "Golf en Casa coordinó el diseño, la elección de componentes, la instalación y la configuración final. La comparación visual permite comprobar el cambio entre el espacio de partida y el resultado terminado.",
+    solution: "Aquí Golf coordinó el diseño, la elección de componentes, la instalación y la configuración final. La comparación visual permite comprobar el cambio entre el espacio de partida y el resultado terminado.",
     quote: "Estoy empezando en el golf y tener un simulador en casa me parecía una opción inmejorable para entrenar y jugar cuando quisiera. Francisco se encargó de todo: diseño, elección de componentes, instalación y configuración final.",
   },
 };
@@ -59,8 +59,8 @@ export function ProjectsPage() {
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <SeoHead
-        title="Proyectos de simuladores de golf realizados | Golf en Casa"
-        description="Casos reales de simuladores de golf residenciales diseñados e instalados por Golf en Casa en Écija y Jerez."
+        title="Proyectos de simuladores de golf realizados | Aquí Golf"
+        description="Casos reales de simuladores de golf residenciales diseñados e instalados por Aquí Golf en Écija y Jerez."
         path="/proyectos"
         image="/despues_2.webp"
       />

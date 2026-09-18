@@ -10,7 +10,7 @@ import {
   getWhatsAppReference,
 } from "../lib/attribution.js";
 
-const SITE_URL = "https://www.golfencasa.net";
+const SITE_URL = "https://aquigolf.es";
 const WHATSAPP_NUMBER = "34678107234";
 
 export function SeoHead({
@@ -29,10 +29,10 @@ export function SeoHead({
       {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
-        name: "Golf en Casa",
+        name: "Aquí Golf",
         url: `${SITE_URL}/`,
-        logo: `${SITE_URL}/logo-mail4.png`,
-        email: "info@golfencasa.net",
+        logo: `${SITE_URL}/brand/aqui-golf-circular.png`,
+        email: "info@aquigolf.es",
         telephone: "+34678107234",
         areaServed: { "@type": "Country", name: "España" },
       },
@@ -40,7 +40,7 @@ export function SeoHead({
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: `${SITE_URL}/`,
-        name: "Golf en Casa",
+        name: "Aquí Golf",
         publisher: { "@id": `${SITE_URL}/#organization` },
         inLanguage: "es-ES",
       },
@@ -102,10 +102,10 @@ export function PublicHeader() {
   return (
     <header className="border-b border-white/10 bg-zinc-950/95 text-white backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-6 lg:px-8">
-        <a href="/" className="flex items-center gap-3" aria-label="Golf en Casa, inicio">
-          <img src="/logo-mail4.png" alt="Golf en Casa" width="64" height="64" className="h-14 w-auto" />
+        <a href="/" className="flex items-center gap-3" aria-label="Aquí Golf, inicio">
+          <img src="/brand/aqui-golf-circular.png" alt="Aquí Golf" width="64" height="64" className="h-14 w-auto" />
           <div>
-            <p className="text-sm font-semibold tracking-wide">Golf en Casa</p>
+            <p className="text-sm font-semibold tracking-wide">Aquí Golf</p>
             <p className="text-xs text-zinc-400">Simuladores & Consultoría</p>
           </div>
         </a>
@@ -213,7 +213,7 @@ export function PublicFooter() {
     <footer className="border-t border-white/10 bg-zinc-950 px-6 py-12 text-zinc-400">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.2fr_1fr_1fr]">
         <div>
-          <img src="/logo-mail4.png" alt="Golf en Casa" width="80" height="80" className="h-20 w-auto" />
+          <img src="/brand/aqui-golf-circular.png" alt="Aquí Golf" width="80" height="80" className="h-20 w-auto" />
           <p className="mt-4 max-w-md leading-7">Diseño, consultoría, instalación y soporte de simuladores de golf a medida en España.</p>
         </div>
         <div>
@@ -227,17 +227,17 @@ export function PublicFooter() {
           </div>
         </div>
         <div>
-          <h2 className="font-bold text-white">Golf en Casa</h2>
+          <h2 className="font-bold text-white">Aquí Golf</h2>
           <div className="mt-4 grid gap-3 text-sm">
             <a href="/proyectos" className="hover:text-white">Proyectos realizados</a>
             <a href="/care" className="hover:text-white">Mantenimiento CARE</a>
             <a href="/signature" className="hover:text-white">Signature Projects</a>
-            <a href="mailto:info@golfencasa.net" className="inline-flex items-center hover:text-white"><Mail className="mr-2 h-4 w-4" />info@golfencasa.net</a>
+            <a href="mailto:info@aquigolf.es" className="inline-flex items-center hover:text-white"><Mail className="mr-2 h-4 w-4" />info@aquigolf.es</a>
           </div>
         </div>
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-wrap gap-x-5 gap-y-3 border-t border-white/10 pt-6 text-xs">
-        <span>© 2026 Golf en Casa</span>
+        <span>© 2026 Aquí Golf</span>
         <a href="/aviso-legal" className="hover:text-white">Aviso legal</a>
         <a href="/politica-privacidad" className="hover:text-white">Privacidad</a>
         <a href="/politica-cookies" className="hover:text-white">Cookies</a>

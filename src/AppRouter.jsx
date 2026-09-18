@@ -98,7 +98,7 @@ function DocumentDefaults() {
 
   return (
     <Helmet htmlAttributes={{ lang: language }}>
-      <meta property="og:site_name" content="Golf en Casa" />
+      <meta property="og:site_name" content="Aquí Golf" />
       <meta name="twitter:card" content="summary_large_image" />
     </Helmet>
   );

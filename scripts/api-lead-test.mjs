@@ -8,7 +8,7 @@ const TEST_ENV = {
   CRM_WEBHOOK_URL: CRM_URL,
   CRM_WEBHOOK_SECRET: "crm_test_local_only",
   SIGNATURE_LEAD_TO: "leads.test@golfencasa.invalid",
-  SIGNATURE_LEAD_FROM: "Golf en Casa Test <noreply@golfencasa.invalid>",
+  SIGNATURE_LEAD_FROM: "Aquí Golf Test <noreply@golfencasa.invalid>",
 };
 
 const originalEnvironment = new Map(
@@ -41,7 +41,7 @@ const attribution = Object.freeze({
   wbraid: "wbraid-test-345",
   msclkid: "msclkid-test-456",
   fbclid: "fbclid-test-456",
-  landingPage: "https://www.golfencasa.net/instalacion-simuladores-golf?utm_source=google",
+  landingPage: "https://aquigolf.es/instalacion-simuladores-golf?utm_source=google",
   conversionPage: "/instalacion-simuladores-golf#formulario",
   referrer: "https://www.google.com/",
   capturedAt: "2026-09-03T12:00:00.000Z",
@@ -63,7 +63,7 @@ const extendedAttribution = Object.freeze({
   msclkid: "",
   fbclid: "fbclid-last-meta-456",
   landingPage:
-    "https://www.golfencasa.net/proyectos?utm_source=meta&utm_medium=paid_social",
+    "https://aquigolf.es/proyectos?utm_source=meta&utm_medium=paid_social",
   conversionPage: "/estudio-simulador-golf#formulario",
   referrer: "https://www.facebook.com/",
   capturedAt: "2026-09-03T13:00:00.000Z",
@@ -79,7 +79,7 @@ const extendedAttribution = Object.freeze({
     msclkid: "",
     fbclid: "",
     landingPage:
-      "https://www.golfencasa.net/instalacion-simuladores-golf?utm_source=google",
+      "https://aquigolf.es/instalacion-simuladores-golf?utm_source=google",
     referrer: "https://www.google.com/",
     capturedAt: "2026-09-03T12:00:00.000Z",
   },
@@ -95,7 +95,7 @@ const extendedAttribution = Object.freeze({
     msclkid: "",
     fbclid: "fbclid-last-meta-456",
     landingPage:
-      "https://www.golfencasa.net/proyectos?utm_source=meta&utm_medium=paid_social",
+      "https://aquigolf.es/proyectos?utm_source=meta&utm_medium=paid_social",
     referrer: "https://www.facebook.com/",
     capturedAt: "2026-09-03T13:00:00.000Z",
   },
@@ -164,7 +164,7 @@ const endpoints = [
       message: "Busco integración arquitectónica completa.",
       attribution: {
         ...attribution,
-        landingPage: "https://www.golfencasa.net/signature?utm_source=google",
+        landingPage: "https://aquigolf.es/signature?utm_source=google",
         conversionPage: "/signature#contact",
       },
     },
@@ -213,7 +213,7 @@ const endpoints = [
       message: "Necesito documentación técnica de integración.",
       attribution: {
         ...attribution,
-        landingPage: "https://www.golfencasa.net/signature?utm_source=google",
+        landingPage: "https://aquigolf.es/signature?utm_source=google",
         conversionPage: "/signature#professionals",
       },
     },
@@ -436,6 +436,25 @@ function assertFirstLastTouchEmail(endpoint, resendPayload) {
 }
 
 for (const endpoint of endpoints) {
+  test(`${endpoint.name}: confirma una escritura tardía sin duplicar solicitudes`, async () => {
+    const { response, calls } = await invoke(endpoint, endpoint.validBody, async ({ url, options }) => {
+      if (url === RESEND_URL) return jsonResponse(200, { id: "email-late-crm" });
+      assert.equal(url, CRM_URL);
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(resolve, 2700);
+        options.signal.addEventListener("abort", () => {
+          clearTimeout(timer);
+          reject(Object.assign(new Error("aborted"), { name: "AbortError" }));
+        }, { once: true });
+      });
+      return jsonResponse(200, { ok: true, leadId: "crm-late-write" });
+    });
+    assertSuccessAfterEmail(response, "email-late-crm");
+    assert.equal(response.payload.crmStatus, "confirmed");
+    assert.equal(response.payload.crmLeadId, "crm-late-write");
+    assert.equal(calls.filter(call => call.url === CRM_URL).length, 1);
+  });
+
   test(`${endpoint.name}: rechaza consentimiento ausente, falso o no booleano`, async () => {
     const invalidValues = [undefined, false, "true", 1, null];
 
@@ -473,6 +492,7 @@ for (const endpoint of endpoints) {
     assertSuccessAfterEmail(response, "email-success");
     assert.equal(response.payload.crmSynced, true);
     assert.equal(response.payload.crmLeadId, "crm-success");
+    assert.equal(response.payload.crmStatus, "confirmed");
     assert.equal(calls.length, 2);
     assert.equal(calls[0].url, RESEND_URL);
     assert.equal(calls[1].url, CRM_URL);
@@ -519,6 +539,34 @@ for (const endpoint of endpoints) {
     assertFirstLastTouchEmail(endpoint, resendPayload);
   });
 
+  test(`${endpoint.name}: marca nueva e inglés respetan el desplegable real del CRM`, async () => {
+    const cases = [
+      ['Ya conocía Aquí Golf', 'Ya conocía Golf en Casa'],
+      ['I already knew Aquí Golf', 'Ya conocía Golf en Casa'],
+      ['YouTube', 'Youtube'],
+      ['Recommendation', 'Recomendación'],
+      ['Other', 'Otro'],
+      ['Not sure / Do not remember', 'No sabe / No recuerda'],
+      ['Prueba técnica interna', 'Otro'],
+    ];
+    for (const [sourceDeclared, expected] of cases) {
+      const body = { ...clone(endpoint.validBody), sourceDeclared };
+      const { response, calls } = await invoke(endpoint, body, ({ url, options }) => {
+        if (url === RESEND_URL) return jsonResponse(200, { id: 'email-source' });
+        if (url === CRM_URL) {
+          const payload = parseRequestBody(options);
+          return payload.sourceDeclared === expected
+            ? jsonResponse(200, { ok: true, leadId: 'crm-source' })
+            : jsonResponse(200, { ok: false, error: 'Dropdown validation failed' });
+        }
+        return unexpectedFetch({ url });
+      });
+      assert.equal(response.payload.crmSynced, true, sourceDeclared);
+      const email = parseRequestBody(calls[0].options);
+      assert.ok(email.text.includes(sourceDeclared), 'Email retains original answer');
+    }
+  });
+
   test(`${endpoint.name}: si Resend responde error no llama al CRM`, async () => {
     const { response, calls } = await invoke(endpoint, endpoint.validBody, ({ url }) => {
       assert.equal(url, RESEND_URL);
@@ -538,6 +586,7 @@ for (const endpoint of endpoints) {
     });
 
     assertSuccessAfterEmail(response, "email-before-crm-error");
+    assert.equal(response.payload.crmStatus, "unconfirmed");
     assert.equal(response.payload.crmSynced, false);
     assert.equal(response.payload.crmLeadId, null);
     assert.equal(calls.length, 2);
@@ -593,14 +642,15 @@ for (const endpoint of endpoints) {
       });
 
       assertSuccessAfterEmail(response, "email-before-crm-timeout");
+      assert.equal(response.payload.crmStatus, "unconfirmed");
       assert.equal(response.payload.crmSynced, false);
       assert.equal(response.payload.crmLeadId, null);
       assert.equal(calls.length, 2);
       assert.ok(crmSignal instanceof AbortSignal, "el CRM recibe un AbortSignal");
       assert.equal(crmSignal.aborted, true, "el timeout aborta la petición CRM");
       assert.ok(
-        observedTimeouts.some((milliseconds) => Number(milliseconds) > 0),
-        "el handler programa un timeout positivo",
+        observedTimeouts.includes(15000),
+        "el CRM dispone de 15 segundos para confirmar y no se reintenta",
       );
     } finally {
       globalThis.setTimeout = originalSetTimeout;

@@ -1,15 +1,16 @@
 # Atribución, CRM y medición
 
-Actualizado el 3 de septiembre de 2026.
+Actualizado el 18 de septiembre de 2026. Cambios preparados en local, pendientes de despliegue y comprobación con servicios reales.
 
 ## Formularios y CRM
 
-- El navegador conserva durante 30 días el primer y el último contacto de adquisición.
+- El navegador conserva durante 30 días el primer y el último contacto de adquisición solo después de obtener consentimiento analítico o publicitario de CookieYes. Los identificadores publicitarios requieren consentimiento publicitario; al retirarlo se eliminan de las copias propias de atribución.
 - Los formularios envían el contrato histórico y, además, `version`, `attributionModel`, `firstTouch` y `lastTouch`.
 - Los campos planos de fuente, medio, campaña y landing representan el contacto seleccionado, normalmente el último.
 - Los identificadores planos (`gclid`, `gbraid`, `wbraid`, `fbclid` y `msclkid`) usan el contacto seleccionado y, si están vacíos, recuperan el identificador del otro contacto. Así un recorrido Google Ads → Meta no pierde el GCLID inicial.
 - Las tres funciones de leads validan y sanean el mismo contrato mediante `api/_lib/lead-attribution.js`.
 - El email de aviso y el objeto enviado al CRM muestran por separado el primer y el último contacto.
+- El origen declarado se normaliza únicamente al enviar al CRM para respetar sus valores admitidos: por ejemplo, «Ya conocía Aquí Golf» se envía como el valor histórico «Ya conocía Golf en Casa». La interfaz y el correo conservan la respuesta original.
 
 Ejemplo de lectura recomendada en el CRM para Google Ads:
 
@@ -22,7 +23,7 @@ Ejemplo de lectura recomendada en el CRM para Google Ads:
 ## Google Tag Manager y conversiones mejoradas
 
 - Todos los eventos `generate_lead` se emiten solo después de que la API confirme el envío.
-- Cada evento incluye un `form_name` estable y `user_data.email_address`; también incluye `user_data.phone_number` cuando el formulario solicita teléfono.
+- Cada evento incluye un `form_name` estable. `user_data.email_address` y, cuando corresponda, `user_data.phone_number` se incluyen solo con consentimiento publicitario; de lo contrario `user_data` es `null` para borrar valores anteriores.
 - Los formularios activos exponen un único `#email` y `#phone` para mantener compatibilidad con la configuración actual de GTM. En el modal técnico de Signature solo se expone `#email` porque no se solicita teléfono.
 - `landing_page` y `conversion_page` de `dataLayer` contienen únicamente el pathname. Las queries con click IDs permanecen en el envío privado al CRM y no se publican en analítica.
 - Los eventos auxiliares existentes se conservan. En GTM, solo `generate_lead` debe activar la conversión de lead para evitar duplicados.
@@ -47,7 +48,7 @@ Calendly no queda unido todavía al CRM por reserva. Para esa fase se necesita u
 
 - Revisar en GTM Preview que la etiqueta de conversión escucha únicamente `generate_lead`, toma `form_name` desde `dataLayer` y recibe los datos de usuario con consentimiento.
 - Confirmar que el importador de Google Ads usa solo leads cualificados del CRM como conversión principal; el envío web puede quedar como conversión secundaria.
-- Decidir con criterio legal si el almacenamiento propio de atribución puede escribirse antes del consentimiento de CookieYes. Actualmente se guarda en `localStorage` durante 30 días.
+- Comprobar con el banner real los estados inicial, aceptación parcial, aceptación total y retirada. La política local ya impide leer/escribir atribución sin consentimiento y está cubierta con pruebas automatizadas. Esta comprobación no sustituye una auditoría jurídica ni de todas las etiquetas externas.
 - First/last touch no conserva un clic Google intermedio en un recorrido de tres canales. Si ese caso aparece en datos reales, añadir un `lastGoogleAdsTouch` específico.
 - Si Resend entrega el email pero el webhook del CRM falla o supera 2,5 segundos, la API no reintenta. Conviene añadir una cola o reintento antes de tratar Sheets como única fuente operativa.
 

@@ -10,11 +10,11 @@ export default function CookiePolicyEN() {
   return (
     <main className="signature-sans min-h-screen bg-[#0B0B0B] text-[#F5F3EF]">
       <Helmet>
-        <title>Cookie Policy | Golf en Casa Signature Projects</title>
-        <meta name="description" content="Information about cookies used by Golf en Casa and how visitors can manage their preferences." />
+        <title>Cookie Policy | Aquí Golf Signature Projects</title>
+        <meta name="description" content="Information about cookies used by Aquí Golf and how visitors can manage their preferences." />
         <meta name="robots" content="noindex,follow" />
-        <link rel="canonical" href="https://www.golfencasa.net/en/cookie-policy" />
-        <link rel="icon" type="image/png" href="/signature/favicon-signature.png?v=20260810" />
+        <link rel="canonical" href="https://aquigolf.es/en/cookie-policy" />
+        <link rel="icon" type="image/png" href="/signature/ag-favicon.png?v=20260916" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -27,8 +27,8 @@ export default function CookiePolicyEN() {
 
       <header className="border-b border-white/10">
         <div className="mx-auto flex h-[82px] max-w-[1200px] items-center justify-between px-6 lg:px-10">
-          <a href="/en/signature" aria-label="Golf en Casa Signature Projects">
-            <img src="/signature/logo-signature-light.png" alt="Golf en Casa | Signature Projects" className="h-12 w-auto sm:h-14" />
+          <a href="/en/signature" aria-label="Aquí Golf Signature Projects">
+            <img src="/signature/aqui-golf-light.svg" alt="Aquí Golf | Signature Projects" className="h-12 w-auto sm:h-14" />
           </a>
           <button type="button" onClick={handleBack} className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55 transition hover:text-[#C8AA7D]">
             ← Back
@@ -63,7 +63,7 @@ export default function CookiePolicyEN() {
 
       <footer className="border-t border-white/10 bg-[#0B0B0B]">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-5 px-6 py-10 text-[10px] uppercase tracking-[0.16em] text-white/30 sm:flex-row sm:justify-between lg:px-10">
-          <p>© 2026 Golf en Casa</p>
+          <p>© 2026 Aquí Golf</p>
           <a href="/en/signature" className="transition hover:text-[#C8AA7D]">Signature Projects</a>
         </div>
       </footer>
