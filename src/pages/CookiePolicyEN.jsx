@@ -1,4 +1,5 @@
 import React from "react";
+import CookiePolicyDetails from "../components/CookiePolicyDetails";
 import { Helmet } from "react-helmet-async";
 
 export default function CookiePolicyEN() {
@@ -41,22 +42,14 @@ export default function CookiePolicyEN() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#C8AA7D]">Legal</p>
           <h1 className="signature-serif mt-5 text-5xl leading-[0.98] tracking-[-0.025em] sm:text-6xl lg:text-7xl">Cookie Policy</h1>
           <p className="mt-7 max-w-2xl text-sm font-light leading-7 text-white/55">Information about the cookies used on this website and the options available to manage your preferences.</p>
-          <p className="mt-4 text-xs uppercase tracking-[0.12em] text-white/35">Policy version: 2026-09-03 (3 September 2026).</p>
+          <p className="mt-4 text-xs uppercase tracking-[0.12em] text-white/35">Policy version: 2026-09-19 (19 September 2026).</p>
         </div>
       </section>
 
       <section className="bg-[#F5F3EF] text-[#0B0B0B]">
         <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-10 lg:py-24">
           <div className="max-w-4xl space-y-10 text-sm font-light leading-7 text-black/65">
-            <>
-<LegalSection title="Use of cookies"><p>This website uses first-party and third-party cookies to improve the user experience and analyse website traffic.</p></LegalSection>
-<LegalSection title="Types of cookies">
-<p><strong className="font-medium text-black">Technical cookies:</strong> enable the basic operation of the website.</p>
-<p><strong className="font-medium text-black">Analytics cookies:</strong> help us understand browsing behaviour and website usage.</p>
-<p><strong className="font-medium text-black">Advertising cookies:</strong> may be used to display personalised advertising.</p>
-</LegalSection>
-<LegalSection title="Managing cookies"><p>You can configure or reject cookies through the consent banner or through your browser settings.</p></LegalSection>
-</>
+            <CookiePolicyDetails english />
           </div>
         </div>
       </section>
@@ -68,14 +61,5 @@ export default function CookiePolicyEN() {
         </div>
       </footer>
     </main>
-  );
-}
-
-function LegalSection({ title, children }) {
-  return (
-    <section className="border-t border-black/15 pt-7 first:border-t-0 first:pt-0">
-      <h2 className="signature-serif text-3xl leading-tight sm:text-4xl">{title}</h2>
-      <div className="mt-4 space-y-4">{children}</div>
-    </section>
   );
 }

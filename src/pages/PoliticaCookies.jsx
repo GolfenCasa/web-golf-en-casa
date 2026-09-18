@@ -1,3 +1,4 @@
+import CookiePolicyDetails from "../components/CookiePolicyDetails";
 import { Helmet } from "react-helmet-async";
 
 export default function PoliticaCookies() {
@@ -32,30 +33,7 @@ export default function PoliticaCookies() {
         <h1 className="mt-8 text-4xl font-black">Política de Cookies</h1>
 
         <div className="mt-8 space-y-6 leading-8 text-zinc-300">
-          <p className="text-sm text-zinc-400">
-            Versión de esta política: 2026-09-03 (3 de septiembre de 2026).
-          </p>
-
-          <p>
-            Esta web utiliza cookies propias y de terceros para mejorar la
-            experiencia del usuario y analizar el tráfico.
-          </p>
-
-          <h2 className="text-2xl font-bold text-white">Tipos de cookies</h2>
-          <p>
-            Cookies técnicas: permiten el funcionamiento básico de la web.
-            <br />
-            Cookies analíticas: ayudan a conocer el comportamiento de navegación.
-            <br />
-            Cookies publicitarias: pueden utilizarse para mostrar publicidad
-            personalizada.
-          </p>
-
-          <h2 className="text-2xl font-bold text-white">Gestión de cookies</h2>
-          <p>
-            El usuario puede configurar o rechazar las cookies desde el banner de
-            consentimiento o desde la configuración de su navegador.
-          </p>
+          <CookiePolicyDetails />
         </div>
       </div>
     </main>

@@ -1,3 +1,4 @@
+import { canMeasureAb } from "../lib/ab-consent.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -148,7 +149,7 @@ const AB_PENDING_KEY = "golf_en_casa_ab_pending_v1";
 const AB_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
 
 const scheduleAbExposure = ({ expectedVariant, landingVersion }) => {
-  if (typeof window === "undefined") return () => {};
+  if (typeof window === "undefined" || !canMeasureAb()) return () => {};
 
   let pending;
   try {
@@ -175,7 +176,7 @@ const scheduleAbExposure = ({ expectedVariant, landingVersion }) => {
   const maxAttempts = 50;
 
   const sendWhenReady = () => {
-    if (cancelled) return;
+    if (cancelled || !canMeasureAb()) return;
 
     const gtmLoaded =
       window.google_tag_manager &&

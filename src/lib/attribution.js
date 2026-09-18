@@ -1,3 +1,4 @@
+import { canMeasureAb } from "./ab-consent.js";
 /**
  * Shared acquisition attribution for Aquí Golf.
  *
@@ -551,7 +552,7 @@ export const captureAttribution = ({ now = Date.now() } = {}) => {
 
 export const observeAttributionConsent = () => {
   if (!isBrowserEnvironment()) return () => {};
-  const onConsent = () => captureAttribution();
+  const onConsent = () => { canMeasureAb(); captureAttribution(); };
   const events = ['cookieyes_banner_load', 'cookieyes_banner_loaded', 'cookieyes_consent_update'];
   events.forEach(name => document.addEventListener(name, onConsent));
   onConsent();

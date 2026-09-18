@@ -320,7 +320,7 @@ export default function LandingSignatureProjects() {
           "Hola, me gustaría comentar un proyecto con Aquí Golf | Signature Projects.",
         phone: WHATSAPP_PHONE,
         attribution,
-        pagePath: getCurrentBrowserPath(),
+        pagePath: getCurrentBrowserPath({ fallback: "/signature" }),
         button: "signature_contact",
       }),
     [attribution]
@@ -1086,9 +1086,8 @@ export default function LandingSignatureProjects() {
           </div>
 
           <p className="mt-5 max-w-2xl text-xs leading-5 text-white/40">
-            Los proyectos conceptuales se identificarán expresamente como Concept
-            Study. Sustituye estas imágenes por instalaciones reales a medida que
-            se complete el portfolio Signature.
+            Los proyectos conceptuales se identifican expresamente como Concept
+            Study.
           </p>
         </div>
       </section>

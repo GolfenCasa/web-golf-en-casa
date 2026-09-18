@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 
-const EXPERIMENT_KEY = "golf_en_casa_ab_landing_v1";
+import { canMeasureAb, readAbVariant, saveAbVariant } from "../lib/ab-consent.js";
 const AB_PENDING_KEY = "golf_en_casa_ab_pending_v1";
 const EXPERIMENT_NAME = "landing_control_vs_landing_2";
 
@@ -17,22 +17,8 @@ const VARIANTS = {
   },
 };
 
-const getStoredVariant = () => {
-  try {
-    const stored = window.localStorage.getItem(EXPERIMENT_KEY);
-    return stored && VARIANTS[stored] ? stored : null;
-  } catch {
-    return null;
-  }
-};
-
-const storeVariant = (variant) => {
-  try {
-    window.localStorage.setItem(EXPERIMENT_KEY, variant);
-  } catch {
-    // The experiment still works if localStorage is unavailable.
-  }
-};
+const getStoredVariant = readAbVariant;
+const storeVariant = saveAbVariant;
 
 const assignVariant = () => {
   const stored = getStoredVariant();
@@ -44,6 +30,7 @@ const assignVariant = () => {
 };
 
 const storePendingExposure = (variant) => {
+  if (!canMeasureAb()) return;
   const config = VARIANTS[variant];
 
   try {

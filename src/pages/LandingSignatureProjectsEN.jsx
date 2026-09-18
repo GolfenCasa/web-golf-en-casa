@@ -321,7 +321,7 @@ export default function LandingSignatureProjectsEN() {
           "Hello, I would like to discuss a project with Aquí Golf | Signature Projects.",
         phone: WHATSAPP_PHONE,
         attribution,
-        pagePath: getCurrentBrowserPath(),
+        pagePath: getCurrentBrowserPath({ fallback: "/en/signature" }),
         button: "signature_contact",
         locale: "en",
       }),
