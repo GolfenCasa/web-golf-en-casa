@@ -24,8 +24,13 @@
 
       (function (w, d, s, l, i) {
         const productionHosts = ["golfencasa.net", "www.golfencasa.net", "aquigolf.es", "www.aquigolf.es"];
+        // Temporary, opt-in audit on the authenticated preview. Remove after QA.
+        const previewConsentAudit =
+          w.location.hostname === "web-golf-en-casa-git-aqui-golf-preview-golf-en-casa-s-projects.vercel.app" &&
+          new URLSearchParams(w.location.search).get("qa_consent") === "20260919" &&
+          Date.now() < Date.parse("2026-09-19T04:00:00Z");
 
-        if (!productionHosts.includes(w.location.hostname)) {
+        if (!productionHosts.includes(w.location.hostname) && !previewConsentAudit) {
           w.__GOLF_EN_CASA_TRACKING_ENABLED__ = false;
           // Independent CMP on the protected migration preview. Production uses GTM.
           if (w.location.hostname === "web-golf-en-casa-git-aqui-golf-preview-golf-en-casa-s-projects.vercel.app") {
