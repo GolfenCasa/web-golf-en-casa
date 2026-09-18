@@ -27,6 +27,13 @@
 
         if (!productionHosts.includes(w.location.hostname)) {
           w.__GOLF_EN_CASA_TRACKING_ENABLED__ = false;
+          // Independent CMP on the protected migration preview. Production uses GTM.
+          if (w.location.hostname === "web-golf-en-casa-git-aqui-golf-preview-golf-en-casa-s-projects.vercel.app") {
+            const cmp = d.createElement("script");
+            cmp.id = "cookieyes";
+            cmp.src = "https://cdn-cookieyes.com/client_data/d76e7b3250695571a34610fa7c832500/script.js";
+            d.head.appendChild(cmp);
+          }
           return;
         }
 

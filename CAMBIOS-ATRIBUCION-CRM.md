@@ -50,7 +50,8 @@ Calendly no queda unido todavía al CRM por reserva. Para esa fase se necesita u
 - Confirmar que el importador de Google Ads usa solo leads cualificados del CRM como conversión principal; el envío web puede quedar como conversión secundaria.
 - Comprobar con el banner real los estados inicial, aceptación parcial, aceptación total y retirada. La política local ya impide leer/escribir atribución sin consentimiento y está cubierta con pruebas automatizadas. Esta comprobación no sustituye una auditoría jurídica ni de todas las etiquetas externas.
 - First/last touch no conserva un clic Google intermedio en un recorrido de tres canales. Si ese caso aparece en datos reales, añadir un `lastGoogleAdsTouch` específico.
-- Si Resend entrega el email pero el webhook del CRM falla o supera 2,5 segundos, la API no reintenta. Conviene añadir una cola o reintento antes de tratar Sheets como única fuente operativa.
+- El CRM dispone de 15 segundos para confirmar, Resend de 10 y la función de 30. La API devuelve `crmStatus` (confirmed, rejected, unconfirmed o not_configured) además del contrato anterior. Una respuesta incierta no se reintenta: puede haber escrito la fila. Antes de introducir reintentos debe existir idempotencia en el receptor. El correo sigue siendo respaldo operativo.
+- La rama `aqui-golf-preview` dispone de una URL protegida en Vercel con CookieYes de staging independiente. GTM sigue desactivado en Preview: comprobar el banner allí no demuestra que todas las etiquetas reales funcionen.
 
 ## Verificación local
 
