@@ -379,10 +379,10 @@ export default function LandingSimuladoresGolf() {
             name: "Francisco Menacho"
           },
           sameAs: [
-            "https://youtube.com/@Golf_en_Casa",
-            "https://instagram.com/golf.en.casa/",
-            "https://www.facebook.com/GolfenCasaSimuladores/",
-            "https://www.tiktok.com/@golf_en_casa"
+            "https://www.youtube.com/@Aqui_Golf",
+            "https://www.instagram.com/aqui.golf/",
+            "https://www.facebook.com/AquiGolfSimuladores/",
+            "https://www.tiktok.com/@aqui_golf"
           ]
         },
         {
@@ -498,7 +498,7 @@ export default function LandingSimuladoresGolf() {
           <div className="flex items-center gap-4">
             <div className="hidden items-center gap-4 text-xl text-zinc-400 sm:flex">
               <a
-                href="https://youtube.com/@Golf_en_Casa"
+                href="https://www.youtube.com/@Aqui_Golf"
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-red-500"
@@ -508,7 +508,7 @@ export default function LandingSimuladoresGolf() {
               </a>
 
               <a
-                href="https://instagram.com/golf.en.casa/"
+                href="https://www.instagram.com/aqui.golf/"
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-pink-500"
@@ -518,7 +518,7 @@ export default function LandingSimuladoresGolf() {
               </a>
 
               <a
-                href="https://www.facebook.com/GolfenCasaSimuladores/"
+                href="https://www.facebook.com/AquiGolfSimuladores/"
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-blue-500"
@@ -528,7 +528,7 @@ export default function LandingSimuladoresGolf() {
               </a>
 
               <a
-                href="https://www.tiktok.com/@golf_en_casa"
+                href="https://www.tiktok.com/@aqui_golf"
                 target="_blank"
                 rel="noreferrer"
                 className="transition hover:text-white"
@@ -1727,7 +1727,7 @@ Enviar medidas por WhatsApp
 
           <div className="mt-8 flex justify-center gap-8 text-4xl">
             <a
-              href="https://youtube.com/@Golf_en_Casa"
+              href="https://www.youtube.com/@Aqui_Golf"
               target="_blank"
               rel="noreferrer"
               aria-label="YouTube Aquí Golf"
@@ -1737,7 +1737,7 @@ Enviar medidas por WhatsApp
             </a>
 
             <a
-              href="https://instagram.com/golf.en.casa/"
+              href="https://www.instagram.com/aqui.golf/"
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram Aquí Golf"
@@ -1747,7 +1747,7 @@ Enviar medidas por WhatsApp
             </a>
 
             <a
-              href="https://www.facebook.com/GolfenCasaSimuladores/"
+              href="https://www.facebook.com/AquiGolfSimuladores/"
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook Aquí Golf"
@@ -1757,7 +1757,7 @@ Enviar medidas por WhatsApp
             </a>
 
             <a
-              href="https://www.tiktok.com/@golf_en_casa"
+              href="https://www.tiktok.com/@aqui_golf"
               target="_blank"
               rel="noreferrer"
               aria-label="TikTok Aquí Golf"

@@ -991,10 +991,10 @@ export default function LandingSimuladoresGolfAds2() {
           Diseño e instalación de simuladores de golf a medida en España
         </p>
         <div className="mt-6 flex justify-center gap-6 text-2xl text-zinc-400">
-          <a href="https://youtube.com/@Golf_en_Casa" target="_blank" rel="noreferrer" aria-label="YouTube" className="hover:text-red-500"><FaYoutube /></a>
-          <a href="https://instagram.com/golf.en.casa/" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-pink-500"><FaInstagram /></a>
-          <a href="https://www.facebook.com/GolfenCasaSimuladores/" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-blue-500"><FaFacebook /></a>
-          <a href="https://www.tiktok.com/@golf_en_casa" target="_blank" rel="noreferrer" aria-label="TikTok" className="hover:text-white"><FaTiktok /></a>
+          <a href="https://www.youtube.com/@Aqui_Golf" target="_blank" rel="noreferrer" aria-label="YouTube" className="hover:text-red-500"><FaYoutube /></a>
+          <a href="https://www.instagram.com/aqui.golf/" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-pink-500"><FaInstagram /></a>
+          <a href="https://www.facebook.com/AquiGolfSimuladores/" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-blue-500"><FaFacebook /></a>
+          <a href="https://www.tiktok.com/@aqui_golf" target="_blank" rel="noreferrer" aria-label="TikTok" className="hover:text-white"><FaTiktok /></a>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-500">
           <a href="/politica-privacidad" className="hover:text-white">Privacidad</a>

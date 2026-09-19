@@ -438,10 +438,10 @@ export default function GolfSimulatorLanding() {
               url: "https://aquigolf.es",
               logo: "https://aquigolf.es/brand/aqui-golf-circular.png",
               sameAs: [
-                "https://youtube.com/@Golf_en_Casa",
-                "https://instagram.com/golf.en.casa/",
-                "https://www.facebook.com/GolfenCasaSimuladores/",
-                "https://www.tiktok.com/@golf_en_casa",
+                "https://www.youtube.com/@Aqui_Golf",
+                "https://www.instagram.com/aqui.golf/",
+                "https://www.facebook.com/AquiGolfSimuladores/",
+                "https://www.tiktok.com/@aqui_golf",
               ],
             },
             {
@@ -642,7 +642,7 @@ export default function GolfSimulatorLanding() {
 
   <div className="hidden items-center gap-3 text-lg text-zinc-400 md:flex">
     <a
-      href="https://youtube.com/@Golf_en_Casa"
+      href="https://www.youtube.com/@Aqui_Golf"
       target="_blank"
       rel="noopener noreferrer"
       className="transition hover:text-red-500"
@@ -651,7 +651,7 @@ export default function GolfSimulatorLanding() {
     </a>
 
     <a
-      href="https://instagram.com/golf.en.casa/"
+      href="https://www.instagram.com/aqui.golf/"
       target="_blank"
       rel="noopener noreferrer"
       className="transition hover:text-pink-500"
@@ -660,7 +660,7 @@ export default function GolfSimulatorLanding() {
     </a>
 
     <a
-      href="https://www.facebook.com/GolfenCasaSimuladores/"
+      href="https://www.facebook.com/AquiGolfSimuladores/"
       target="_blank"
       rel="noopener noreferrer"
       className="transition hover:text-blue-500"
@@ -669,7 +669,7 @@ export default function GolfSimulatorLanding() {
     </a>
 
     <a
-      href="https://www.tiktok.com/@golf_en_casa"
+      href="https://www.tiktok.com/@aqui_golf"
       target="_blank"
       rel="noopener noreferrer"
       className="transition hover:text-white"
@@ -1000,7 +1000,7 @@ export default function GolfSimulatorLanding() {
       </div>
 
       <a
-        href="https://youtube.com/@Golf_en_Casa"
+        href="https://www.youtube.com/@Aqui_Golf"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-4 text-base font-semibold text-white transition hover:bg-white/10 sm:w-auto"
@@ -1306,7 +1306,7 @@ export default function GolfSimulatorLanding() {
     <div className="mt-8 flex justify-center gap-8 text-4xl">
 
       <a
-        href="https://youtube.com/@Golf_en_Casa"
+        href="https://www.youtube.com/@Aqui_Golf"
         target="_blank"
         rel="noopener noreferrer"
         className="text-zinc-400 transition hover:text-red-500"
@@ -1315,7 +1315,7 @@ export default function GolfSimulatorLanding() {
       </a>
 
       <a
-        href="https://instagram.com/golf.en.casa/"
+        href="https://www.instagram.com/aqui.golf/"
         target="_blank"
         rel="noopener noreferrer"
         className="text-zinc-400 transition hover:text-pink-500"
@@ -1324,7 +1324,7 @@ export default function GolfSimulatorLanding() {
       </a>
 
       <a
-        href="https://www.facebook.com/GolfenCasaSimuladores/?ref=PROFILE_EDIT_xav_ig_profile_page_web#"
+        href="https://www.facebook.com/AquiGolfSimuladores/"
         target="_blank"
         rel="noopener noreferrer"
         className="text-zinc-400 transition hover:text-blue-500"
@@ -1333,7 +1333,7 @@ export default function GolfSimulatorLanding() {
       </a>
 
       <a
-        href="https://www.tiktok.com/@golf_en_casa?_t=ZN-8vwiEoVTBF0&_r=1"
+        href="https://www.tiktok.com/@aqui_golf"
         target="_blank"
         rel="noopener noreferrer"
         className="text-zinc-400 transition hover:text-white"
