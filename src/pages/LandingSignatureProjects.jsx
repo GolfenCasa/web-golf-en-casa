@@ -233,55 +233,6 @@ export default function LandingSignatureProjects() {
     });
   }, []);
 
-  useEffect(() => {
-    const faviconHref = "/signature/ag-favicon.png?v=20260916";
-
-    const existingIcons = Array.from(
-      document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
-    );
-
-    const previousIcons = existingIcons.map((link) => ({
-      node: link,
-      rel: link.getAttribute("rel"),
-      href: link.getAttribute("href"),
-      sizes: link.getAttribute("sizes"),
-      type: link.getAttribute("type"),
-    }));
-
-    existingIcons.forEach((link) => link.remove());
-
-    const icon = document.createElement("link");
-    icon.rel = "icon";
-    icon.type = "image/png";
-    icon.sizes = "512x512";
-    icon.href = faviconHref;
-
-    const shortcut = document.createElement("link");
-    shortcut.rel = "shortcut icon";
-    shortcut.type = "image/png";
-    shortcut.href = faviconHref;
-
-    const apple = document.createElement("link");
-    apple.rel = "apple-touch-icon";
-    apple.href = faviconHref;
-
-    document.head.append(icon, shortcut, apple);
-
-    return () => {
-      icon.remove();
-      shortcut.remove();
-      apple.remove();
-
-      previousIcons.forEach(({ node, rel, href, sizes, type }) => {
-        if (rel) node.setAttribute("rel", rel);
-        if (href) node.setAttribute("href", href);
-        if (sizes) node.setAttribute("sizes", sizes);
-        if (type) node.setAttribute("type", type);
-        document.head.appendChild(node);
-      });
-    };
-  }, []);
-
   const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -502,8 +453,6 @@ export default function LandingSignatureProjects() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://aquigolf.es/signature" />
         <meta property="og:image" content="https://aquigolf.es/signature/hero-1280.webp" />
-        <link rel="icon" type="image/png" href="/signature/ag-favicon.png?v=20260916" />
-
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

@@ -95,9 +95,18 @@ function HashNavigation() {
 function DocumentDefaults() {
   const { pathname } = useLocation();
   const language = pathname.startsWith("/en/") ? "en" : "es";
+  const signaturePaths = [
+    "/signature", "/en/signature", "/en/privacy-policy",
+    "/en/cookie-policy", "/en/legal-notice",
+  ];
+  const favicon = signaturePaths.includes(pathname.replace(/\/$/, ""))
+    ? "/signature/ag-favicon.png?v=20260916"
+    : "/brand/aqui-golf-circular.png?v=20260919";
 
   return (
     <Helmet htmlAttributes={{ lang: language }}>
+      <link rel="icon" type="image/png" href={favicon} />
+      <link rel="apple-touch-icon" href={favicon} />
       <meta property="og:site_name" content="Aquí Golf" />
       <meta name="twitter:card" content="summary_large_image" />
     </Helmet>

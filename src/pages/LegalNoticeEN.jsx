@@ -14,7 +14,6 @@ export default function LegalNoticeEN() {
         <meta name="description" content="Legal information about the ownership and use of the Aquí Golf website." />
         <meta name="robots" content="noindex,follow" />
         <link rel="canonical" href="https://aquigolf.es/en/legal-notice" />
-        <link rel="icon" type="image/png" href="/signature/ag-favicon.png?v=20260916" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
