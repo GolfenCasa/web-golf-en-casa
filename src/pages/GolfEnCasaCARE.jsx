@@ -32,7 +32,7 @@ import {
 const WHATSAPP_PHONE = "34678107234";
 const WHATSAPP_MESSAGE =
   "Hola, quiero información sobre los planes Aquí Golf CARE y CARE+ para mi simulador.";
-const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
+const CALENDLY_URL = "https://calendly.com/simuladores-aquigolf/30min";
 
 const buildCareWhatsAppUrl = (attribution, button) =>
   buildWhatsAppUrl({

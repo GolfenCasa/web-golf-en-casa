@@ -25,7 +25,7 @@ import {
 
 
 
-const calendlyUrl = 'https://calendly.com/simuladores-golfencasa/30min';
+const calendlyUrl = 'https://calendly.com/simuladores-aquigolf/30min';
 const youtubeCourseUrl = 'https://youtube.com/playlist?list=PLfYDa4ADpRpYQ8iuZZrYMbw1-5TRONady';
 const email = 'info@aquigolf.es';
 const whatsappNumber = '34678107234';
@@ -92,7 +92,7 @@ const packages = [
     description: 'Ideal si estás empezando y no sabes qué comprar.',
     features: ['Videollamada 60 min', 'Revisión de medidas', 'Recomendaciones clave', 'Siguientes pasos claros'],
     cta: 'Reservar Consultoría',
-    url: 'https://calendly.com/simuladores-golfencasa/mentoria-basica',
+    url: 'https://calendly.com/simuladores-aquigolf/mentoria-basica',
   },
   {
     name: 'Diseño Pro',
@@ -101,7 +101,7 @@ const packages = [
     features: ['Lista de materiales', 'Distribución recomendada', 'Opciones por presupuesto', 'Plano de instalación'],
     cta: 'Reservar Consultoría Pro',
      featured: true,
-    url: 'https://calendly.com/simuladores-golfencasa/new-meeting',
+    url: 'https://calendly.com/simuladores-aquigolf/new-meeting',
   },
   {
     name: 'Instalación Completa',

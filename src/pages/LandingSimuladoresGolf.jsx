@@ -47,7 +47,7 @@ import {
 } from "../lib/attribution";
 
 const WHATSAPP_PHONE = "34678107234";
-const CALENDLY_URL = "https://calendly.com/simuladores-golfencasa/30min";
+const CALENDLY_URL = "https://calendly.com/simuladores-aquigolf/30min";
 const EMAIL = "info@aquigolf.es";
 
 const attributionEventData = (attribution) =>
