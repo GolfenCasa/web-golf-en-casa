@@ -1,3 +1,4 @@
+import AdvertisingPrivacyDetails from "../components/AdvertisingPrivacyDetails.jsx";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
@@ -40,7 +41,7 @@ export default function PrivacyPolicyEN() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#C8AA7D]">Legal</p>
           <h1 className="signature-serif mt-5 text-5xl leading-[0.98] tracking-[-0.025em] sm:text-6xl lg:text-7xl">Privacy Policy</h1>
           <p className="mt-7 max-w-2xl text-sm font-light leading-7 text-white/55">Information about how Aquí Golf processes personal data submitted through this website and its enquiry channels.</p>
-          <p className="mt-4 text-xs uppercase tracking-[0.12em] text-white/35">Policy version: 2026-09-03 (3 September 2026).</p>
+          <p className="mt-4 text-xs uppercase tracking-[0.12em] text-white/35">Policy version: 2026-09-20 (20 September 2026).</p>
         </div>
       </section>
 
@@ -52,6 +53,7 @@ export default function PrivacyPolicyEN() {
 <LegalSection title="Purpose of processing"><p>Personal data provided through forms, email or consultancy bookings will be used to manage enquiries, prepare quotations, provide services and maintain communications related to the service requested.</p></LegalSection>
 <LegalSection title="Legal basis"><p>The legal basis for processing personal data is the consent of the data subject and the implementation of pre-contractual measures requested by the data subject.</p></LegalSection>
 <LegalSection title="Recipients"><p>Personal data may be processed by service providers required for the provision and operation of the service, including Google, Calendly, Vercel and SiteGround.</p></LegalSection>
+<AdvertisingPrivacyDetails english />
 <LegalSection title="Your rights"><p>You may exercise your rights of access, rectification, erasure, objection, restriction of processing and data portability by writing to info@aquigolf.es.</p></LegalSection>
 </>
           </div>

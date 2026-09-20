@@ -1,3 +1,5 @@
+import MeasurementConsent from "../components/MeasurementConsent.jsx";
+import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -281,6 +283,7 @@ export default function LandingSignatureProjectsEN() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "en");
 
     if (submitState === "sending") return;
 
@@ -294,6 +297,7 @@ export default function LandingSignatureProjectsEN() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          measurementConsent,
           ...form,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
           privacyConsent:
@@ -346,7 +350,7 @@ export default function LandingSignatureProjectsEN() {
         user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        }),
+        }, measurementConsent),
         ...attributionEventData(attribution),
       });
 
@@ -362,6 +366,7 @@ export default function LandingSignatureProjectsEN() {
 
   const handleTechnicalSubmit = async (e) => {
     e.preventDefault();
+    const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "en");
     if (technicalSubmitState === "sending") return;
 
     setTechnicalSubmitState("sending");
@@ -372,6 +377,7 @@ export default function LandingSignatureProjectsEN() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          measurementConsent,
           leadType: "signature_technical_request",
           ...technicalForm,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
@@ -421,7 +427,7 @@ export default function LandingSignatureProjectsEN() {
         user_data: enhancedConversionData({
           email_address: technicalForm.email.trim().toLowerCase(),
           phone_number: technicalForm.phone.trim(),
-        }),
+        }, measurementConsent),
         ...attributionEventData(attribution),
       });
 
@@ -1300,6 +1306,7 @@ export default function LandingSignatureProjectsEN() {
                 </a>.
               </span>
             </label>
+<MeasurementConsent english className="sm:col-span-2 text-black/65" />
 
             <div className="sm:col-span-2">
               <button
@@ -1482,6 +1489,7 @@ export default function LandingSignatureProjectsEN() {
                       </a>.
                     </span>
                   </label>
+<MeasurementConsent english className="sm:col-span-2 text-black/65" />
 
                   <div className="sm:col-span-2">
                     <button type="submit" disabled={technicalSubmitState === "sending"}

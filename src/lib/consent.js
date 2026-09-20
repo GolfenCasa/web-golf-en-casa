@@ -13,7 +13,7 @@ export function getMeasurementConsent() {
   }
 }
 
-export function enhancedConversionData(data) {
+export function enhancedConversionData(data, measurementConsent) {
   // null also clears a previous dataLayer value if consent has been withdrawn.
-  return getMeasurementConsent().advertising ? data : null;
+  return getMeasurementConsent().advertising && measurementConsent?.granted === true ? data : null;
 }

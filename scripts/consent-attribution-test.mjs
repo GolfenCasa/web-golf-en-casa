@@ -40,7 +40,7 @@ test('CMP ausente, aceptación parcial, retirada y envío con estado React antig
   listeners.get('cookieyes_consent_update')();
   const acceptedReactState = captureAttribution();
   assert.equal(acceptedReactState.lastTouch.gclid, 'PRIVATE-ID');
-  assert.equal(enhancedConversionData({ email_address: 'test@example.invalid' }).email_address, 'test@example.invalid');
+  assert.equal(enhancedConversionData({ email_address: 'test@example.invalid' }, { granted: true }).email_address, 'test@example.invalid');
 
   categories = { analytics: true, advertisement: false };
   listeners.get('cookieyes_consent_update')();

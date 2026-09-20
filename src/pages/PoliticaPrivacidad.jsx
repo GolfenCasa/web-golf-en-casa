@@ -1,3 +1,4 @@
+import AdvertisingPrivacyDetails from "../components/AdvertisingPrivacyDetails.jsx";
 import { Helmet } from "react-helmet-async";
 
 export default function PoliticaPrivacidad() {
@@ -33,7 +34,7 @@ export default function PoliticaPrivacidad() {
 
         <div className="mt-8 space-y-6 leading-8 text-zinc-300">
           <p className="text-sm text-zinc-400">
-            Versión de esta política: 2026-09-03 (3 de septiembre de 2026).
+            Versión de esta política: 2026-09-20 (20 de septiembre de 2026).
           </p>
 
           <p>
@@ -61,6 +62,8 @@ export default function PoliticaPrivacidad() {
             Los datos podrán ser tratados por proveedores necesarios para la
             prestación del servicio, como Google, Calendly, Vercel o SiteGround.
           </p>
+
+          <AdvertisingPrivacyDetails />
 
           <h2 className="text-2xl font-bold text-white">Derechos</h2>
           <p>

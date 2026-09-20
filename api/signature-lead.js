@@ -1,3 +1,4 @@
+import { normaliseMeasurementConsent } from "../shared/measurement-consent.js";
 import { toCrmSource } from "./_lib/crm-source.js";
 import {
   getAttributionSummaryRows,
@@ -11,7 +12,7 @@ const EMAIL_FROM =
 
 // Sheets may finish after several seconds. Never retry an uncertain write.
 const CRM_TIMEOUT_MS = 15000;
-const PRIVACY_POLICY_VERSION = "2026-09-03";
+const PRIVACY_POLICY_VERSION = "2026-09-20";
 
 const projectRequiredFields = [
   "name",
@@ -70,6 +71,8 @@ export default async function handler(request, response) {
       .status(400)
       .json({ ok: false, error: "Privacy consent required" });
   }
+
+  const measurementConsent = normaliseMeasurementConsent(body.measurementConsent);
 
   const data = {
     leadType:
@@ -289,6 +292,7 @@ export default async function handler(request, response) {
           },
           body: JSON.stringify({
             secret: process.env.CRM_WEBHOOK_SECRET,
+            measurementConsent,
             leadType: data.leadType,
             name: data.name,
             email: data.email,

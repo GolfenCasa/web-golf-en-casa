@@ -1,3 +1,5 @@
+import MeasurementConsent from "../components/MeasurementConsent.jsx";
+import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { canMeasureAb } from "../lib/ab-consent.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
@@ -266,6 +268,7 @@ export default function LandingSimuladoresGolf() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "es");
     if (submitState === "sending") return;
     setSubmitState("sending");
     setSubmitError("");
@@ -275,6 +278,7 @@ export default function LandingSimuladoresGolf() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          measurementConsent,
           ...form,
           companyWebsite: e.currentTarget.elements.companyWebsite?.value || "",
           privacyConsent:
@@ -304,7 +308,7 @@ export default function LandingSimuladoresGolf() {
         user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        }),
+        }, measurementConsent),
         ...attributionEventData(attribution),
       });
       window.dataLayer.push({
@@ -1494,6 +1498,7 @@ Descubre si tu espacio es apto antes de invertir en material
                 .
               </span>
             </label>
+<MeasurementConsent className="text-zinc-300" />
 
             <button
               type="submit"

@@ -1,3 +1,5 @@
+import MeasurementConsent from "../components/MeasurementConsent.jsx";
+import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { canMeasureAb } from "../lib/ab-consent.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
@@ -337,6 +339,7 @@ export default function LandingSimuladoresGolfAds2() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const measurementConsent = captureFormMeasurementConsent(event.currentTarget, "es");
     if (!form.privacyConsent || submitState === "sending") return;
 
     setSubmitState("sending");
@@ -349,6 +352,7 @@ export default function LandingSimuladoresGolfAds2() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          measurementConsent,
           ...form,
           privacyConsent: form.privacyConsent === true,
           companyWebsite:
@@ -377,7 +381,7 @@ export default function LandingSimuladoresGolfAds2() {
         user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        }),
+        }, measurementConsent),
       });
 
       pushDataLayer("form_submit", "hero_form", {
@@ -1196,6 +1200,7 @@ function LeadForm({
               </a>.
             </span>
           </label>
+<MeasurementConsent className="text-zinc-300" />
 
           <div className="grid gap-3 sm:grid-cols-[auto_1fr]">
             <button
@@ -1231,7 +1236,7 @@ function LeadForm({
 
       <div className="mt-5 flex items-center justify-center gap-2 text-center text-xs text-zinc-400">
         <Clock3 className="h-4 w-4 text-emerald-300" />
-        Respuesta personalizada · Sin compromiso · Tus datos no se comparten
+        Respuesta personalizada · Sin compromiso · Tú eliges el permiso de medición
       </div>
     </form>
   );

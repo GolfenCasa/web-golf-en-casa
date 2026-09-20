@@ -1,3 +1,5 @@
+import MeasurementConsent from "./components/MeasurementConsent.jsx";
+import { captureFormMeasurementConsent } from "./lib/form-measurement-consent.js";
 import { enhancedConversionData } from "./lib/consent.js";
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -323,6 +325,7 @@ export default function GolfSimulatorLanding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "es");
 
     if (submitState === 'sending') return;
 
@@ -336,6 +339,7 @@ export default function GolfSimulatorLanding() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          measurementConsent,
           leadType: 'website_general_enquiry',
           ...form,
           attribution: toLeadAttribution(attribution, {
@@ -385,7 +389,7 @@ export default function GolfSimulatorLanding() {
         user_data: enhancedConversionData({
           email_address: form.email.trim().toLowerCase(),
           phone_number: form.phone.trim(),
-        }),
+        }, measurementConsent),
         ...attributionEventData(attribution),
       });
 
@@ -1227,6 +1231,7 @@ export default function GolfSimulatorLanding() {
     </a>.
   </span>
 </label>
+<MeasurementConsent className="text-zinc-600" />
 
 <div className="mt-5 flex flex-col gap-3 sm:flex-row">
   <button

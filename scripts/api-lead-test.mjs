@@ -354,6 +354,28 @@ function unexpectedFetch({ url }) {
   throw new Error(`Acceso de red no esperado en la prueba: ${url}`);
 }
 
+for (const endpoint of endpoints) {
+  test(`${endpoint.name}: permiso opcional normalizado y consulta conservada`, async () => {
+    for (const granted of [true, false, undefined, 'true']) {
+      const body = clone(endpoint.validBody);
+      body.measurementConsent = { granted, noticeVersion:'2026-09-20-v1',
+        source:'optional_form_checkbox', locale:'es', capturedAt:new Date().toISOString(),
+        receivedAt:'2000-01-01', status:'GRANTED', adPersonalization:'GRANTED' };
+      const {response,calls} = await invoke(endpoint,body, ({url}) => {
+        if (url === RESEND_URL) return jsonResponse(200,{id:'email-test-id'});
+        if (url === CRM_URL) return jsonResponse(200,{ok:true});
+        throw new Error('Red inesperada');
+      });
+      assertSuccessAfterEmail(response);
+      const payload = parseRequestBody(calls.find(c=>c.url===CRM_URL).options);
+      assert.equal(payload.measurementConsent.status, granted===true?'GRANTED':granted===false?'DENIED':'UNKNOWN');
+      assert.equal(payload.measurementConsent.adPersonalization,'DENIED');
+      assert.notEqual(payload.measurementConsent.receivedAt,'2000-01-01');
+      assert.equal(payload.email,endpoint.validBody.email);
+    }
+  });
+}
+
 function assertSuccessAfterEmail(response, resendId = "email-test-id") {
   assert.equal(response.statusCode, 200);
   assert.equal(response.payload.ok, true);
@@ -378,7 +400,7 @@ function assertConsentEvidence(value, label) {
 function assertCrmContract(endpoint, crmPayload) {
   assert.deepEqual(
     Object.keys(crmPayload).sort(),
-    [...endpoint.crmKeys].sort(),
+    [...endpoint.crmKeys, "measurementConsent"].sort(),
     `${endpoint.name}: conserva exactamente las claves top-level del CRM`,
   );
   assert.equal(crmPayload.secret, TEST_ENV.CRM_WEBHOOK_SECRET);
