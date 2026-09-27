@@ -1,8 +1,18 @@
-import { getMeasurementConsent } from './consent.js';
-
 export const AB_VARIANT_KEY = 'golf_en_casa_ab_landing_v1';
 export const AB_PENDING_KEY = 'golf_en_casa_ab_pending_v1';
 const TTL = 30 * 24 * 60 * 60 * 1000;
+
+// The API is unavailable until CookieYes finishes loading. That is not rejection.
+export function getAbConsentState() {
+  try {
+    const consent = typeof window !== 'undefined' && window.getCkyConsent?.();
+    if (!consent || typeof consent.isUserActionCompleted !== 'boolean') return 'loading';
+    if (!consent.isUserActionCompleted) return 'pending';
+    if (consent.categories?.analytics === true) return 'granted';
+    if (consent.categories?.analytics === false) return 'denied';
+    return 'loading';
+  } catch { return 'loading'; }
+}
 
 export function clearAbStorage() {
   if (typeof window === 'undefined') return;
@@ -11,9 +21,9 @@ export function clearAbStorage() {
 }
 
 export function canMeasureAb() {
-  const allowed = getMeasurementConsent().analytics;
-  if (!allowed) clearAbStorage();
-  return allowed;
+  const state = getAbConsentState();
+  if (state === 'denied') clearAbStorage();
+  return state === 'granted';
 }
 
 export function readAbVariant(now = Date.now()) {

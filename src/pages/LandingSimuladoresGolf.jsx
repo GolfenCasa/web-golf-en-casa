@@ -1,6 +1,6 @@
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
-import { canMeasureAb } from "../lib/ab-consent.js";
+import { scheduleAbExposure } from "../lib/ab-experiment.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -90,78 +90,6 @@ const testimonials = [
 ];
 
 
-const AB_EXPERIMENT_NAME = "landing_control_vs_landing_2";
-const AB_PENDING_KEY = "golf_en_casa_ab_pending_v1";
-const AB_PENDING_MAX_AGE_MS = 10 * 60 * 1000;
-
-const scheduleAbExposure = ({ expectedVariant, landingVersion }) => {
-  if (typeof window === "undefined" || !canMeasureAb()) return () => {};
-
-  let pending;
-  try {
-    const raw = window.sessionStorage.getItem(AB_PENDING_KEY);
-    pending = raw ? JSON.parse(raw) : null;
-  } catch {
-    return () => {};
-  }
-
-  if (
-    !pending ||
-    pending.experimentName !== AB_EXPERIMENT_NAME ||
-    pending.variant !== expectedVariant ||
-    pending.landingVersion !== landingVersion ||
-    pending.sentAt ||
-    !pending.createdAt ||
-    Date.now() - pending.createdAt > AB_PENDING_MAX_AGE_MS
-  ) {
-    return () => {};
-  }
-
-  let cancelled = false;
-  let attempts = 0;
-  const maxAttempts = 50;
-
-  const sendWhenReady = () => {
-    if (cancelled || !canMeasureAb()) return;
-
-    const gtmLoaded =
-      window.google_tag_manager &&
-      Object.keys(window.google_tag_manager).some((key) => key.startsWith("GTM-"));
-
-    if (!gtmLoaded && attempts < maxAttempts) {
-      attempts += 1;
-      window.setTimeout(sendWhenReady, 100);
-      return;
-    }
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: "ab_assignment",
-      experiment_name: AB_EXPERIMENT_NAME,
-      ab_variant: expectedVariant,
-      landing_version: landingVersion,
-      exposure_page: window.location.pathname,
-    });
-
-    try {
-      window.sessionStorage.setItem(
-        AB_PENDING_KEY,
-        JSON.stringify({
-          ...pending,
-          sentAt: Date.now(),
-        })
-      );
-    } catch {
-      // Measurement continues even if sessionStorage is unavailable.
-    }
-  };
-
-  window.setTimeout(sendWhenReady, 0);
-
-  return () => {
-    cancelled = true;
-  };
-};
 
 export default function LandingSimuladoresGolf() {
   const [attribution, setAttribution] = useState(EMPTY_ATTRIBUTION);
