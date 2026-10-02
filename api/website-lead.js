@@ -1,3 +1,4 @@
+import { isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../shared/garden-budget.js";
 import { normaliseMeasurementConsent } from "../shared/measurement-consent.js";
 import { toCrmSource } from "./_lib/crm-source.js";
 import {
@@ -88,6 +89,10 @@ export default async function handler(request, response) {
 
   if (!isValidEmail(data.email)) {
     return response.status(400).json({ ok: false, error: "Invalid email" });
+  }
+
+  if (!isGardenBudgetValid(data)) {
+    return response.status(400).json({ ok: false, error: GARDEN_BUDGET_NOTICE });
   }
 
   if (!process.env.RESEND_API_KEY) {

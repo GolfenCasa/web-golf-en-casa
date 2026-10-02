@@ -1,3 +1,6 @@
+import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../../shared/garden-budget.js";
+import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
+import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
@@ -220,10 +223,7 @@ export default function LandingSimuladoresGolfAds2() {
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
-    setForm((current) => ({
-      ...current,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setForm((current) => updateLeadForm(current, name, type === "checkbox" ? checked : value));
   };
 
   const pushDataLayer = (event, location, extra = {}, attributionOverride = attribution) => {
@@ -256,7 +256,7 @@ export default function LandingSimuladoresGolfAds2() {
   };
 
   const moveToStepTwo = () => {
-    if (!form.projectType || !form.dimensions || !form.budget) return;
+    if (!form.projectType || !form.dimensions || !form.budget || !isGardenBudgetValid(form)) return;
     setStep(2);
     pushDataLayer("form_step_completed", "hero_form", {
       form_step: 1,
@@ -267,6 +267,11 @@ export default function LandingSimuladoresGolfAds2() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!isGardenBudgetValid(form)) {
+      setSubmitState("error");
+      setSubmitError(GARDEN_BUDGET_NOTICE);
+      return;
+    }
     const measurementConsent = captureFormMeasurementConsent(event.currentTarget, "es");
     if (!form.privacyConsent || submitState === "sending") return;
 
@@ -975,7 +980,7 @@ function LeadForm({
     );
   }
 
-  const stepOneComplete = form.projectType && form.dimensions && form.budget;
+  const stepOneComplete = form.projectType && form.dimensions && form.budget && isGardenBudgetValid(form);
 
   return (
     <form
@@ -1030,6 +1035,7 @@ function LeadForm({
             <option>Negocio indoor</option>
             <option>Otro</option>
           </select>
+          <GardenBudgetNotice projectType={form.projectType} />
 
           <FieldLabel htmlFor="dimensions" text="Medidas aproximadas" />
           <input
@@ -1052,11 +1058,7 @@ function LeadForm({
             className="w-full rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
           >
             <option value="">Selecciona un rango</option>
-            <option>Menos de 5.000 €</option>
-            <option>5.000 € - 10.000 €</option>
-            <option>10.000 € - 20.000 €</option>
-            <option>Más de 20.000 €</option>
-            <option>Aún no lo sé</option>
+            <LeadBudgetOptions projectType={form.projectType} allowUnknown />
           </select>
 
           <button
