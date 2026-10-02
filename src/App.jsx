@@ -1,3 +1,6 @@
+import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../shared/garden-budget.js";
+import LeadBudgetOptions from "./components/LeadBudgetOptions.jsx";
+import GardenBudgetNotice from "./components/GardenBudgetNotice.jsx";
 import MeasurementConsent from "./components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "./lib/form-measurement-consent.js";
 import { enhancedConversionData } from "./lib/consent.js";
@@ -241,7 +244,10 @@ export default function GolfSimulatorLanding() {
   const [submitState, setSubmitState] = useState('idle');
   const [submitError, setSubmitError] = useState('');
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((current) => updateLeadForm(current, name, value));
+  };
 
 
   useEffect(() => {
@@ -325,6 +331,11 @@ export default function GolfSimulatorLanding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isGardenBudgetValid(form)) {
+      setSubmitState("error");
+      setSubmitError(GARDEN_BUDGET_NOTICE);
+      return;
+    }
     const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "es");
 
     if (submitState === 'sending') return;
@@ -1168,6 +1179,7 @@ export default function GolfSimulatorLanding() {
                   <option>Negocio indoor</option>
                   <option>Otro</option>
                 </select>
+                <GardenBudgetNotice projectType={form.projectType} />
                 <input
                   name="dimensions"
                   value={form.dimensions}
@@ -1178,11 +1190,7 @@ export default function GolfSimulatorLanding() {
                 />
                 <select name="budget" value={form.budget} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
                   <option value="">Presupuesto aproximado</option>
-                  <option>Menos de 5.000 €</option>
-                  <option>5.000 € - 10.000 €</option>
-                  <option>10.000 € - 20.000 €</option>
-                  <option>Más de 20.000 €</option>
-                  <option>Aún no lo sé</option>
+                  <LeadBudgetOptions projectType={form.projectType} allowUnknown />
                 </select>
                 <select name="sourceDeclared" value={form.sourceDeclared} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
                   <option value="">¿Cómo nos has conocido?</option>

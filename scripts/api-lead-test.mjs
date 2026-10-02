@@ -679,3 +679,27 @@ for (const endpoint of endpoints) {
     }
   });
 }
+
+for (const endpoint of endpoints.filter(({ name }) => ["website-lead", "viability-lead"].includes(name))) {
+  test(`${endpoint.name}: garden rejects insufficient or unknown budgets before email/CRM`, async () => {
+    for (const budget of ["Menos de 5.000 €", "5.000 € - 10.000 €", "10.000 € - 20.000 €", "Aún no lo sé", "19999", ""]) {
+      const { response, calls } = await invoke(endpoint, {
+        ...endpoint.validBody, projectType: "Golf Studio en jardín", budget,
+      }, unexpectedFetch);
+      assert.equal(response.statusCode, 400, budget);
+      assert.equal(calls.length, 0);
+    }
+  });
+  test(`${endpoint.name}: garden >= 20000 reaches email and CRM`, async () => {
+    for (const budget of ["20.000 € o más", "Más de 20.000 €"]) {
+      const { response, calls } = await invoke(endpoint, {
+        ...endpoint.validBody, projectType: "Golf Studio en jardín", budget,
+      }, ({ url }) => url === RESEND_URL
+        ? jsonResponse(200, { id: "email-test-id" })
+        : jsonResponse(200, { ok: true }));
+      assertSuccessAfterEmail(response);
+      assert.equal(calls.length, 2);
+      assert.equal(parseRequestBody(calls[1].options).budget, budget);
+    }
+  });
+}
