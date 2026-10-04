@@ -74,41 +74,25 @@
           "value": "noindex, follow"
         }
       ]
+    },
+    {
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ],
+      "source": "/qr/(.*)"
     }
   ],
-  "redirects": [
+  "rewrites": [
     {
-      "source": "/:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "go.golfencasa.net"
-        }
-      ],
       "destination": "/api/redirect?slug=:slug",
-      "permanent": false
-    },
-    {
-      "source": "/:path((?!api(?:/|$)|admin(?:/|$)|assets(?:/|$)|\\.well-known(?:/|$)).*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "golfencasa.net"
-        }
-      ],
-      "destination": "https://aquigolf.es/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path((?!api(?:/|$)|admin(?:/|$)|assets(?:/|$)|\\.well-known(?:/|$)).*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.golfencasa.net"
-        }
-      ],
-      "destination": "https://aquigolf.es/:path*",
-      "permanent": true
+      "source": "/qr/:slug"
     }
   ]
 }

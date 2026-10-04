@@ -19,7 +19,7 @@ export async function readStore() {
   const history = (await redis.lrange(HISTORY_KEY, 0, HISTORY_LIMIT - 1)) || [];
   return {
     version: 2,
-    links: links.filter(Boolean),
+    links: links.filter(Boolean).map((link) => ({ ...link, publicUrl: publicLink(link.slug) })),
     history: history.filter(Boolean),
   };
 }
@@ -113,5 +113,5 @@ export function normalizeSlug(value) {
 }
 
 export function publicLink(slug) {
-  return `https://go.golfencasa.net/${slug}`;
+  return `https://aquigolf.es/qr/${slug}`;
 }
