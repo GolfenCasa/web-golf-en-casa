@@ -131,7 +131,7 @@ export default function LinkManager() {
       const physicalLink = {
         ...form,
         ...createdLink,
-        publicUrl: createdLink.publicUrl || `https://go.golfencasa.net/${createdLink.slug || form.slug}`,
+        publicUrl: createdLink.publicUrl || `https://aquigolf.es/qr/${createdLink.slug || form.slug}`,
       };
       setPendingTokenAfterSave(false);
       setTokenPreview(physicalLink);
@@ -247,7 +247,7 @@ export default function LinkManager() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[960px] text-left">
                 <thead className="border-b border-white/10 text-sm text-slate-400"><tr><th className="p-5">Enlace</th><th className="p-5">Destino</th><th className="p-5">Carpeta</th><th className="p-5">Clics</th><th className="p-5">Estado</th><th className="p-5 text-right">Acciones</th></tr></thead>
-                <tbody>{filtered.map((link) => <tr key={link.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.018]"><td className="p-5"><p className="font-medium">{link.name}</p><button onClick={() => copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">go.golfencasa.net/{link.slug}</button></td><td className="max-w-xs p-5"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-5"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-5 font-medium">{link.clicks || 0}</td><td className="p-5"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'}`}>{link.active ? 'Activo' : 'Pausado'}</span></td><td className="p-5"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={() => previewQr(link)}><Eye/></IconButton><IconButton title="Marcador / llavero 3D" onClick={() => setTokenPreview(link)}><Settings/></IconButton><IconButton title="Copiar enlace" onClick={() => copy(link.publicUrl)}><Copy/></IconButton><IconButton title="Descargar PNG" onClick={() => downloadQr(link, 'png')}><Download/></IconButton><IconButton title="Descargar SVG" onClick={() => downloadQr(link, 'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={() => openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={() => remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody>
+                <tbody>{filtered.map((link) => <tr key={link.id} className="border-b border-white/5 last:border-0 hover:bg-white/[0.018]"><td className="p-5"><p className="font-medium">{link.name}</p><button onClick={() => copy(link.publicUrl)} className="mt-1 text-sm text-emerald-400 hover:underline">aquigolf.es/qr/{link.slug}</button></td><td className="max-w-xs p-5"><a href={link.destination} target="_blank" rel="noreferrer" className="block truncate text-sm text-slate-300 hover:text-white">{link.destination}</a></td><td className="p-5"><span className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-1 text-sm"><FolderOpen size={14}/>{link.folder}</span></td><td className="p-5 font-medium">{link.clicks || 0}</td><td className="p-5"><span className={`rounded-full px-2.5 py-1 text-xs ${link.active ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-500/15 text-slate-400'}`}>{link.active ? 'Activo' : 'Pausado'}</span></td><td className="p-5"><div className="flex justify-end gap-1"><IconButton title="Vista previa" onClick={() => previewQr(link)}><Eye/></IconButton><IconButton title="Marcador / llavero 3D" onClick={() => setTokenPreview(link)}><Settings/></IconButton><IconButton title="Copiar enlace" onClick={() => copy(link.publicUrl)}><Copy/></IconButton><IconButton title="Descargar PNG" onClick={() => downloadQr(link, 'png')}><Download/></IconButton><IconButton title="Descargar SVG" onClick={() => downloadQr(link, 'svg')}><QrCode/></IconButton><IconButton title="Editar" onClick={() => openEdit(link)}><Edit3/></IconButton><IconButton title="Eliminar" onClick={() => remove(link)} danger><Trash2/></IconButton></div></td></tr>)}</tbody>
               </table>
             </div>
             {!filtered.length && <div className="p-14 text-center text-slate-400">No hay enlaces que coincidan.</div>}
@@ -318,7 +318,7 @@ function CreateChoice({ onClose, onCorporate, onPhysical }) {
           </button>
         </div>
 
-        <p className="px-6 pb-6 text-xs leading-5 text-slate-500">Ambos modos usan go.golfencasa.net, por lo que podrás cambiar el destino más adelante sin regenerar el QR.</p>
+        <p className="px-6 pb-6 text-xs leading-5 text-slate-500">Ambos modos usan aquigolf.es/qr, por lo que podrás cambiar el destino más adelante sin regenerar el QR.</p>
       </div>
     </div>
   </div>;
@@ -355,7 +355,7 @@ function Editor({ mode = 'corporate', form, setForm, onClose, onSave, busy, mess
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState('Q');
 
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
-  const publicUrl = `https://go.golfencasa.net/${form.slug || 'alias'}`;
+  const publicUrl = `https://aquigolf.es/qr/${form.slug || 'alias'}`;
   const tokenOptions = useMemo(
     () => ({ diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel }),
     [diameterMm, qrAreaMm, keychainHoleMm, errorCorrectionLevel]
