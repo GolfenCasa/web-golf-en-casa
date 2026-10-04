@@ -27,6 +27,8 @@ const CLICK_ID_FIELDS = Object.freeze([
   ["FBCLID", "fbclid"],
 ]);
 const ATTRIBUTION_MODELS = new Set(["first_touch", "last_touch"]);
+const AI_SOURCES = new Set(["chatgpt", "perplexity", "copilot", "gemini", "claude"]);
+const AI_REFERRER_DOMAINS = ["chatgpt.com", "chat.openai.com", "perplexity.ai", "copilot.microsoft.com", "gemini.google.com", "claude.ai"];
 
 const isRecord = (value) =>
   Boolean(value && typeof value === "object" && !Array.isArray(value));
@@ -37,11 +39,25 @@ const clean = (value, maxLength) =>
     .replaceAll("\u0000", "")
     .slice(0, maxLength);
 
+const sanitiseAiReferrer = (value) => {
+  try {
+    const parsed = new URL(value);
+    if (!["http:", "https:"].includes(parsed.protocol)) return value;
+    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
+    return AI_REFERRER_DOMAINS.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`))
+      ? `${parsed.origin}/` : value;
+  } catch {
+    return value;
+  }
+};
+
 const sanitizeFields = (value, fields) => {
   const input = isRecord(value) ? value : {};
 
   return Object.fromEntries(
-    fields.map((field) => [field, clean(input[field], FIELD_LIMITS[field])]),
+    fields.map((field) => [field, field === "referrer"
+      ? sanitiseAiReferrer(clean(input[field], FIELD_LIMITS[field]))
+      : clean(input[field], FIELD_LIMITS[field])]),
   );
 };
 
@@ -57,6 +73,13 @@ const sanitizeAttributionModel = (value) => {
   return ATTRIBUTION_MODELS.has(model) ? model : "";
 };
 
+const addAiFields = (output, input) => {
+  if (!isRecord(input) || !Object.hasOwn(input, "ai_referral")) return output;
+  const source = clean(input.ai_source, 40).toLowerCase();
+  const detected = input.ai_referral === true && AI_SOURCES.has(source);
+  return { ...output, ai_source: detected ? source : "", ai_referral: detected };
+};
+
 /**
  * Whitelists both the original flat lead-attribution contract and the v2
  * first/last-touch extension. Optional v2 keys are only emitted when the
@@ -64,7 +87,7 @@ const sanitizeAttributionModel = (value) => {
  */
 export const sanitizeLeadAttribution = (value) => {
   const input = isRecord(value) ? value : {};
-  const attribution = sanitizeFields(input, LEGACY_FIELDS);
+  const attribution = addAiFields(sanitizeFields(input, LEGACY_FIELDS), input);
 
   if (Object.hasOwn(input, "version")) {
     attribution.version = sanitizeVersion(input.version);
@@ -77,11 +100,11 @@ export const sanitizeLeadAttribution = (value) => {
   }
 
   if (Object.hasOwn(input, "firstTouch")) {
-    attribution.firstTouch = sanitizeFields(input.firstTouch, TOUCH_FIELDS);
+    attribution.firstTouch = addAiFields(sanitizeFields(input.firstTouch, TOUCH_FIELDS), input.firstTouch);
   }
 
   if (Object.hasOwn(input, "lastTouch")) {
-    attribution.lastTouch = sanitizeFields(input.lastTouch, TOUCH_FIELDS);
+    attribution.lastTouch = addAiFields(sanitizeFields(input.lastTouch, TOUCH_FIELDS), input.lastTouch);
   }
 
   return attribution;
@@ -100,7 +123,7 @@ const formatClickIds = (touch) => {
 
 const summaryTouch = (attribution, field) => {
   if (isRecord(attribution[field])) return attribution[field];
-  return sanitizeFields(attribution, TOUCH_FIELDS);
+  return addAiFields(sanitizeFields(attribution, TOUCH_FIELDS), attribution);
 };
 
 /**
@@ -112,7 +135,7 @@ export const getAttributionSummaryRows = (value) => {
   const firstTouch = summaryTouch(attribution, "firstTouch");
   const lastTouch = summaryTouch(attribution, "lastTouch");
 
-  return [
+  const rows = [
     [
       "Modelo de atribución",
       attribution.attributionModel || "legacy / último contacto",
@@ -126,4 +149,11 @@ export const getAttributionSummaryRows = (value) => {
     ["Último contacto — IDs de clic", formatClickIds(lastTouch)],
     ["Último contacto — Landing", lastTouch.landingPage || "No disponible"],
   ];
+  if (firstTouch.ai_referral || lastTouch.ai_referral) {
+    rows.push(
+      ["Primer contacto — Referencia IA", firstTouch.ai_referral ? firstTouch.ai_source : "No detectada"],
+      ["Último contacto — Referencia IA", lastTouch.ai_referral ? lastTouch.ai_source : "No detectada"],
+    );
+  }
+  return rows;
 };

@@ -15,7 +15,8 @@ const pageConfigs = {
     description: "Rangos orientativos y partidas que determinan el precio de un simulador de golf en casa. Compara alcance, tecnología e instalación antes de pedir presupuesto.",
     eyebrow: "Presupuesto y alcance",
     h1: "¿Cuánto cuesta un simulador de golf en casa?",
-    intro: "El precio no depende de una sola máquina. Pantalla, protección, proyección, monitor de lanzamiento, PC, software, suelo e instalación forman un sistema y deben encajar con el espacio.",
+    intro: "En Aquí Golf, una configuración esencial puede partir de unos 3.000 €, una instalación Home se orienta entre 6.000 y 10.000 € y un proyecto Premium puede superar los 10.000 €. Son rangos orientativos: el presupuesto debe confirmar equipos, trabajos incluidos e IVA para tu espacio.",
+    editorial: true,
     image: "/despues_1.webp",
     serviceType: "Presupuesto de simuladores de golf a medida",
     icon: WalletCards,
@@ -27,7 +28,7 @@ const pageConfigs = {
     sections: [
       {
         title: "Qué debe incluir un presupuesto comparable",
-        paragraphs: ["Dos ofertas con el mismo precio pueden cubrir cosas muy distintas. Para comparar bien, pide que cada partida indique marca o especificación, instalación, configuración, formación, desplazamiento, garantías e impuestos."],
+        paragraphs: ["Un simulador completo combina monitor de lanzamiento, pantalla o red, protección, superficie de golpeo y software; cuando se usa proyección, también deben encajar proyector y PC. Dos ofertas con el mismo precio pueden cubrir cosas muy distintas. Para comparar bien, pide que cada partida indique marca o especificación, instalación, configuración, formación, desplazamiento, garantías e impuestos."],
         bullets: ["Monitor de lanzamiento y licencias", "Pantalla de impacto, protección lateral y estructura", "Proyector, soporte, cableado y control de luz", "Alfombra, zona de golpeo y acabados", "PC, software, instalación, calibración y formación"],
       },
       {
@@ -49,6 +50,7 @@ const pageConfigs = {
       ["Comprueba las medidas de tu espacio", "/medidas-simulador-golf"],
       ["Consulta la instalación llave en mano", "/instalacion-simuladores-golf"],
       ["Ver proyectos realizados", "/proyectos"],
+      ["Guía para elegir un simulador de golf", "/guias-simuladores-golf"],
     ],
     leadContext: "el precio de un simulador de golf para mi espacio",
   },
@@ -58,7 +60,8 @@ const pageConfigs = {
     description: "Aprende qué altura, ancho y fondo hay que comprobar antes de instalar un simulador de golf. Solicita un estudio de viabilidad de tu espacio.",
     eyebrow: "Viabilidad del espacio",
     h1: "Medidas para un simulador de golf: comprueba si tu espacio es viable",
-    intro: "No existe una medida mínima universal. La altura del jugador, el swing, el palo más largo, la lateralidad y la posición de la pantalla cambian el espacio que necesitas.",
+    intro: "Para saber si cabe un simulador de golf, comprueba ancho, fondo y altura libres, obstáculos y una prueba de swing segura. No existe una medida mínima universal: el jugador, su palo más largo, la lateralidad y las distancias que exige el monitor elegido determinan la viabilidad.",
+    editorial: true,
     image: "/antes_2.webp",
     serviceType: "Estudio de viabilidad para simuladores de golf",
     icon: Ruler,
@@ -70,7 +73,7 @@ const pageConfigs = {
     sections: [
       {
         title: "Las seis medidas que necesitamos",
-        paragraphs: ["Mide en varios puntos y anota cualquier obstáculo. Un falso techo, una viga o una lámpara pueden ser más determinantes que la cota general de la habitación."],
+        paragraphs: ["Mide en varios puntos y anota cualquier obstáculo. Un falso techo, una viga o una lámpara pueden ser más determinantes que la cota general de la habitación. Además del movimiento del jugador, comprueba en el manual del monitor las distancias de bola, sensor y pantalla: cambian entre tecnologías y modelos."],
         bullets: ["Ancho libre de pared a pared", "Fondo útil hasta la pantalla prevista", "Altura mínima real, incluidas vigas y luminarias", "Puertas, ventanas, columnas y enchufes", "Posición aproximada de bola", "Espacio para PC, proyector y circulación"],
       },
       {
@@ -92,6 +95,7 @@ const pageConfigs = {
       ["Consultar precios orientativos", "/precio-simulador-golf"],
       ["Solicitar instalación a medida", "/instalacion-simuladores-golf#formulario"],
       ["Estudiar una solución en el jardín", "/simulador-golf-jardin"],
+      ["Consultar las guías de planificación", "/guias-simuladores-golf"],
     ],
     leadContext: "comprobar las medidas de mi espacio para un simulador de golf",
   },
@@ -101,7 +105,7 @@ const pageConfigs = {
     description: "Asesoramiento independiente para elegir componentes, validar medidas y planificar tu simulador de golf antes de comprar o instalar.",
     eyebrow: "Asesoramiento independiente",
     h1: "Consultoría para diseñar tu simulador de golf sin comprar a ciegas",
-    intro: "Si quieres montar parte del proyecto por tu cuenta, una revisión técnica previa puede evitar incompatibilidades, compras duplicadas y problemas de espacio.",
+    intro: "La consultoría de Aquí Golf parte de 49 € para una consulta online sobre objetivos, medidas, presupuesto y siguientes pasos. Es una opción si quieres montarlo por tu cuenta, revisar una lista de compra o resolver dudas antes de contratar una instalación.",
     image: "/francisco-aqui-golf.webp",
     serviceType: "Consultoría para simuladores de golf",
     icon: Settings,
@@ -133,7 +137,7 @@ const pageConfigs = {
     description: "Estudia un Golf Studio independiente para instalar un simulador de golf en tu jardín: espacio, aislamiento, climatización, electricidad y normativa.",
     eyebrow: "Golf Studio",
     h1: "Un simulador de golf en el jardín, diseñado alrededor del juego",
-    intro: "Cuando la vivienda no tiene una estancia adecuada, una construcción auxiliar puede convertirse en un espacio dedicado. Primero hay que validar parcela, dimensiones, confort y normativa.",
+    intro: "Puedes plantear un simulador de golf en el jardín mediante un Golf Studio dedicado. Antes de definir construcción y equipos, hay que validar la parcela, el espacio de swing, aislamiento, electricidad y normativa municipal; la viabilidad depende de cada ubicación.",
     image: "/images/golf-studio-1280.webp",
     serviceType: "Diseño de espacios Golf Studio para simuladores de golf",
     icon: Home,
@@ -204,7 +208,12 @@ function GrowthPage({ config }) {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
-      <SeoHead {...config} faqs={config.faqs} />
+      <SeoHead
+        {...config}
+        faqs={config.faqs}
+        breadcrumbs={[{ label: config.eyebrow }]}
+        article={config.editorial ? { headline: config.h1, dateModified: "2026-10-04", author: "Aquí Golf" } : undefined}
+      />
       <PublicHeader />
 
       <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.2),transparent_38%)]">
@@ -217,6 +226,7 @@ function GrowthPage({ config }) {
               </p>
               <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">{config.h1}</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">{config.intro}</p>
+              <p className="mt-4 text-sm leading-6 text-zinc-400">Contenido de <a href="/sobre-aqui-golf" className="underline hover:text-emerald-300">Aquí Golf</a> · Revisado el <time dateTime="2026-10-04">4 de octubre de 2026</time></p>
               <a href="/instalacion-simuladores-golf#formulario" className="mt-8 inline-flex items-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 transition hover:bg-emerald-300">
                 Solicitar orientación <ArrowRight className="ml-2 h-5 w-5" />
               </a>

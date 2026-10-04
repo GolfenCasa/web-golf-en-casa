@@ -5,6 +5,7 @@ import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
 import { enhancedConversionData } from "../lib/consent.js";
+import { getEntityGraph } from "../lib/site-schema.js";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
@@ -48,6 +49,7 @@ import {
   getCurrentBrowserPath,
   getWhatsAppReference,
   prepareAttributedLink,
+  prepareWhatsAppLink,
   toLeadAttribution,
 } from "../lib/attribution";
 
@@ -191,11 +193,20 @@ export default function LandingSimuladoresGolf() {
     );
   };
 
-  const trackWhatsAppClick = (location) => {
+  const refreshWhatsAppLink = (event, location) => prepareWhatsAppLink(event, {
+    phone: WHATSAPP_PHONE,
+    message: "Hola, he visto vuestra web y quiero saber si mi espacio es apto para montar un simulador de golf. Mis medidas aproximadas son: ",
+    attribution,
+    pagePath: getCurrentBrowserPath(),
+    button: location,
+  });
+
+  const trackWhatsAppClick = (event, location) => {
+    const prepared = refreshWhatsAppLink(event, location);
     pushDataLayer("click_whatsapp", location, {
       whatsapp_message_variant: location,
-      whatsapp_reference: getWhatsAppReference(attribution),
-    });
+      whatsapp_reference: getWhatsAppReference(prepared.attribution),
+    }, prepared.attribution);
   };
 
   const handleSubmit = async (e) => {
@@ -301,31 +312,7 @@ export default function LandingSimuladoresGolf() {
     {JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
-        {
-          "@type": "Organization",
-          "@id": "https://aquigolf.es/#organization",
-          name: "Aquí Golf",
-          url: "https://aquigolf.es",
-          logo: "https://aquigolf.es/brand/aqui-golf-circular.png",
-          description:
-            "Diseño, consultoría e instalación de simuladores de golf a medida en España.",
-          telephone: "+34678107234",
-          email: "info@aquigolf.es",
-          areaServed: {
-            "@type": "Country",
-            name: "España"
-          },
-          founder: {
-            "@type": "Person",
-            name: "Francisco Menacho"
-          },
-          sameAs: [
-            "https://www.youtube.com/@Aqui_Golf",
-            "https://www.instagram.com/aqui.golf/",
-            "https://www.facebook.com/AquiGolfSimuladores/",
-            "https://www.tiktok.com/@aqui_golf"
-          ]
-        },
+        ...getEntityGraph(),
         {
           "@type": "WebPage",
           "@id":
@@ -414,7 +401,7 @@ export default function LandingSimuladoresGolf() {
         target="_blank"
         rel="noreferrer"
         aria-label="Contactar por WhatsApp"
-        onClick={() => trackWhatsAppClick("floating_button")}
+        onClick={(event) => trackWhatsAppClick(event, "floating_button")}
         className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-600"
       >
         <FaWhatsapp />
@@ -483,7 +470,7 @@ export default function LandingSimuladoresGolf() {
               href={whatsappUrls.header}
               target="_blank"
               rel="noreferrer"
-              onClick={() => trackWhatsAppClick("header")}
+              onClick={(event) => trackWhatsAppClick(event, "header")}
               className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-lg" />
@@ -539,7 +526,7 @@ Descubre si tu espacio es apto
                 href={whatsappUrls.hero}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackWhatsAppClick("hero")}
+                onClick={(event) => trackWhatsAppClick(event, "hero")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -667,7 +654,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
                 href={whatsappUrls.golf_studio_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackWhatsAppClick("golf_studio_section")}
+                onClick={(event) => trackWhatsAppClick(event, "golf_studio_section")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -931,7 +918,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               href={whatsappUrls.projects_section}
               target="_blank"
               rel="noreferrer"
-              onClick={() => trackWhatsAppClick("projects_section")}
+              onClick={(event) => trackWhatsAppClick(event, "projects_section")}
               className="inline-flex items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-bold text-white transition hover:bg-green-600"
             >
               <FaWhatsapp className="mr-2 text-xl" />
@@ -1122,7 +1109,7 @@ Simuladores para viviendas, jardines, academias y negocios
             href={whatsappUrls.pricing}
             target="_blank"
             rel="noreferrer"
-            onClick={() => trackWhatsAppClick("pricing")}
+            onClick={(event) => trackWhatsAppClick(event, "pricing")}
             className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-semibold text-white transition hover:bg-white/10"
           >
             <MessageCircle className="mr-2 h-5 w-5" />
@@ -1202,7 +1189,7 @@ Experiencias de clientes que necesitaban resolver dudas de espacio, tecnología 
                 href={whatsappUrls.contact_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackWhatsAppClick("contact_section")}
+                onClick={(event) => trackWhatsAppClick(event, "contact_section")}
                 className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 text-base font-bold text-white transition hover:bg-green-600"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -1613,7 +1600,10 @@ Descubre si tu espacio es apto antes de invertir en material
               href={whatsappUrls.final_cta}
               target="_blank"
               rel="noreferrer"
-              onClick={() => pushDataLayer("click_whatsapp", "final_cta")}
+              onClick={(event) => {
+                const prepared = refreshWhatsAppLink(event, "final_cta");
+                pushDataLayer("click_whatsapp", "final_cta", {}, prepared.attribution);
+              }}
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 font-semibold text-white hover:bg-zinc-800"
             >
               <FaWhatsapp className="mr-2 text-xl" />
@@ -1661,6 +1651,8 @@ Enviar medidas por WhatsApp
             <a href="/simulador-golf-jardin" className="hover:text-white">Golf Studio</a>
             <a href="/simulador-golf-negocio" className="hover:text-white">Negocios</a>
             <a href="/proyectos" className="hover:text-white">Proyectos</a>
+            <a href="/guias-simuladores-golf" className="hover:text-white">Guías y comparativas</a>
+            <a href="/sobre-aqui-golf" className="hover:text-white">Sobre Aquí Golf</a>
             <a href="/care" className="hover:text-white">CARE</a>
             <a href="/signature" className="hover:text-white">Signature</a>
           </nav>

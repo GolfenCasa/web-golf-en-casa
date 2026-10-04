@@ -32,6 +32,7 @@ import {
   captureAttribution,
   getCurrentBrowserPath,
   prepareAttributedLink,
+  prepareWhatsAppLink,
   toLeadAttribution,
 } from "../lib/attribution";
 
@@ -280,6 +281,20 @@ export default function LandingSignatureProjectsEN() {
       }),
     [attribution]
   );
+
+  const refreshWhatsAppLink = (event) => prepareWhatsAppLink(event, {
+    message: "Hello, I would like to discuss a project with Aquí Golf | Signature Projects.",
+    phone: WHATSAPP_PHONE,
+    attribution,
+    pagePath: getCurrentBrowserPath({ fallback: "/en/signature" }),
+    button: "signature_contact",
+    locale: "en",
+  });
+
+  const trackWhatsAppClick = (event) => {
+    const prepared = refreshWhatsAppLink(event);
+    pushDataLayer("signature_whatsapp", "contact", {}, prepared.attribution);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1142,7 +1157,7 @@ export default function LandingSignatureProjectsEN() {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => pushDataLayer("signature_whatsapp", "contact")}
+                  onClick={trackWhatsAppClick}
                   className="flex items-center gap-3 hover:text-[#9C7B4F]"
                 >
                   <FaWhatsapp /> WhatsApp
@@ -1566,7 +1581,7 @@ export default function LandingSignatureProjectsEN() {
             ]} />
             <FooterColumn title="Contact" links={[
               ["Email", `mailto:${EMAIL}`],
-              ["WhatsApp", whatsappUrl],
+              ["WhatsApp", whatsappUrl, { onClick: refreshWhatsAppLink }],
               ["Schedule a Conversation", calendlyUrl, {
                 onPointerDown: refreshCalendlyLink,
                 onClick: (event) => trackCalendlyClick(event, "footer"),

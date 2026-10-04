@@ -25,6 +25,16 @@ const UTM_FIELDS = [
   ["utm_term", "term"],
 ];
 const MAX_UTM_VALUE_LENGTH = 255;
+const AI_PROVIDERS = Object.freeze([
+  { id: "chatgpt", domain: "chatgpt.com", aliases: ["chatgpt", "chatgpt.com", "chat.openai.com"], label: "ChatGPT", reference: "AI_GPT" },
+  { id: "perplexity", domain: "perplexity.ai", aliases: ["perplexity", "perplexity.ai"], label: "Perplexity", reference: "AI_PPLX" },
+  { id: "copilot", domain: "copilot.microsoft.com", aliases: ["copilot", "copilot.microsoft.com"], label: "Microsoft Copilot", reference: "AI_COPILOT" },
+  { id: "gemini", domain: "gemini.google.com", aliases: ["gemini", "gemini.google.com"], label: "Gemini", reference: "AI_GEMINI" },
+  { id: "claude", domain: "claude.ai", aliases: ["claude", "claude.ai"], label: "Claude", reference: "AI_CLAUDE" },
+]);
+const PAID_ACQUISITION_MEDIA = new Set([
+  "cpc", "ppc", "paid", "paid_search", "paid_social", "social_paid", "display", "cpm", "cpv",
+]);
 
 export const EMPTY_ATTRIBUTION_TOUCH = Object.freeze({
   source: "direct",
@@ -58,6 +68,40 @@ const normaliseHostname = (value) =>
     .replace(/^www\./, "")
     .replace(/^\[|\]$/g, "")
     .replace(/\.$/, "");
+
+const aiProviderFromSource = (source) => {
+  const value = normaliseHostname(source);
+  return AI_PROVIDERS.find((provider) => provider.aliases.includes(value));
+};
+
+const aiProviderFromReferrer = (referrer) => {
+  try {
+    const parsed = new URL(referrer);
+    if (!["http:", "https:"].includes(parsed.protocol)) return undefined;
+    const hostname = normaliseHostname(parsed.hostname);
+    return AI_PROVIDERS.find((provider) =>
+      hostname === provider.domain || hostname.endsWith(`.${provider.domain}`) ||
+      (provider.id === "chatgpt" && hostname === "chat.openai.com"),
+    );
+  } catch {
+    return undefined;
+  }
+};
+
+// Assistant URLs can contain conversation IDs or prompts. Only their origin
+// is needed for attribution; do not persist or forward the rest of the URL.
+const sanitiseAiReferrer = (referrer) =>
+  aiProviderFromReferrer(referrer) ? `${new URL(referrer).origin}/` : referrer;
+
+const aiReferralFields = (touch) => {
+  const provider = aiProviderFromSource(touch.source) || aiProviderFromReferrer(touch.referrer);
+  if (!provider) return {};
+  const paid = CLICK_ID_FIELDS.some((field) => Boolean(touch[field])) ||
+    PAID_ACQUISITION_MEDIA.has(cleanText(touch.medium, 120).toLowerCase());
+  // Preserve an explicit false value after advertising consent removes click IDs.
+  const detected = !paid && touch.ai_referral !== false;
+  return { ai_source: detected ? provider.id : "", ai_referral: detected };
+};
 
 const toTimestamp = (value) => {
   if (value instanceof Date) return value.getTime();
@@ -160,6 +204,9 @@ const getExternalReferrer = (referrer, currentHostname = "") => {
 const inferReferrerSource = (referrer) => {
   if (!referrer) return { source: "direct", medium: "none" };
 
+  const aiProvider = aiProviderFromReferrer(referrer);
+  if (aiProvider) return { source: aiProvider.domain, medium: "referral" };
+
   try {
     const hostname = normaliseHostname(new URL(referrer).hostname);
 
@@ -215,7 +262,7 @@ export const detectAttributionTouch = ({
   }
 
   const hostname = currentHostname || parsedUrl.hostname;
-  const externalReferrer = getExternalReferrer(referrer, hostname);
+  const externalReferrer = sanitiseAiReferrer(getExternalReferrer(referrer, hostname));
   const params = parsedUrl.searchParams;
   const touch = {
     source: readSearchParam(params, "utm_source", 120),
@@ -255,14 +302,14 @@ export const detectAttributionTouch = ({
   touch.source ||= "direct";
   touch.medium ||= touch.source === "direct" ? "none" : "referral";
 
-  return touch;
+  return { ...touch, ...aiReferralFields(touch) };
 };
 
 const normaliseTouch = (value, { capturedAt = "" } = {}) => {
   const input = value && typeof value === "object" ? value : {};
   const source = cleanText(input.source, 120) || "direct";
 
-  return {
+  const touch = {
     source,
     medium: cleanText(input.medium, 120) || (source === "direct" ? "none" : "referral"),
     campaign: cleanText(input.campaign, 200),
@@ -274,9 +321,10 @@ const normaliseTouch = (value, { capturedAt = "" } = {}) => {
     wbraid: cleanText(input.wbraid),
     msclkid: cleanText(input.msclkid),
     landingPage: cleanText(input.landingPage, 1000),
-    referrer: cleanText(input.referrer, 2000),
+    referrer: sanitiseAiReferrer(cleanText(input.referrer, 2000)),
     capturedAt: toIsoString(input.capturedAt || capturedAt),
   };
+  return { ...touch, ...aiReferralFields({ ...touch, ai_referral: input.ai_referral }) };
 };
 
 export const hasAcquisitionSignal = (attribution) => {
@@ -432,6 +480,10 @@ export const toLeadAttribution = (
     attributionModel: selectedModel === "first" ? "first_touch" : "last_touch",
     source: touch.source,
     medium: touch.medium,
+    ...(Object.hasOwn(touch, "ai_referral") ? {
+      ai_source: touch.ai_source,
+      ai_referral: touch.ai_referral,
+    } : {}),
     campaign: touch.campaign,
     content: touch.content,
     term: touch.term,
@@ -591,6 +643,10 @@ export const classifyTrafficSource = (attribution, model = "last", locale = "es"
 
   if (source === "linkedin" && paidSocial.includes(medium)) return "LinkedIn Ads";
 
+  if (touch.ai_referral) {
+    return AI_PROVIDERS.find((provider) => provider.id === touch.ai_source)?.label || source;
+  }
+
   if (
     source === "youtube" ||
     referrer.includes("youtube.com") ||
@@ -629,6 +685,8 @@ export const attributionEventData = (attribution, options = {}) => {
     traffic_campaign: touch.campaign,
     traffic_content: touch.content,
     traffic_term: touch.term,
+    ai_source: touch.ai_source || "",
+    ai_referral: touch.ai_referral === true,
     landing_page: landingPath,
     source_label: classifyTrafficSource(touch, "last", locale),
     gclid_present: Boolean(touch.gclid),
@@ -744,7 +802,10 @@ export const sanitisePathForWhatsApp = (value, fallback = "/") => {
 export const sanitizePathForWhatsApp = sanitisePathForWhatsApp;
 
 export const getWhatsAppReference = (attribution, model = "last") => {
+  attribution = applyConsentToAttribution(attribution);
   const source = classifyTrafficSource(attribution, model);
+  const aiProvider = AI_PROVIDERS.find((provider) => provider.label === source);
+  if (aiProvider) return aiProvider.reference;
   if (source === "Google Ads") return "GADS";
   if (source === "Meta Ads") return "META";
   if (source === "Microsoft Ads") return "MSADS";
@@ -760,6 +821,7 @@ export const getWhatsAppTrackingLines = (
   attribution,
   { model = "last", pagePath = "", button = "", locale = "es" } = {},
 ) => {
+  attribution = applyConsentToAttribution(attribution);
   const touch = getAttributionTouch(attribution, model);
   const landingPath = sanitisePathForWhatsApp(touch.landingPage, "/");
   const conversionPath = sanitisePathForWhatsApp(pagePath || landingPath, landingPath);
@@ -812,4 +874,23 @@ export const buildWhatsAppUrl = ({
   const text = [cleanText(message, 4000), "---", ...tracking].filter(Boolean).join("\n");
 
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+};
+
+/** Refreshes the final WhatsApp message before the browser opens the link. */
+export const prepareWhatsAppLink = (event, options = {}) => {
+  const attribution = isBrowserEnvironment()
+    ? captureAttribution()
+    : options.attribution || createEmptyAttribution();
+  const href = buildWhatsAppUrl({ ...options, attribution });
+  const target = event?.currentTarget;
+
+  if (target) {
+    try { target.href = href; }
+    catch {
+      try { target.setAttribute?.("href", href); }
+      catch { /* The computed URL is still returned for an immutable target. */ }
+    }
+  }
+
+  return { attribution, href };
 };

@@ -119,6 +119,8 @@ const legacyEvent = attributionEventData(updatedWithMeta, {
   conversionPage: "/signature",
 });
 assert.deepEqual(Object.keys(legacyEvent).sort(), [
+  "ai_referral",
+  "ai_source",
   "conversion_page",
   "fbclid_present",
   "gclid_present",
@@ -339,6 +341,9 @@ globalThis.window = {
   },
 };
 globalThis.document = { referrer: "" };
+// Keep the browser interaction inside the fixture's 30-day lifetime.
+const originalDateNow = Date.now;
+Date.now = () => START + DAY;
 const browserCapture = captureAttribution({ now: START });
 assert.equal(getAttributionTouch(browserCapture).gclid, "G-1");
 assert.ok(browserStorage.has(ATTRIBUTION_STORAGE_KEY));
@@ -368,6 +373,7 @@ assert.equal(reads, 3);
 assert.equal(writes, 2);
 delete globalThis.window;
 delete globalThis.document;
+Date.now = originalDateNow;
 
 // SSR: neither helper reads nor writes storage when browser globals are absent.
 assert.equal(typeof globalThis.window, "undefined");

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, CheckCircle2, Mail, MessageCircle } from "lucide-react";
+import { absoluteSiteUrl, getPageSchema, OFFICIAL_PROFILES } from "../lib/site-schema.js";
 import {
   EMPTY_ATTRIBUTION,
   attributionEventData,
@@ -8,9 +9,9 @@ import {
   captureAttribution,
   getCurrentBrowserPath,
   getWhatsAppReference,
+  prepareWhatsAppLink,
 } from "../lib/attribution.js";
 
-const SITE_URL = "https://aquigolf.es";
 const WHATSAPP_NUMBER = "34678107234";
 
 export function SeoHead({
@@ -20,67 +21,12 @@ export function SeoHead({
   image = "/despues_1.webp",
   faqs = [],
   serviceType,
+  article,
+  breadcrumbs = [],
+  pageType = "WebPage",
 }) {
-  const canonical = `${SITE_URL}${path === "/" ? "/" : path}`;
-  const schemaIdBase = canonical.endsWith("/") ? canonical : `${canonical}/`;
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": `${SITE_URL}/#organization`,
-        name: "Aquí Golf",
-        url: `${SITE_URL}/`,
-        logo: `${SITE_URL}/brand/aqui-golf-circular.png`,
-        email: "info@aquigolf.es",
-        telephone: "+34678107234",
-        areaServed: { "@type": "Country", name: "España" },
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${SITE_URL}/#website`,
-        url: `${SITE_URL}/`,
-        name: "Aquí Golf",
-        publisher: { "@id": `${SITE_URL}/#organization` },
-        inLanguage: "es-ES",
-      },
-      {
-        "@type": "WebPage",
-        "@id": `${schemaIdBase}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        isPartOf: { "@id": `${SITE_URL}/#website` },
-        about: { "@id": `${SITE_URL}/#organization` },
-      },
-      ...(serviceType
-        ? [
-            {
-              "@type": "Service",
-              "@id": `${schemaIdBase}#service`,
-              name: serviceType,
-              serviceType,
-              provider: { "@id": `${SITE_URL}/#organization` },
-              areaServed: { "@type": "Country", name: "España" },
-              url: canonical,
-            },
-          ]
-        : []),
-      ...(faqs.length
-        ? [
-            {
-              "@type": "FAQPage",
-              "@id": `${schemaIdBase}#faq`,
-              mainEntity: faqs.map(({ question, answer }) => ({
-                "@type": "Question",
-                name: question,
-                acceptedAnswer: { "@type": "Answer", text: answer },
-              })),
-            },
-          ]
-        : []),
-    ],
-  };
+  const canonical = absoluteSiteUrl(path);
+  const schema = getPageSchema({ title, description, path, image, faqs, serviceType, article, breadcrumbs, pageType });
 
   return (
     <Helmet>
@@ -90,10 +36,14 @@ export function SeoHead({
       <link rel="canonical" href={canonical} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={article ? "article" : "website"} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:image" content={`${SITE_URL}${image}`} />
-      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+      <meta property="og:image" content={absoluteSiteUrl(image)} />
+      <meta property="og:site_name" content="Aquí Golf" />
+      <meta property="og:locale" content="es_ES" />
+      {article?.datePublished && <meta property="article:published_time" content={article.datePublished} />}
+      {article?.dateModified && <meta property="article:modified_time" content={article.dateModified} />}
+      <script type="application/ld+json">{JSON.stringify(schema).replace(/</g, "\\u003c")}</script>
     </Helmet>
   );
 }
@@ -114,6 +64,8 @@ export function PublicHeader() {
           <a href="/precio-simulador-golf" className="whitespace-nowrap hover:text-white">Precios</a>
           <a href="/medidas-simulador-golf" className="whitespace-nowrap hover:text-white">Medidas</a>
           <a href="/proyectos" className="whitespace-nowrap hover:text-white">Proyectos</a>
+          <a href="/guias-simuladores-golf" className="whitespace-nowrap hover:text-white">Guías</a>
+          <a href="/sobre-aqui-golf" className="whitespace-nowrap hover:text-white">Sobre nosotros</a>
           <a href="/care" className="whitespace-nowrap hover:text-white">CARE</a>
         </nav>
         <a
@@ -197,7 +149,16 @@ export function LeadBand({ context = "mi proyecto de simulador de golf" }) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackContact("whatsapp_click", "seo_lead_band", attribution)}
+            onClick={(event) => {
+              const prepared = prepareWhatsAppLink(event, {
+                phone: WHATSAPP_NUMBER,
+                message: `Hola, quiero información sobre ${context}.`,
+                attribution,
+                pagePath: getCurrentBrowserPath({ fallback: "/" }),
+                button: "seo_lead_band",
+              });
+              trackContact("whatsapp_click", "seo_lead_band", prepared.attribution);
+            }}
             className="inline-flex items-center justify-center rounded-2xl border border-zinc-950 px-6 py-4 font-bold transition hover:bg-emerald-300"
           >
             <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
@@ -224,15 +185,21 @@ export function PublicFooter() {
             <a href="/consultoria-simulador-golf" className="hover:text-white">Consultoría</a>
             <a href="/simulador-golf-jardin" className="hover:text-white">Simulador en jardín</a>
             <a href="/simulador-golf-negocio" className="hover:text-white">Soluciones para negocios</a>
+            <a href="/guias-simuladores-golf" className="hover:text-white">Guías de simuladores de golf</a>
           </div>
         </div>
         <div>
           <h2 className="font-bold text-white">Aquí Golf</h2>
           <div className="mt-4 grid gap-3 text-sm">
+            <a href="/sobre-aqui-golf" className="hover:text-white">Francisco Menacho y Aquí Golf</a>
             <a href="/proyectos" className="hover:text-white">Proyectos realizados</a>
             <a href="/care" className="hover:text-white">Mantenimiento CARE</a>
             <a href="/signature" className="hover:text-white">Signature Projects</a>
             <a href="mailto:info@aquigolf.es" className="inline-flex items-center hover:text-white"><Mail className="mr-2 h-4 w-4" />info@aquigolf.es</a>
+            <a href="tel:+34678107234" className="hover:text-white">+34 678 10 72 34</a>
+            <div className="flex flex-wrap gap-4">
+              {OFFICIAL_PROFILES.map(({ name, url }) => <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="hover:text-white">{name}</a>)}
+            </div>
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ import {
   FaWhatsapp
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import { getPageSchema } from "./lib/site-schema.js";
 import {
   EMPTY_ATTRIBUTION,
   appendAttributionToUrl,
@@ -24,6 +25,7 @@ import {
   getCurrentBrowserPath,
   getWhatsAppReference,
   prepareAttributedLink,
+  prepareWhatsAppLink,
   toLeadAttribution,
 } from "./lib/attribution";
 
@@ -443,33 +445,12 @@ export default function GolfSimulatorLanding() {
       <meta property="og:image" content="https://aquigolf.es/despues_1.webp" />
 
       <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Organization",
-              "@id": "https://aquigolf.es/#organization",
-              name: "Aquí Golf",
-              url: "https://aquigolf.es",
-              logo: "https://aquigolf.es/brand/aqui-golf-circular.png",
-              sameAs: [
-                "https://www.youtube.com/@Aqui_Golf",
-                "https://www.instagram.com/aqui.golf/",
-                "https://www.facebook.com/AquiGolfSimuladores/",
-                "https://www.tiktok.com/@aqui_golf",
-              ],
-            },
-            {
-              "@type": "WebSite",
-              "@id": "https://aquigolf.es/#website",
-              url: "https://aquigolf.es",
-              name: "Aquí Golf",
-              publisher: {
-                "@id": "https://aquigolf.es/#organization",
-              },
-            },
-          ],
-        })}
+        {JSON.stringify(getPageSchema({
+          path: "/",
+          title: "Aquí Golf | Simuladores de golf y consultoría",
+          description: "Diseño, consultoría e instalación de simuladores de golf a medida en España para viviendas, academias y negocios indoor.",
+          serviceType: "Diseño, consultoría e instalación de simuladores de golf",
+        }))}
       </script>
         <link rel="canonical" href="https://aquigolf.es/" />
     </Helmet>
@@ -479,12 +460,19 @@ export default function GolfSimulatorLanding() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
-      onClick={() =>
+      onClick={(event) => {
+        const prepared = prepareWhatsAppLink(event, {
+          phone: whatsappNumber,
+          message: whatsappMessage,
+          attribution,
+          pagePath: getCurrentBrowserPath(),
+          button: "floating_whatsapp",
+        });
         pushDataLayer('whatsapp_click', 'floating_whatsapp', {
           contact_channel: 'whatsapp',
-          whatsapp_reference: getWhatsAppReference(attribution),
-        })
-      }
+          whatsapp_reference: getWhatsAppReference(prepared.attribution),
+        }, prepared.attribution);
+      }}
       className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-400 sm:bottom-6 sm:right-6 sm:h-16 sm:w-16"
     >
       <FaWhatsapp />
@@ -1312,6 +1300,8 @@ export default function GolfSimulatorLanding() {
       <a href="/simulador-golf-jardin" className="hover:text-white">Golf Studio</a>
       <a href="/simulador-golf-negocio" className="hover:text-white">Negocios</a>
       <a href="/proyectos" className="hover:text-white">Proyectos</a>
+      <a href="/guias-simuladores-golf" className="hover:text-white">Guías y comparativas</a>
+      <a href="/sobre-aqui-golf" className="hover:text-white">Sobre Aquí Golf</a>
       <a href="/care" className="hover:text-white">CARE</a>
       <a href="/signature" className="hover:text-white">Signature</a>
     </nav>

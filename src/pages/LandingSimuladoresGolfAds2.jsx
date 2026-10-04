@@ -50,6 +50,7 @@ import {
   getCurrentBrowserPath,
   getWhatsAppReference,
   prepareAttributedLink,
+  prepareWhatsAppLink,
   toLeadAttribution,
 } from "../lib/attribution";
 
@@ -248,11 +249,24 @@ export default function LandingSimuladoresGolfAds2() {
     pushDataLayer("calendly_click", location, extra, prepared.attribution);
   };
 
-  const trackWhatsAppClick = (location) => {
+  const trackWhatsAppClick = (event, location) => {
+    const messages = {
+      floating_button: "Hola, quiero saber si mi espacio es apto para instalar un simulador de golf. Mis medidas aproximadas son:",
+      hero: "Hola, quiero comprobar si mi espacio es viable para instalar un simulador de golf.",
+      golf_studio_section: "Hola, he visto la opción Golf Studio y quiero estudiar la instalación de una caseta con simulador de golf en mi jardín. La parcela está en:",
+      form_success: "Hola, acabo de solicitar el estudio gratuito y quiero enviar fotos de mi espacio.",
+    };
+    const prepared = prepareWhatsAppLink(event, {
+      phone: WHATSAPP_PHONE,
+      message: messages[location],
+      attribution,
+      pagePath: getCurrentPage(),
+      button: location,
+    });
     pushDataLayer("click_whatsapp", location, {
       contact_channel: "whatsapp",
-      whatsapp_reference: getWhatsAppReference(attribution),
-    });
+      whatsapp_reference: getWhatsAppReference(prepared.attribution),
+    }, prepared.attribution);
   };
 
   const moveToStepTwo = () => {
@@ -354,7 +368,7 @@ export default function LandingSimuladoresGolfAds2() {
         target="_blank"
         rel="noreferrer"
         aria-label="Enviar medidas por WhatsApp"
-        onClick={() => trackWhatsAppClick("floating_button")}
+        onClick={(event) => trackWhatsAppClick(event, "floating_button")}
         className="fixed bottom-5 right-5 z-[999] flex h-14 w-14 items-center justify-center rounded-full bg-green-700 text-3xl text-white shadow-2xl transition hover:scale-110 hover:bg-green-600"
       >
         <FaWhatsapp />
@@ -428,7 +442,7 @@ export default function LandingSimuladoresGolfAds2() {
                 href={whatsappUrls.hero}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackWhatsAppClick("hero")}
+                onClick={(event) => trackWhatsAppClick(event, "hero")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-5 py-4 font-bold transition hover:bg-white/10 sm:px-6"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -580,7 +594,7 @@ export default function LandingSimuladoresGolfAds2() {
                 href={whatsappUrls.golf_studio_section}
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => trackWhatsAppClick("golf_studio_section")}
+                onClick={(event) => trackWhatsAppClick(event, "golf_studio_section")}
                 className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-6 py-4 font-bold text-white transition hover:bg-white/10"
               >
                 <FaWhatsapp className="mr-2 text-xl" />
@@ -970,7 +984,7 @@ function LeadForm({
           href={whatsappSuccessUrl}
           target="_blank"
           rel="noreferrer"
-          onClick={() => trackWhatsAppClick("form_success")}
+          onClick={(event) => trackWhatsAppClick(event, "form_success")}
           className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-green-700 px-6 py-4 font-black transition hover:bg-green-600"
         >
           <FaWhatsapp className="mr-2 text-xl" />

@@ -3,4 +3,20 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
+# Search crawlers use the same public/private boundaries as other crawlers.
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
 Sitemap: https://aquigolf.es/sitemap.xml

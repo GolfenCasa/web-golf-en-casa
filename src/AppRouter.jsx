@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import LandingSimuladoresGolf from "./pages/LandingSimuladoresGolf.jsx";
 import LandingSimuladoresGolfAds2 from "./pages/LandingSimuladoresGolfAds2.jsx";
 import ABLandingRouter from "./pages/ABLandingRouter.jsx";
+import { guideRoutes } from "./data/golfGuides.js";
 
 const GolfSimulatorLanding = lazy(() => import("./App.jsx"));
 const LandingSignatureProjects = lazy(() => import("./pages/LandingSignatureProjects.jsx"));
@@ -18,6 +19,9 @@ const PrimeDayAmazonGolfEnCasa = lazy(() => import("./pages/PrimeDayAmazonGolfEn
 const GolfEnCasaCARE = lazy(() => import("./pages/GolfEnCasaCARE.jsx"));
 const LinkManager = lazy(() => import("./pages/LinkManager.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
+const AboutAquiGolf = lazy(() => import("./pages/AboutAquiGolf.jsx"));
+const GuidesIndexPage = lazy(() => import("./pages/GolfGuides.jsx").then((module) => ({ default: module.GuidesIndexPage })));
+const GolfGuidePage = lazy(() => import("./pages/GolfGuides.jsx").then((module) => ({ default: module.GolfGuidePage })));
 const PricePage = lazy(() => import("./pages/SeoGrowthPages.jsx").then((module) => ({ default: module.PricePage })));
 const MeasuresPage = lazy(() => import("./pages/SeoGrowthPages.jsx").then((module) => ({ default: module.MeasuresPage })));
 const ConsultingPage = lazy(() => import("./pages/SeoGrowthPages.jsx").then((module) => ({ default: module.ConsultingPage })));
@@ -55,6 +59,9 @@ export default function AppRouter() {
         <Route path="/proyectos" element={<ProjectsPage />} />
         <Route path="/proyectos/simulador-golf-ecija" element={<ProjectEcijaPage />} />
         <Route path="/proyectos/simulador-golf-jerez" element={<ProjectJerezPage />} />
+        <Route path="/sobre-aqui-golf" element={<AboutAquiGolf />} />
+        <Route path="/guias-simuladores-golf" element={<GuidesIndexPage />} />
+        {guideRoutes.map(path => <Route key={path} path={path} element={<GolfGuidePage />} />)}
         <Route path="/admin/enlaces" element={<LinkManager />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

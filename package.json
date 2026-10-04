@@ -8,17 +8,22 @@
     "build:client": "vite build",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir .ssr --emptyOutDir",
     "prerender": "node scripts/prerender.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "npm run build:client && npm run build:server && npm run prerender",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepreview:ssg": "npm run build",
     "preview:ssg": "node scripts/serve-dist.mjs",
     "test:seo": "node scripts/validate-seo-build.mjs",
+    "test:geo": "node scripts/validate-geo-build.mjs",
+    "test:ai-attribution": "node --test scripts/ai-attribution-test.mjs",
+    "indexnow:preview": "node scripts/submit-indexnow.mjs",
+    "indexnow:submit": "node scripts/submit-indexnow.mjs --submit",
     "test:attribution": "node scripts/attribution-test.mjs",
     "test:tracking": "node scripts/tracking-contract-test.mjs",
     "test:consent": "node --test scripts/consent-attribution-test.mjs scripts/ab-consent-test.mjs scripts/ab-experiment-test.mjs scripts/measurement-consent-test.mjs",
     "test:api": "node --test scripts/api-lead-test.mjs",
-    "verify:local": "npm run test:attribution && npm run test:api && npm run test:tracking && npm run test:consent && npm run build && npm run test:seo"
+    "verify:local": "npm run test:attribution && npm run test:ai-attribution && npm run test:api && npm run test:tracking && npm run test:consent && npm run build && npm run test:seo && npm run test:geo"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",

@@ -1,3 +1,5 @@
+import { guideRoutes } from "./data/golfGuides.js";
+
 export const prerenderRoutes = [
   "/",
   "/instalacion-simuladores-golf",
@@ -22,6 +24,9 @@ export const prerenderRoutes = [
   "/proyectos/simulador-golf-ecija",
   "/proyectos/simulador-golf-jerez",
   "/admin/enlaces",
+  "/sobre-aqui-golf",
+  "/guias-simuladores-golf",
+  ...guideRoutes,
 ];
 
 export const indexableRoutes = [
@@ -38,4 +43,7 @@ export const indexableRoutes = [
   "/proyectos",
   "/proyectos/simulador-golf-ecija",
   "/proyectos/simulador-golf-jerez",
+  "/sobre-aqui-golf",
+  "/guias-simuladores-golf",
+  ...guideRoutes,
 ];

@@ -20,6 +20,13 @@ const projects = {
     beforeAlt: "Estancia antes de instalar el simulador de golf en Écija",
     afterAlt: "Simulador de golf terminado en una vivienda de Écija",
     summary: "El proyecto transformó una estancia doméstica en una zona de práctica indoor preparada para entrenar y jugar en casa.",
+    startingPoint: "Estancia de una vivienda particular",
+    decisions: [
+      ["Pantalla y zona de golpeo", "Adaptación de la pantalla de impacto y la zona de práctica al espacio doméstico."],
+      ["Protección", "Protección del entorno como parte de la integración del simulador."],
+      ["Proyección e iluminación", "Coordinación de la proyección y la iluminación en la estancia."],
+      ["Entrega", "Configuración y puesta en marcha para entrenar y jugar en casa."],
+    ],
     scope: [
       "Diseño adaptado a una vivienda particular",
       "Pantalla de impacto y protección del entorno",
@@ -42,6 +49,13 @@ const projects = {
     beforeAlt: "Espacio vacío antes del proyecto de simulador de golf en Jerez",
     afterAlt: "Simulador de golf instalado y configurado en Jerez",
     summary: "Una estancia vacía se convirtió en un simulador listo para uso residencial mediante un proyecto coordinado de diseño, componentes, instalación y configuración.",
+    startingPoint: "Estancia vacía destinada a uso residencial",
+    decisions: [
+      ["Diseño", "Adaptación a las medidas disponibles, el presupuesto, el jugador y el uso previsto."],
+      ["Componentes", "Selección coordinada de los elementos de la solución personalizada."],
+      ["Pantalla y superficie", "Integración de pantalla, protección y superficie de juego."],
+      ["Entrega", "Instalación, configuración final y puesta en marcha."],
+    ],
     scope: [
       "Diseño según las medidas disponibles",
       "Selección coordinada de componentes",
@@ -63,6 +77,8 @@ export function ProjectsPage() {
         description="Casos reales de simuladores de golf residenciales diseñados e instalados por Aquí Golf en Écija y Jerez."
         path="/proyectos"
         image="/despues_2.webp"
+        pageType="CollectionPage"
+        breadcrumbs={[{ label: "Proyectos" }]}
       />
       <PublicHeader />
 
@@ -71,7 +87,7 @@ export function ProjectsPage() {
           <Breadcrumbs items={[{ label: "Proyectos" }]} />
           <p className="mt-10 text-sm font-black uppercase tracking-[0.2em] text-emerald-300">Casos reales</p>
           <h1 className="mt-4 max-w-5xl text-4xl font-black tracking-tight sm:text-6xl">Proyectos de simuladores de golf a medida en España</h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">Cada instalación parte de un espacio, un jugador y un objetivo diferentes. Estos casos muestran transformaciones reales, sin renders ni configuraciones de catálogo.</p>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">Aquí Golf ha publicado dos instalaciones residenciales: Écija, Sevilla, y Jerez, Cádiz. Las fotografías del antes y después muestran cómo se adaptó cada estancia para entrenar y jugar al golf en casa.</p>
         </div>
       </section>
 
@@ -117,6 +133,8 @@ function ProjectDetail({ project }) {
         path={project.path}
         image={project.after}
         serviceType="Diseño e instalación de simuladores de golf residenciales"
+        breadcrumbs={[{ label: "Proyectos", href: "/proyectos" }, { label: project.location }]}
+        article={{ headline: project.h1, dateModified: "2026-10-04", author: "Aquí Golf" }}
       />
       <PublicHeader />
 
@@ -128,6 +146,7 @@ function ProjectDetail({ project }) {
               <p className="flex items-center text-sm font-black uppercase tracking-[0.18em] text-emerald-300"><MapPin className="mr-2 h-4 w-4" />{project.location}</p>
               <h1 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl">{project.h1}</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">{project.summary}</p>
+              <p className="mt-4 text-sm leading-6 text-zinc-400">Caso publicado por <a href="/sobre-aqui-golf" className="underline hover:text-emerald-300">Aquí Golf</a> · Revisado el <time dateTime="2026-10-04">4 de octubre de 2026</time></p>
             </div>
             <a href="/instalacion-simuladores-golf#formulario" className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 hover:bg-emerald-300">Estudiar un proyecto similar <ArrowRight className="ml-2 h-5 w-5" /></a>
           </div>
@@ -135,6 +154,12 @@ function ProjectDetail({ project }) {
       </section>
 
       <section className="bg-white text-zinc-950">
+        <div className="mx-auto max-w-7xl px-6 pt-14 lg:px-8">
+          <h2 className="text-3xl font-black">Ficha del proyecto</h2>
+          <dl className="mt-6 grid gap-4 sm:grid-cols-3">
+            {[["Ubicación", project.location], ["Uso", "Residencial: práctica y juego en casa"], ["Espacio de partida", project.startingPoint]].map(([label, value]) => <div key={label} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"><dt className="text-sm font-bold text-emerald-800">{label}</dt><dd className="mt-2 font-semibold leading-7">{value}</dd></div>)}
+          </dl>
+        </div>
         <div className="mx-auto grid max-w-7xl gap-6 px-6 py-16 md:grid-cols-2 lg:px-8 lg:py-24">
           <figure>
             <img src={project.before} alt={project.beforeAlt} width="1200" height="900" className="aspect-[4/3] w-full rounded-[2rem] object-cover" />
@@ -163,6 +188,17 @@ function ProjectDetail({ project }) {
             <h2 className="text-3xl font-black">Alcance del proyecto</h2>
             <Checklist items={project.scope} dark />
           </article>
+          <article className="rounded-[2rem] bg-white p-8 shadow-sm lg:col-span-2">
+            <h2 className="text-3xl font-black">Decisiones de la instalación</h2>
+            <div className="mt-6 overflow-x-auto">
+              <table className="w-full min-w-[32rem] text-left text-base leading-7">
+                <caption className="sr-only">Elementos y alcance de la instalación residencial en {project.location}</caption>
+                <thead><tr className="border-b-2 border-zinc-200"><th scope="col" className="px-4 py-3 font-bold text-emerald-800">Elemento</th><th scope="col" className="px-4 py-3 font-bold text-emerald-800">Alcance de este proyecto</th></tr></thead>
+                <tbody>{project.decisions.map(([element, text]) => <tr key={element} className="border-b border-zinc-200"><th scope="row" className="px-4 py-4 align-top font-semibold">{element}</th><td className="px-4 py-4 text-zinc-600">{text}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <p className="mt-5 text-sm leading-7 text-zinc-500">La ficha recoge el alcance publicado del caso y sus fotografías. Las medidas, los modelos de equipo y el presupuesto no se detallan en esta página; la configuración de otro proyecto se estudia según su propio espacio.</p>
+          </article>
         </div>
       </section>
 
@@ -171,6 +207,17 @@ function ProjectDetail({ project }) {
           <p className="text-sm font-black uppercase tracking-[0.2em] text-emerald-300">Experiencia del cliente</p>
           <blockquote className="mt-6 text-2xl font-semibold leading-10 sm:text-3xl">“{project.quote}”</blockquote>
           <p className="mt-5 text-zinc-400">Cliente en {project.location}</p>
+        </div>
+      </section>
+
+      <section className="bg-zinc-100 text-zinc-950">
+        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+          <h2 className="text-2xl font-black">Planifica una instalación parecida</h2>
+          <div className="mt-5 flex flex-wrap gap-x-8 gap-y-4 font-semibold text-emerald-800">
+            <a href="/medidas-simulador-golf" className="underline">Comprobar medidas y swing</a>
+            <a href="/precio-simulador-golf" className="underline">Comparar rangos de precio y alcance</a>
+            <a href="/guias-simuladores-golf" className="underline">Elegir la tecnología del simulador</a>
+          </div>
         </div>
       </section>
 
