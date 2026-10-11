@@ -1,6 +1,7 @@
 import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../../shared/garden-budget.js";
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
+import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
@@ -499,7 +500,7 @@ export default function LandingSimuladoresGolf() {
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
-              <MiniStat label="Proyectos reales" value="Écija y Jerez" highlighted />
+              <MiniStat label="Proyectos reales" value="Écija, Jerez y Ubrique" highlighted />
               <MiniStat label="Cobertura" value="Toda España" />
               <MiniStat label="Servicio" value="Llave en mano" />
             </div>
@@ -873,17 +874,18 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Ejemplos reales de espacios transformados en zonas de práctica y
-              juego indoor. Usa el deslizador para ver el antes y después.
+              Instalaciones realizadas en Écija, Jerez y Ubrique. Consulta las
+              fotografías de cada proyecto y compara el antes y después donde está disponible.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          <div className="mt-12 grid gap-6 lg:grid-cols-3">
             <ProjectCard
               title="Simulador de golf en vivienda particular"
               location="Écija, Sevilla"
               before="/antes_1.jpg"
               after="/despues_1.webp"
+              path="/proyectos/simulador-golf-ecija"
               description="Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación."
             />
 
@@ -892,7 +894,18 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               location="Jerez, Cádiz"
               before="/antes_2.webp"
               after="/despues_2.webp"
+              path="/proyectos/simulador-golf-jerez"
               description="Diseño adaptado a las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador."
+            />
+
+            <ProjectCard
+              title="Instalación de simulador de golf en Ubrique"
+              location="Ubrique, Cádiz"
+              after={ubriqueProjectPhotos[0].src}
+              srcSet={ubriqueProjectPhotos[0].srcSet}
+              sizes={landingProjectImageSizes}
+              path="/proyectos/simulador-golf-ubrique"
+              description="Instalación indoor integrada en una sala compartida para ocio y entrenamiento. Las fotografías muestran el simulador terminado desde dos perspectivas."
             />
           </div>
 
@@ -907,7 +920,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               Realizamos proyectos a medida para clientes particulares, academias y negocios indoor. Podemos desplazarnos y estudiar instalaciones en toda España.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {["Sevilla", "Cádiz", "Jerez", "Sotogrande", "Málaga", "Marbella", "Madrid", "Toda España"].map((city) => (
+              {["Sevilla", "Cádiz", "Jerez", "Ubrique", "Sotogrande", "Málaga", "Marbella", "Madrid", "Toda España"].map((city) => (
                 <CityPill key={city} city={city} />
               ))}
             </div>
@@ -1832,7 +1845,7 @@ function HeroVideo() {
 function MiniStat({ label, value, highlighted = false }) {
   return (
     <div
-      className={`rounded-2xl border px-4 py-3 ${
+      className={`min-w-0 rounded-2xl border px-4 py-3 ${
         highlighted
           ? "border-emerald-400/20 bg-emerald-400/10"
           : "border-white/10 bg-white/5"
@@ -1845,7 +1858,7 @@ function MiniStat({ label, value, highlighted = false }) {
       >
         {label}
       </span>
-      <strong className="mt-1 block text-lg text-white">{value}</strong>
+      <strong className="mt-1 block text-lg leading-6 text-white">{value}</strong>
     </div>
   );
 }
@@ -2017,10 +2030,14 @@ function TestimonialCard({ name, role, text }) {
   );
 }
 
-function ProjectCard({ title, location, before, after, description }) {
+function ProjectCard({ title, location, before, after, description, path, srcSet, sizes }) {
   return (
     <article className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-50 shadow-xl">
-      <BeforeAfterSlider before={before} after={after} alt={title} />
+      {before ? (
+        <BeforeAfterSlider before={before} after={after} alt={title} />
+      ) : (
+        <img src={after} srcSet={srcSet} sizes={sizes} alt={`${title}: instalación terminada`} width="1600" height="1200" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
+      )}
 
       <div className="p-6">
         <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
@@ -2035,12 +2052,17 @@ function ProjectCard({ title, location, before, after, description }) {
         <div className="mt-5 flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
             <Camera className="h-3 w-3" />
-            Antes / después real
+            {before ? "Antes / después real" : "Instalación terminada"}
           </span>
           <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700">
             Diseño a medida
           </span>
         </div>
+        {path && (
+          <a href={path} className="mt-6 inline-flex items-center font-bold text-emerald-800 transition hover:text-emerald-700">
+            Ver proyecto completo<ArrowRight className="ml-2 h-4 w-4" />
+          </a>
+        )}
       </div>
     </article>
   );

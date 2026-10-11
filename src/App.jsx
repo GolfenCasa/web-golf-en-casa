@@ -2,6 +2,8 @@ import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../sh
 import LeadBudgetOptions from "./components/LeadBudgetOptions.jsx";
 import GardenBudgetNotice from "./components/GardenBudgetNotice.jsx";
 import MeasurementConsent from "./components/MeasurementConsent.jsx";
+import ProjectPhotoCarousel from "./components/ProjectPhotoCarousel.jsx";
+import { projectCardImageSizes, ubriqueProjectPhotos } from "./data/ubriqueProjectPhotos.js";
 import { captureFormMeasurementConsent } from "./lib/form-measurement-consent.js";
 import { enhancedConversionData } from "./lib/consent.js";
 import React, { useEffect, useMemo, useState } from 'react';
@@ -147,14 +149,18 @@ const featuredVideos = [
 
 
 
-function BeforeAfterSlider({ before, after, alt }) {
+function BeforeAfterSlider({ before, after, beforeSrcSet, afterSrcSet, alt }) {
   const [position, setPosition] = useState(50);
 
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-200">
       <img
         src={before}
+        srcSet={beforeSrcSet}
+        sizes={beforeSrcSet ? projectCardImageSizes : undefined}
         alt={`${alt} antes`}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
 
@@ -164,7 +170,11 @@ function BeforeAfterSlider({ before, after, alt }) {
       >
         <img
           src={after}
+          srcSet={afterSrcSet}
+          sizes={afterSrcSet ? projectCardImageSizes : undefined}
           alt={`${alt} después`}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover"
           style={{
             width: `${100 / (position / 100)}%`,
@@ -923,17 +933,28 @@ export default function GolfSimulatorLanding() {
       </h2>
 
       <p className="mt-5 text-lg leading-8 text-zinc-600">
-        Ejemplos de instalaciones, diseños y espacios indoor golf realizados o proyectados a medida. Usa el deslizador para comparar el antes y el después de cada proyecto.
+        Conoce nuestras instalaciones en Ubrique, Écija y Jerez. Cada proyecto muestra cómo adaptamos el simulador al espacio y al uso previsto, con fotografías del resultado y los detalles del trabajo.
       </p>
     </div>
 
-    <div className="mt-12 grid gap-6 lg:grid-cols-2">
+    <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {[
+        {
+          title: 'Simulador de golf en Ubrique',
+          location: 'Ubrique, Cádiz',
+          after: '/proyectos/ubrique/simulador-golf-ubrique.webp',
+          photos: ubriqueProjectPhotos,
+          path: '/proyectos/simulador-golf-ubrique',
+          description:
+            'Instalación en una sala de ocio con ProTee VX, proyección BenQ 4K y GSPro. Pantalla protegida, zona de golpeo y puesta en marcha para entrenar y jugar indoor.',
+        },
         {
           title: 'Simulador de golf residencial en Écija',
           location: 'Écija, Sevilla',
           before: '/antes_1.jpg',
-          after: '/despues_1.JPEG',
+          after: '/despues_1.webp',
+          beforeSrcSet: '/proyectos/ecija/antes-ecija-480.webp 480w, /proyectos/ecija/antes-ecija-800.webp 800w, /proyectos/ecija/antes-ecija-1200.webp 1200w',
+          afterSrcSet: '/proyectos/ecija/despues-ecija-480.webp 480w, /proyectos/ecija/despues-ecija-800.webp 800w, /proyectos/ecija/despues-ecija-1200.webp 1200w',
           path: '/proyectos/simulador-golf-ecija',
           description:
             'Transformación de un espacio doméstico en una zona de práctica indoor, optimizando pantalla de impacto, zona de golpeo, proyector, seguridad e iluminación.',
@@ -941,8 +962,10 @@ export default function GolfSimulatorLanding() {
         {
           title: 'Instalación de simulador de golf en Jerez',
           location: 'Jerez, Cádiz',
-          before: '/antes_2.JPEG',
-          after: '/despues_2.JPEG',
+          before: '/antes_2.webp',
+          after: '/despues_2.webp',
+          beforeSrcSet: '/proyectos/jerez/antes-jerez-480.webp 480w, /proyectos/jerez/antes-jerez-800.webp 800w, /proyectos/jerez/antes-jerez-1200.webp 1200w',
+          afterSrcSet: '/proyectos/jerez/despues-jerez-480.webp 480w, /proyectos/jerez/despues-jerez-800.webp 800w, /proyectos/jerez/despues-jerez-1200.webp 1200w',
           path: '/proyectos/simulador-golf-jerez',
           description:
             'Diseño de una solución personalizada según las medidas disponibles, el presupuesto, el tipo de jugador y el uso previsto del simulador.',
@@ -952,11 +975,22 @@ export default function GolfSimulatorLanding() {
           key={project.title}
           className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-50 shadow-xl"
         >
-          <BeforeAfterSlider
-            before={project.before}
-            after={project.after}
-            alt={project.title}
-          />
+          {project.before ? (
+            <BeforeAfterSlider
+              before={project.before}
+              after={project.after}
+              beforeSrcSet={project.beforeSrcSet}
+              afterSrcSet={project.afterSrcSet}
+              alt={project.title}
+            />
+          ) : (
+            <ProjectPhotoCarousel
+              photos={project.photos}
+              projectName="Ubrique"
+              href={project.path}
+              sizes={projectCardImageSizes}
+            />
+          )}
 
           <div className="p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">

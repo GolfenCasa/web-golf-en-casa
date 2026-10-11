@@ -30,6 +30,7 @@ const BusinessPage = lazy(() => import("./pages/SeoGrowthPages.jsx").then((modul
 const ProjectsPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectsPage })));
 const ProjectEcijaPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectEcijaPage })));
 const ProjectJerezPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectJerezPage })));
+const ProjectUbriquePage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectUbriquePage })));
 
 export default function AppRouter() {
   return (
@@ -59,6 +60,7 @@ export default function AppRouter() {
         <Route path="/proyectos" element={<ProjectsPage />} />
         <Route path="/proyectos/simulador-golf-ecija" element={<ProjectEcijaPage />} />
         <Route path="/proyectos/simulador-golf-jerez" element={<ProjectJerezPage />} />
+        <Route path="/proyectos/simulador-golf-ubrique" element={<ProjectUbriquePage />} />
         <Route path="/sobre-aqui-golf" element={<AboutAquiGolf />} />
         <Route path="/guias-simuladores-golf" element={<GuidesIndexPage />} />
         {guideRoutes.map(path => <Route key={path} path={path} element={<GolfGuidePage />} />)}
