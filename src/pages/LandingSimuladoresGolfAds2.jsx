@@ -1,6 +1,7 @@
 import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../../shared/garden-budget.js";
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
+import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
@@ -500,16 +501,17 @@ export default function LandingSimuladoresGolfAds2() {
               Espacios reales transformados en simuladores listos para jugar
             </h2>
             <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Cada proyecto parte de unas medidas, un presupuesto y un uso distintos. Desliza para comparar el antes y el después.
+              Conoce instalaciones realizadas en Écija, Jerez y Ubrique. Cada proyecto parte de un espacio, un presupuesto y un uso distintos. Consulta las fotografías y compara el antes y después donde está disponible.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-7 lg:grid-cols-2">
+          <div className="mt-12 grid gap-7 lg:grid-cols-3">
             <ProjectCard
               title="Simulador residencial a medida"
               location="Écija, Sevilla"
               before="/antes_1.jpg"
               after="/despues_1.webp"
+              path="/proyectos/simulador-golf-ecija"
               description="Diseño de pantalla, zona de golpeo, proyección, protección e iluminación adaptado a una estancia doméstica."
             />
             <ProjectCard
@@ -517,7 +519,17 @@ export default function LandingSimuladoresGolfAds2() {
               location="Jerez, Cádiz"
               before="/antes_2.webp"
               after="/despues_2.webp"
+              path="/proyectos/simulador-golf-jerez"
               description="Solución personalizada según espacio disponible, tipo de jugador, presupuesto y uso frecuente del simulador."
+            />
+            <ProjectCard
+              title="Instalación de simulador de golf en Ubrique"
+              location="Ubrique, Cádiz"
+              after={ubriqueProjectPhotos[0].src}
+              srcSet={ubriqueProjectPhotos[0].srcSet}
+              sizes={landingProjectImageSizes}
+              path="/proyectos/simulador-golf-ubrique"
+              description="Instalación indoor integrada en una sala compartida para ocio y entrenamiento. Las fotografías muestran el simulador terminado desde dos perspectivas."
             />
           </div>
 
@@ -1340,10 +1352,14 @@ function FAQItem({ question, answer }) {
   );
 }
 
-function ProjectCard({ title, location, before, after, description }) {
+function ProjectCard({ title, location, before, after, description, path, srcSet, sizes }) {
   return (
     <article className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-50 shadow-xl">
-      <BeforeAfterSlider before={before} after={after} alt={title} />
+      {before ? (
+        <BeforeAfterSlider before={before} after={after} alt={title} />
+      ) : (
+        <img src={after} srcSet={srcSet} sizes={sizes} alt={`${title}: instalación terminada`} width="1600" height="1200" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" />
+      )}
       <div className="p-6">
         <p className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">
           <MapPin className="h-4 w-4" />
@@ -1351,6 +1367,11 @@ function ProjectCard({ title, location, before, after, description }) {
         </p>
         <h3 className="mt-3 text-2xl font-black">{title}</h3>
         <p className="mt-4 leading-7 text-zinc-600">{description}</p>
+        {path && (
+          <a href={path} className="mt-6 inline-flex items-center font-bold text-emerald-800 transition hover:text-emerald-700">
+            Ver proyecto completo<ArrowRight className="ml-2 h-4 w-4" />
+          </a>
+        )}
       </div>
     </article>
   );

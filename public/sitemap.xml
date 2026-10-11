@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://aquigolf.es/</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/instalacion-simuladores-golf</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/care</loc>
@@ -48,19 +48,23 @@
   </url>
   <url>
     <loc>https://aquigolf.es/proyectos</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/proyectos/simulador-golf-ecija</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/proyectos/simulador-golf-jerez</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
+  </url>
+  <url>
+    <loc>https://aquigolf.es/proyectos/simulador-golf-ubrique</loc>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/sobre-aqui-golf</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-10-11</lastmod>
   </url>
   <url>
     <loc>https://aquigolf.es/guias-simuladores-golf</loc>

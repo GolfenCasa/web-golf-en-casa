@@ -5,12 +5,11 @@ const sitemapPath = new URL("../public/sitemap.xml", import.meta.url);
 const previous = await readFile(sitemapPath, "utf8");
 const previousDates = new Map([...previous.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)].map(([,url,date]) => [url,date]));
 const updatedRoutes = new Set([
-  "/", "/instalacion-simuladores-golf", "/precio-simulador-golf",
-  "/medidas-simulador-golf", "/consultoria-simulador-golf",
-  "/simulador-golf-jardin", "/simulador-golf-negocio", "/proyectos",
+  "/", "/instalacion-simuladores-golf", "/proyectos", "/sobre-aqui-golf",
   "/proyectos/simulador-golf-ecija", "/proyectos/simulador-golf-jerez",
+  "/proyectos/simulador-golf-ubrique",
 ]);
-const updatedDate = "2026-10-04";
+const updatedDate = "2026-10-11";
 const alternates = [
   ["es", "https://aquigolf.es/signature"],
   ["en", "https://aquigolf.es/en/signature"],
