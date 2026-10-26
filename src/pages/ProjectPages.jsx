@@ -1,5 +1,6 @@
 import { ArrowRight, MapPin, ShieldCheck, Wrench } from "lucide-react";
 import { ubriqueProjectPhotos, projectCardImageSizes, projectDetailImageSizes } from "../data/ubriqueProjectPhotos.js";
+import { villafrancaProjectPhotos } from "../data/villafrancaProjectPhotos.js";
 import {
   Breadcrumbs,
   Checklist,
@@ -10,6 +11,40 @@ import {
 } from "../components/SeoLandingShell.jsx";
 
 const projects = {
+  villafranca: {
+    path: "/proyectos/simulador-golf-villafranca-de-los-barros",
+    title: "Simulador de golf en Villafranca de los Barros | Aquí Golf",
+    description: "Conoce la instalación a medida de Aquí Golf en Villafranca de los Barros, Badajoz: simulador personalizado con tecnología 4K y fotografías del resultado.",
+    h1: "Simulador de golf a medida en Villafranca de los Barros",
+    location: "Villafranca de los Barros, Badajoz",
+    after: villafrancaProjectPhotos[0].src,
+    afterSrcSet: villafrancaProjectPhotos[0].srcSet,
+    afterAlt: villafrancaProjectPhotos[0].alt,
+    highlight: "Nuevo proyecto · A medida · 4K",
+    summary: "Una instalación hecha a medida que combina tecnología 4K, revestimiento de listones, protecciones acolchadas y un mueble integrado para el equipo. Diseño, acabados y configuración personalizados para crear un espacio de golf propio.",
+    facts: [["Ubicación", "Villafranca de los Barros, Badajoz"], ["Diseño", "Hecho a medida y personalizado"], ["Tecnología", "4K"], ["Estado", "Instalación terminada"]],
+    gallery: villafrancaProjectPhotos,
+    heroPhoto: villafrancaProjectPhotos[0],
+    reviewed: "2026-10-26",
+    reviewedLabel: "26 de octubre de 2026",
+    decisions: [
+      ["Diseño a medida", "Configuración adaptada al espacio y a las necesidades del cliente, sin partir de una solución estándar."],
+      ["Personalización y acabados", "Revestimiento de listones y mueble para el equipo integrados en el diseño del espacio."],
+      ["Área de juego", "Pantalla de impacto, protecciones acolchadas y superficie de césped con zona de golpeo."],
+      ["Tecnología 4K", "Proyección 4K integrada en el conjunto para disfrutar de la simulación de golf."],
+      ["Instalación", "Coordinación del montaje y la configuración del simulador hasta su puesta en marcha."],
+    ],
+    scope: [
+      "Diseño del simulador a medida del espacio",
+      "Configuración personalizada para el cliente",
+      "Integración de pantalla, protección y zona de golpeo",
+      "Tecnología de proyección 4K",
+      "Instalación, configuración y puesta en marcha",
+    ],
+    challenge: "El objetivo era crear un simulador adaptado a este espacio, con una distribución y una integración visual propias. La personalización debía formar parte del proyecto desde el diseño, coordinando el área de juego y la tecnología.",
+    solution: "Aquí Golf desarrolló una instalación a medida con tecnología 4K. El revestimiento de listones enmarca el recinto acolchado, mientras el monitor mural y el mueble para el equipo quedan integrados junto al área de juego. Una solución personalizada en su diseño, sus acabados y su configuración.",
+    notes: "Las tres fotografías muestran la instalación terminada. El diseño y la configuración de cada proyecto se personalizan según el espacio y las necesidades del cliente.",
+  },
   ubrique: {
     path: "/proyectos/simulador-golf-ubrique",
     title: "Simulador de golf en Ubrique, Cádiz | Proyecto realizado",
@@ -108,9 +143,9 @@ export function ProjectsPage() {
     <main className="min-h-screen bg-zinc-950 text-white">
       <SeoHead
         title="Proyectos de simuladores de golf realizados | Aquí Golf"
-        description="Proyectos reales de simuladores de golf diseñados e instalados por Aquí Golf en Ubrique, Écija y Jerez. Fotografías y alcance de cada instalación."
+        description="Proyectos de simuladores de golf a medida de Aquí Golf en Villafranca de los Barros, Ubrique, Écija y Jerez. Fotografías y alcance de cada instalación."
         path="/proyectos"
-        image={projects.ubrique.after}
+        image={projects.villafranca.after}
         pageType="CollectionPage"
         breadcrumbs={[{ label: "Proyectos" }]}
       />
@@ -121,18 +156,19 @@ export function ProjectsPage() {
           <Breadcrumbs items={[{ label: "Proyectos" }]} />
           <p className="mt-10 text-sm font-black uppercase tracking-[0.2em] text-emerald-300">Casos reales</p>
           <h1 className="mt-4 max-w-5xl text-4xl font-black tracking-tight sm:text-6xl">Proyectos de simuladores de golf a medida en España</h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">Conoce tres instalaciones de Aquí Golf en Ubrique, Cádiz, Écija, Sevilla, y Jerez, Cádiz. Cada ficha muestra las fotografías y el alcance del trabajo: desde una sala de ocio compartida hasta espacios residenciales preparados para entrenar y jugar al golf.</p>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">Conoce cuatro instalaciones de Aquí Golf en Villafranca de los Barros, Ubrique, Écija y Jerez. Nuestro nuevo proyecto en Badajoz combina diseño a medida, personalización y tecnología 4K. Cada ficha muestra las fotografías y el alcance del trabajo realizado.</p>
         </div>
       </section>
 
       <section className="bg-zinc-100 text-zinc-950">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 xl:grid-cols-3 lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-16 md:grid-cols-2 lg:px-8 lg:py-24">
           {Object.values(projects).map((project) => (
             <article key={project.path} className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
               <a href={project.path} aria-label={`Ver proyecto en ${project.location}`}><img src={project.after} srcSet={project.afterSrcSet} sizes={project.afterSrcSet ? projectCardImageSizes : undefined} alt={project.afterAlt} width="1280" height="960" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover" /></a>
               <div className="p-7 sm:p-8">
                 <p className="flex items-center text-sm font-bold text-emerald-800"><MapPin className="mr-2 h-4 w-4" />{project.location}</p>
-                {project.completed ? <p className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500">Última instalación · {project.completed}</p> : null}
+                {project.highlight ? <p className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900">{project.highlight}</p> : null}
+                {project.completed ? <p className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500">Instalación · {project.completed}</p> : null}
                 <h2 className="mt-3 text-3xl font-black">{project.h1}</h2>
                 <p className="mt-4 leading-7 text-zinc-600">{project.summary}</p>
                 <a href={project.path} className="mt-6 inline-flex items-center font-bold text-emerald-800 hover:text-emerald-700">Ver proyecto completo <ArrowRight className="ml-2 h-4 w-4" /></a>
@@ -159,13 +195,16 @@ export function ProjectsPage() {
 export function ProjectEcijaPage() { return <ProjectDetail project={projects.ecija} />; }
 export function ProjectJerezPage() { return <ProjectDetail project={projects.jerez} />; }
 export function ProjectUbriquePage() { return <ProjectDetail project={projects.ubrique} />; }
+export function ProjectVillafrancaPage() { return <ProjectDetail project={projects.villafranca} />; }
 
 function ProjectDetail({ project }) {
-  const gallery = project.gallery || [
+  const gallery = project.heroPhoto ? project.gallery.slice(1) : project.gallery || [
     { src: project.before, alt: project.beforeAlt, caption: "Antes: espacio de partida" },
     { src: project.after, alt: project.afterAlt, caption: "Después: simulador instalado" },
   ];
-  const facts = [["Ubicación", project.location], ["Uso", project.use || "Residencial: práctica y juego en casa"], ["Espacio de partida", project.startingPoint], ...(project.completed ? [["Instalación", project.completed]] : [])];
+  const facts = project.facts || [["Ubicación", project.location], ["Uso", project.use || "Residencial: práctica y juego en casa"], ["Espacio de partida", project.startingPoint], ...(project.completed ? [["Instalación", project.completed]] : [])];
+  const reviewed = project.reviewed || "2026-10-11";
+  const reviewedLabel = project.reviewedLabel || "11 de octubre de 2026";
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <SeoHead
@@ -175,21 +214,29 @@ function ProjectDetail({ project }) {
         image={project.after}
         serviceType="Diseño e instalación de simuladores de golf a medida"
         breadcrumbs={[{ label: "Proyectos", href: "/proyectos" }, { label: project.location }]}
-        article={{ headline: project.h1, dateModified: "2026-10-11", author: "Aquí Golf" }}
+        article={{ headline: project.h1, dateModified: reviewed, author: "Aquí Golf" }}
       />
       <PublicHeader />
 
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24">
           <Breadcrumbs items={[{ label: "Proyectos", href: "/proyectos" }, { label: project.location }]} />
-          <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+          <div className={`mt-10 grid gap-10 lg:grid-cols-[1fr_0.75fr] ${project.heroPhoto ? "lg:items-start" : "lg:items-end"}`}>
             <div>
               <p className="flex items-center text-sm font-black uppercase tracking-[0.18em] text-emerald-300"><MapPin className="mr-2 h-4 w-4" />{project.location}</p>
               <h1 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl">{project.h1}</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-300">{project.summary}</p>
-              <p className="mt-4 text-sm leading-6 text-zinc-400">Caso publicado por <a href="/sobre-aqui-golf" className="underline hover:text-emerald-300">Aquí Golf</a> · Revisado el <time dateTime="2026-10-11">11 de octubre de 2026</time></p>
+              <p className="mt-4 text-sm leading-6 text-zinc-400">Caso publicado por <a href="/sobre-aqui-golf" className="underline hover:text-emerald-300">Aquí Golf</a> · Revisado el <time dateTime={reviewed}>{reviewedLabel}</time></p>
             </div>
-            <a href="/instalacion-simuladores-golf#formulario" className="inline-flex items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 hover:bg-emerald-300">Estudiar un proyecto similar <ArrowRight className="ml-2 h-5 w-5" /></a>
+            <div>
+              {project.heroPhoto ? <figure className="mb-6">
+                <a href={project.heroPhoto.src} target="_blank" rel="noopener noreferrer" aria-label={`Ampliar fotografía: ${project.heroPhoto.alt}`}>
+                  <img src={project.heroPhoto.src} srcSet={project.heroPhoto.srcSet} sizes="(min-width: 1280px) 512px, (min-width: 1024px) 43vw, calc(100vw - 48px)" alt={project.heroPhoto.alt} width={project.heroPhoto.width} height={project.heroPhoto.height} fetchPriority="high" className="aspect-[4/3] w-full rounded-[2rem] object-cover" />
+                </a>
+                <figcaption className="mt-3 text-sm leading-6 text-zinc-400">{project.heroPhoto.caption}</figcaption>
+              </figure> : null}
+              <a href="/instalacion-simuladores-golf#formulario" className="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-bold text-zinc-950 hover:bg-emerald-300">Estudiar un proyecto similar <ArrowRight className="ml-2 h-5 w-5" /></a>
+            </div>
           </div>
         </div>
       </section>
@@ -197,13 +244,13 @@ function ProjectDetail({ project }) {
       <section className="bg-white text-zinc-950">
         <div className="mx-auto max-w-7xl px-6 pt-14 lg:px-8">
           <h2 className="text-3xl font-black">Ficha del proyecto</h2>
-          <dl className={`mt-6 grid gap-4 ${project.completed ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}>
+          <dl className={`mt-6 grid gap-4 ${facts.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}>
             {facts.map(([label, value]) => <div key={label} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"><dt className="text-sm font-bold text-emerald-800">{label}</dt><dd className="mt-2 font-semibold leading-7">{value}</dd></div>)}
           </dl>
         </div>
         <div className="mx-auto grid max-w-7xl gap-6 px-6 py-16 md:grid-cols-2 lg:px-8 lg:py-24">
-          {gallery.map(({ src, srcSet, alt, caption, width = 1200, height = 900 }) => <figure key={src}>
-            <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Ampliar fotografía: ${alt}`}><img src={src} srcSet={srcSet} sizes={srcSet ? projectDetailImageSizes : undefined} alt={alt} width={width} height={height} loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-[2rem] object-cover" /></a>
+          {gallery.map(({ src, srcSet, alt, caption, width = 1200, height = 900, fit }) => <figure key={src}>
+            <a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Ampliar fotografía: ${alt}`}><img src={src} srcSet={srcSet} sizes={srcSet ? projectDetailImageSizes : undefined} alt={alt} width={width} height={height} loading="lazy" decoding="async" className={`w-full rounded-[2rem] ${fit === "contain" ? "h-auto" : "aspect-[4/3] object-cover"}`} /></a>
             <figcaption className="mt-3 text-sm text-zinc-600">{caption}</figcaption>
           </figure>)}
         </div>

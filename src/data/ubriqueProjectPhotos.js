@@ -1,5 +1,5 @@
-export const projectCardImageSizes = "(min-width: 1280px) 410px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)";
-export const landingProjectImageSizes = "(min-width: 1280px) 410px, (min-width: 1024px) calc((100vw - 112px) / 3), calc(100vw - 48px)";
+export const projectCardImageSizes = "(min-width: 1280px) 604px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)";
+export const landingProjectImageSizes = "(min-width: 1280px) 604px, (min-width: 1024px) calc((100vw - 88px) / 2), calc(100vw - 48px)";
 export const projectDetailImageSizes = "(min-width: 1280px) 604px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 48px)";
 
 function responsivePhoto(name, alt, label, caption) {

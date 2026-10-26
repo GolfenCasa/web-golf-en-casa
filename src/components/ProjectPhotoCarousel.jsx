@@ -26,7 +26,7 @@ export default function ProjectPhotoCarousel({ photos, projectName, href, sizes 
           height={photo.height}
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover"
+          className={`h-full w-full ${photo.fit === "contain" ? "object-contain" : "object-cover"}`}
         />
       </a>
 

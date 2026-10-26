@@ -8,8 +8,9 @@ const updatedRoutes = new Set([
   "/", "/instalacion-simuladores-golf", "/proyectos", "/sobre-aqui-golf",
   "/proyectos/simulador-golf-ecija", "/proyectos/simulador-golf-jerez",
   "/proyectos/simulador-golf-ubrique",
+  "/proyectos/simulador-golf-villafranca-de-los-barros",
 ]);
-const updatedDate = "2026-10-11";
+const updatedDate = "2026-10-26";
 const alternates = [
   ["es", "https://aquigolf.es/signature"],
   ["en", "https://aquigolf.es/en/signature"],

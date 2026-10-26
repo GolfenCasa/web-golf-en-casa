@@ -4,6 +4,7 @@ import GardenBudgetNotice from "./components/GardenBudgetNotice.jsx";
 import MeasurementConsent from "./components/MeasurementConsent.jsx";
 import ProjectPhotoCarousel from "./components/ProjectPhotoCarousel.jsx";
 import { projectCardImageSizes, ubriqueProjectPhotos } from "./data/ubriqueProjectPhotos.js";
+import { villafrancaProjectPhotos } from "./data/villafrancaProjectPhotos.js";
 import { captureFormMeasurementConsent } from "./lib/form-measurement-consent.js";
 import { enhancedConversionData } from "./lib/consent.js";
 import React, { useEffect, useMemo, useState } from 'react';
@@ -933,12 +934,22 @@ export default function GolfSimulatorLanding() {
       </h2>
 
       <p className="mt-5 text-lg leading-8 text-zinc-600">
-        Conoce nuestras instalaciones en Ubrique, Écija y Jerez. Cada proyecto muestra cómo adaptamos el simulador al espacio y al uso previsto, con fotografías del resultado y los detalles del trabajo.
+        Conoce nuestras instalaciones en Villafranca de los Barros, Ubrique, Écija y Jerez. Cada proyecto muestra cómo adaptamos el simulador al espacio y al uso previsto, con fotografías del resultado y los detalles del trabajo.
       </p>
     </div>
 
-    <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="mt-12 grid gap-6 md:grid-cols-2">
       {[
+        {
+          title: 'Simulador de golf a medida en Villafranca de los Barros',
+          location: 'Villafranca de los Barros, Badajoz',
+          after: villafrancaProjectPhotos[0].src,
+          photos: villafrancaProjectPhotos,
+          path: '/proyectos/simulador-golf-villafranca-de-los-barros',
+          highlight: 'Nuevo proyecto · A medida · 4K',
+          description:
+            'Una instalación hecha a medida, con diseño y acabados personalizados para el espacio del cliente. Tecnología 4K integrada para una experiencia de golf indoor adaptada a su forma de jugar.',
+        },
         {
           title: 'Simulador de golf en Ubrique',
           location: 'Ubrique, Cádiz',
@@ -986,7 +997,7 @@ export default function GolfSimulatorLanding() {
           ) : (
             <ProjectPhotoCarousel
               photos={project.photos}
-              projectName="Ubrique"
+              projectName={project.location}
               href={project.path}
               sizes={projectCardImageSizes}
             />
@@ -996,6 +1007,7 @@ export default function GolfSimulatorLanding() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
               {project.location}
             </p>
+            {project.highlight ? <p className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900">{project.highlight}</p> : null}
 
             <h3 className="mt-3 text-2xl font-black">
               {project.title}
