@@ -31,6 +31,7 @@ const ProjectsPage = lazy(() => import("./pages/ProjectPages.jsx").then((module)
 const ProjectEcijaPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectEcijaPage })));
 const ProjectJerezPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectJerezPage })));
 const ProjectUbriquePage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectUbriquePage })));
+const ProjectVillafrancaPage = lazy(() => import("./pages/ProjectPages.jsx").then((module) => ({ default: module.ProjectVillafrancaPage })));
 
 export default function AppRouter() {
   return (
@@ -58,6 +59,7 @@ export default function AppRouter() {
         <Route path="/simulador-golf-jardin" element={<GardenPage />} />
         <Route path="/simulador-golf-negocio" element={<BusinessPage />} />
         <Route path="/proyectos" element={<ProjectsPage />} />
+        <Route path="/proyectos/simulador-golf-villafranca-de-los-barros" element={<ProjectVillafrancaPage />} />
         <Route path="/proyectos/simulador-golf-ecija" element={<ProjectEcijaPage />} />
         <Route path="/proyectos/simulador-golf-jerez" element={<ProjectJerezPage />} />
         <Route path="/proyectos/simulador-golf-ubrique" element={<ProjectUbriquePage />} />

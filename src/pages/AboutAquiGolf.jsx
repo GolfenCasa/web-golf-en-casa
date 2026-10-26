@@ -14,7 +14,7 @@ const criteria = [
   ["Primero el espacio y el uso", "Comprobamos medidas, obstáculos, lateralidad y swing antes de cerrar la selección de equipos. Una medida aislada o un kit de catálogo no resuelven todos los proyectos."],
   ["Recomendaciones con contexto", "Explicamos para qué jugador y sala tiene sentido cada opción. La compatibilidad, las distancias y las licencias se contrastan con la documentación del fabricante cuando dependen de un modelo concreto."],
   ["Precios con alcance visible", "Los rangos publicados orientan la decisión. El presupuesto de cada instalación debe detallar equipos, trabajos, configuración, desplazamiento e impuestos aplicables."],
-  ["Casos identificables", "Las fichas de los proyectos de Écija, Jerez y Ubrique muestran fotografías de las instalaciones y explican el alcance de cada trabajo."],
+  ["Casos identificables", "Las fichas de los proyectos de Villafranca de los Barros, Ubrique, Écija y Jerez muestran fotografías de las instalaciones y explican el alcance de cada trabajo."],
 ];
 
 export default function AboutAquiGolf() {
@@ -78,7 +78,7 @@ export default function AboutAquiGolf() {
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {criteria.map(([title, text]) => <article key={title} className="rounded-3xl border border-zinc-200 bg-zinc-50 p-7"><CheckCircle2 className="h-7 w-7 text-emerald-700" /><h3 className="mt-4 text-xl font-bold">{title}</h3><p className="mt-3 leading-7 text-zinc-600">{text}</p></article>)}
           </div>
-          <p className="mt-7 text-sm leading-7 text-zinc-600">Responsable del contenido de Aquí Golf: Francisco Menacho. Revisión de esta página: <time dateTime="2026-10-11">11 de octubre de 2026</time>. Si detectas una información que necesita corregirse, escríbenos a <a href="mailto:info@aquigolf.es" className="font-semibold text-emerald-800 underline">info@aquigolf.es</a>.</p>
+          <p className="mt-7 text-sm leading-7 text-zinc-600">Responsable del contenido de Aquí Golf: Francisco Menacho. Revisión de esta página: <time dateTime="2026-10-26">26 de octubre de 2026</time>. Si detectas una información que necesita corregirse, escríbenos a <a href="mailto:info@aquigolf.es" className="font-semibold text-emerald-800 underline">info@aquigolf.es</a>.</p>
           <a href="/guias-simuladores-golf" className="mt-6 inline-flex items-center font-bold text-emerald-800">Consultar las guías de simuladores de golf<ArrowRight className="ml-2 h-4 w-4" /></a>
         </div>
       </section>
@@ -87,11 +87,12 @@ export default function AboutAquiGolf() {
         <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1fr_0.8fr] lg:px-8">
           <div>
             <h2 className="text-3xl font-black">Proyectos que puedes consultar</h2>
-            <p className="mt-5 leading-8 text-zinc-300">Los proyectos de Écija, Sevilla, Jerez, Cádiz, y Ubrique, Cádiz, muestran distintas soluciones para incorporar un simulador de golf al espacio disponible. En Ubrique, la instalación se integra en una sala compartida para ocio y entrenamiento. Consulta las fotografías y el alcance de cada trabajo.</p>
+            <p className="mt-5 leading-8 text-zinc-300">Los proyectos de Villafranca de los Barros (Badajoz), Ubrique (Cádiz), Écija (Sevilla) y Jerez (Cádiz) muestran distintas soluciones para incorporar un simulador de golf al espacio disponible. En Villafranca de los Barros, el proyecto combina una instalación a medida con tecnología 4K. En Ubrique, el simulador se integra en una sala compartida para ocio y entrenamiento. Consulta las fotografías y el alcance de cada trabajo.</p>
             <div className="mt-6 grid gap-4">
+              <a href="/proyectos/simulador-golf-villafranca-de-los-barros" className="inline-flex items-center font-bold text-emerald-300">Simulador a medida en Villafranca de los Barros<ArrowRight className="ml-2 h-4 w-4" /></a>
+              <a href="/proyectos/simulador-golf-ubrique" className="inline-flex items-center font-bold text-emerald-300">Instalación de simulador de golf en Ubrique<ArrowRight className="ml-2 h-4 w-4" /></a>
               <a href="/proyectos/simulador-golf-ecija" className="inline-flex items-center font-bold text-emerald-300">Proyecto residencial en Écija<ArrowRight className="ml-2 h-4 w-4" /></a>
               <a href="/proyectos/simulador-golf-jerez" className="inline-flex items-center font-bold text-emerald-300">Instalación residencial en Jerez<ArrowRight className="ml-2 h-4 w-4" /></a>
-              <a href="/proyectos/simulador-golf-ubrique" className="inline-flex items-center font-bold text-emerald-300">Instalación de simulador de golf en Ubrique<ArrowRight className="ml-2 h-4 w-4" /></a>
             </div>
           </div>
           <aside className="rounded-3xl border border-white/10 bg-white/5 p-7">

@@ -2,6 +2,7 @@ import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../..
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
 import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
+import { villafrancaProjectPhotos } from "../data/villafrancaProjectPhotos.js";
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
@@ -501,11 +502,20 @@ export default function LandingSimuladoresGolfAds2() {
               Espacios reales transformados en simuladores listos para jugar
             </h2>
             <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Conoce instalaciones realizadas en Écija, Jerez y Ubrique. Cada proyecto parte de un espacio, un presupuesto y un uso distintos. Consulta las fotografías y compara el antes y después donde está disponible.
+              Conoce instalaciones realizadas en Villafranca de los Barros, Ubrique, Écija y Jerez. Cada proyecto parte de un espacio, un presupuesto y un uso distintos. Consulta las fotografías y compara el antes y después donde está disponible.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-7 lg:grid-cols-3">
+          <div className="mt-12 grid gap-7 lg:grid-cols-2">
+            <ProjectCard
+              title="Simulador a medida con tecnología 4K"
+              location="Villafranca de los Barros, Badajoz"
+              after={villafrancaProjectPhotos[0].src}
+              srcSet={villafrancaProjectPhotos[0].srcSet}
+              sizes={landingProjectImageSizes}
+              path="/proyectos/simulador-golf-villafranca-de-los-barros"
+              description="Instalación hecha a medida, con diseño y acabados personalizados para el espacio del cliente y tecnología 4K integrada. Descubre las tres fotografías del resultado."
+            />
             <ProjectCard
               title="Simulador residencial a medida"
               location="Écija, Sevilla"

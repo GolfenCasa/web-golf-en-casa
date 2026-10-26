@@ -2,6 +2,7 @@ import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../..
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
 import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
+import { villafrancaProjectPhotos } from "../data/villafrancaProjectPhotos.js";
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { scheduleAbExposure } from "../lib/ab-experiment.js";
@@ -500,7 +501,7 @@ export default function LandingSimuladoresGolf() {
             </p>
 
             <div className="mt-6 grid gap-3 text-sm text-zinc-200 sm:grid-cols-3">
-              <MiniStat label="Proyectos reales" value="Écija, Jerez y Ubrique" highlighted />
+              <MiniStat label="Proyectos publicados" value="4 instalaciones" highlighted />
               <MiniStat label="Cobertura" value="Toda España" />
               <MiniStat label="Servicio" value="Llave en mano" />
             </div>
@@ -874,12 +875,21 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
             </h2>
 
             <p className="mt-5 text-lg leading-8 text-zinc-600">
-              Instalaciones realizadas en Écija, Jerez y Ubrique. Consulta las
+              Instalaciones realizadas en Villafranca de los Barros, Ubrique, Écija y Jerez. Consulta las
               fotografías de cada proyecto y compara el antes y después donde está disponible.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            <ProjectCard
+              title="Simulador a medida con tecnología 4K"
+              location="Villafranca de los Barros, Badajoz"
+              after={villafrancaProjectPhotos[0].src}
+              srcSet={villafrancaProjectPhotos[0].srcSet}
+              sizes={landingProjectImageSizes}
+              path="/proyectos/simulador-golf-villafranca-de-los-barros"
+              description="Instalación hecha a medida, con diseño y acabados personalizados para el espacio del cliente y tecnología 4K integrada. Descubre las tres fotografías del resultado."
+            />
             <ProjectCard
               title="Simulador de golf en vivienda particular"
               location="Écija, Sevilla"
@@ -920,7 +930,7 @@ Estudio inicial gratuito y sin compromiso. Revisamos medidas, fotos y objetivo d
               Realizamos proyectos a medida para clientes particulares, academias y negocios indoor. Podemos desplazarnos y estudiar instalaciones en toda España.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              {["Sevilla", "Cádiz", "Jerez", "Ubrique", "Sotogrande", "Málaga", "Marbella", "Madrid", "Toda España"].map((city) => (
+              {["Villafranca de los Barros", "Badajoz", "Sevilla", "Cádiz", "Jerez", "Ubrique", "Sotogrande", "Málaga", "Marbella", "Madrid", "Toda España"].map((city) => (
                 <CityPill key={city} city={city} />
               ))}
             </div>
