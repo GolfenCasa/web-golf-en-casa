@@ -451,6 +451,8 @@ for (const endpoint of endpoints) {
     assert.equal(crm.depth, "6");
     assert.equal(crm.dimensionsUnknown, false);
     assert.equal(crm.dimensions, "Altura: 3.2 m · Anchura: 4.1 m · Fondo: 6 m");
+    assert.ok(crm.message.startsWith("Medidas del espacio: Altura: 3.2 m · Anchura: 4.1 m · Fondo: 6 m | "));
+    assert.ok(crm.message.indexOf(body.message) > crm.message.indexOf("Fondo: 6 m"));
     for (const [label, value] of [["Altura", "3.2 m"], ["Anchura", "4.1 m"], ["Fondo", "6 m"]]) {
       assert.ok(email.text.includes(`${label}: ${value}`));
       assert.ok(email.html.includes(label));
@@ -473,6 +475,7 @@ for (const endpoint of endpoints) {
     assert.equal(crm.dimensionsUnknown, true);
     for (const field of ["height", "width", "depth"]) assert.equal(crm[field], "");
     assert.equal(crm.dimensions, "Todavía no las sabe (proyecto en planificación)");
+    assert.ok(crm.message.startsWith("Medidas del espacio: Todavía no las sabe (proyecto en planificación) | "));
     for (const output of [email.text, email.html]) {
       assert.ok(output.includes(crm.dimensions));
       assert.ok(!output.includes("LEGACY CONFLICTIVO"));
@@ -491,6 +494,53 @@ for (const endpoint of endpoints) {
       const { response, calls } = await invoke(endpoint, body, unexpectedFetch);
       assert.equal(response.statusCode, 400);
       assert.equal(calls.length, 0);
+    }
+  });
+
+  test(`${endpoint.name}: CRM.message conserva medidas primero, notas completas y privacidad con mensaje vacío o largo`, async () => {
+    for (const dimensionsUnknown of [false, true]) {
+      for (const message of ["", `INICIO-MENSAJE-${"x".repeat(4500)}-FIN-MENSAJE`]) {
+        const body = {
+          ...clone(endpoint.validBody), dimensionsUnknown, message,
+          height: "3", width: "4", depth: "6",
+        };
+        const { response, calls } = await invoke(endpoint, body, successfulFetch);
+        assertSuccessAfterEmail(response);
+        assert.equal(calls.length, 2);
+        const email = parseRequestBody(calls[0].options);
+        const crm = parseRequestBody(calls[1].options);
+        const expectedSummary = dimensionsUnknown
+          ? "Todavía no las sabe (proyecto en planificación)"
+          : "Altura: 3 m · Anchura: 4 m · Fondo: 6 m";
+        const expectedPrefix = `Medidas del espacio: ${expectedSummary} | `;
+        assert.ok(crm.message.startsWith(expectedPrefix), "resumen inequívoco al principio de message");
+        assert.equal(crm.dimensions, expectedSummary, "campo legacy conservado");
+        assert.equal(crm.height, dimensionsUnknown ? "" : "3");
+        assert.equal(crm.width, dimensionsUnknown ? "" : "4");
+        assert.equal(crm.depth, dimensionsUnknown ? "" : "6");
+        assert.equal(crm.dimensionsUnknown, dimensionsUnknown);
+        assertConsentEvidence(crm.message, `${endpoint.name}: CRM con medidas`);
+        assert.ok(crm.message.includes("policyVersion: 2026-09-20"));
+        assert.ok(crm.message.includes("Landing inicial: /instalacion-simuladores-golf") || crm.message.includes("Landing inicial: /signature"));
+        assert.ok(crm.message.includes(`Página conversión: ${body.attribution.conversionPage}`));
+        if (body.company && body.leadType === "signature_technical_request") {
+          assert.ok(crm.message.includes(`Empresa / estudio: ${body.company}`));
+          assert.ok(crm.message.includes(`Perfil profesional: ${body.profile}`));
+        } else if (body.leadType === "signature_project") {
+          assert.ok(crm.message.includes(`Perfil: ${body.profile}`));
+          assert.ok(crm.message.includes(`Estado del proyecto: ${body.stage}`));
+        }
+        if (message) {
+          const cleanedMessage = message.slice(0, 4000);
+          assert.ok(crm.message.includes(cleanedMessage), "conserva los 4000 caracteres admitidos del mensaje");
+          assert.ok(crm.message.indexOf(cleanedMessage) >= expectedPrefix.length);
+          assert.ok(!crm.message.includes("FIN-MENSAJE"), "mantiene el límite preexistente del mensaje de usuario");
+          assert.ok(email.text.includes(cleanedMessage));
+          assert.ok(email.html.includes(cleanedMessage));
+        }
+        assert.ok(!email.text.includes("Medidas del espacio:"), "prefijo de compatibilidad solo en CRM");
+        assert.ok(!email.html.includes("Medidas del espacio:"));
+      }
     }
   });
 }
@@ -559,6 +609,11 @@ function assertCrmContract(endpoint, crmPayload) {
     "privacyConsent no debe ser top-level en CRM",
   );
   assertConsentEvidence(crmPayload.message, `${endpoint.name} CRM.message`);
+  assert.ok(
+    crmPayload.message.startsWith(`Medidas del espacio: ${endpoint.crmValues.dimensions} | `),
+    `${endpoint.name}: el receptor puede guardar medidas al conservar solo message`,
+  );
+  assert.ok(crmPayload.message.includes(endpoint.validBody.message), "preserva el mensaje original en notas");
 }
 
 function assertResendContract(endpoint, resendPayload) {
