@@ -1,4 +1,5 @@
 import { normaliseMeasurementConsent } from "../shared/measurement-consent.js";
+import { getSpaceMeasurementsError, normaliseSpaceMeasurements } from "../shared/space-measurements.js";
 import { toCrmSource } from "./_lib/crm-source.js";
 import {
   getAttributionSummaryRows,
@@ -22,7 +23,6 @@ const projectRequiredFields = [
   "profile",
   "projectType",
   "stage",
-  "dimensions",
   "investment",
   "sourceDeclared",
 ];
@@ -73,6 +73,13 @@ export default async function handler(request, response) {
   }
 
   const measurementConsent = normaliseMeasurementConsent(body.measurementConsent);
+  const spaceMeasurements = normaliseSpaceMeasurements(body);
+  if (!spaceMeasurements.valid) {
+    return response.status(400).json({
+      ok: false,
+      error: getSpaceMeasurementsError(body, body.language),
+    });
+  }
 
   const data = {
     leadType:
@@ -87,7 +94,7 @@ export default async function handler(request, response) {
     profile: clean(body.profile, 120),
     projectType: clean(body.projectType, 120),
     stage: clean(body.stage, 120),
-    dimensions: clean(body.dimensions, 160),
+    ...spaceMeasurements,
     investment: clean(body.investment, 120),
     sourceDeclared: clean(body.sourceDeclared, 160),
     message: clean(body.message, 4000),
@@ -103,7 +110,6 @@ export default async function handler(request, response) {
           "location",
           "profile",
           "projectType",
-          "dimensions",
           "investment",
           "sourceDeclared",
         ]
@@ -157,7 +163,10 @@ export default async function handler(request, response) {
         ["Empresa / estudio", data.company || "No indicado"],
         ["Perfil profesional", data.profile],
         ["Tipo de proyecto", data.projectType],
-        ["Dimensiones", data.dimensions],
+        ["Estado de las medidas", data.dimensionsUnknown ? data.dimensions : "Medidas facilitadas"],
+        ["Altura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.height} m`],
+        ["Anchura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.width} m`],
+        ["Fondo", data.dimensionsUnknown ? "Todavía no lo sabe" : `${data.depth} m`],
         ["Inversión prevista", data.investment],
         ["Cómo nos ha conocido", data.sourceDeclared],
         ["Fuente / medio", sourceLabel],
@@ -183,7 +192,10 @@ export default async function handler(request, response) {
         ["Perfil", data.profile],
         ["Tipo de proyecto", data.projectType],
         ["Estado", data.stage],
-        ["Dimensiones", data.dimensions || "No indicado"],
+        ["Estado de las medidas", data.dimensionsUnknown ? data.dimensions : "Medidas facilitadas"],
+        ["Altura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.height} m`],
+        ["Anchura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.width} m`],
+        ["Fondo", data.dimensionsUnknown ? "Todavía no lo sabe" : `${data.depth} m`],
         ["Inversión prevista", data.investment],
         ["Cómo nos ha conocido", data.sourceDeclared],
         ["Fuente / medio", sourceLabel],
@@ -301,6 +313,10 @@ export default async function handler(request, response) {
             projectType: data.projectType,
             budget: data.investment,
             dimensions: data.dimensions,
+            height: data.height,
+            width: data.width,
+            depth: data.depth,
+            dimensionsUnknown: data.dimensionsUnknown,
             sourceDeclared: toCrmSource(data.sourceDeclared),
             message: isTechnical
               ? [

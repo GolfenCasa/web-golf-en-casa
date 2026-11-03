@@ -1,5 +1,7 @@
 import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../../shared/garden-budget.js";
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
+import SpaceMeasurements from "../components/SpaceMeasurements.jsx";
+import { EMPTY_SPACE_MEASUREMENTS, getSpaceMeasurementsError } from "../../shared/space-measurements.js";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
 import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
 import { villafrancaProjectPhotos } from "../data/villafrancaProjectPhotos.js";
@@ -109,7 +111,7 @@ export default function LandingSimuladoresGolf() {
     city: "",
     projectType: "",
     budget: "",
-    dimensions: "",
+    ...EMPTY_SPACE_MEASUREMENTS,
     sourceDeclared: "",
     message: "",
   });
@@ -213,6 +215,12 @@ export default function LandingSimuladoresGolf() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const dimensionsError = getSpaceMeasurementsError(form);
+    if (dimensionsError) {
+      setSubmitState("error");
+      setSubmitError(dimensionsError);
+      return;
+    }
     if (!isGardenBudgetValid(form)) {
       setSubmitState("error");
       setSubmitError(GARDEN_BUDGET_NOTICE);
@@ -1378,20 +1386,7 @@ Descubre si tu espacio es apto antes de invertir en material
                 <LeadBudgetOptions projectType={form.projectType} />
               </select>
 
-              <label htmlFor="dimensions" className="sr-only">
-                Medidas aproximadas del espacio
-              </label>
-              <input
-                id="dimensions"
-                name="dimensions"
-                type="text"
-                aria-label="Medidas aproximadas del espacio"
-                value={form.dimensions}
-                onChange={handleChange}
-                required
-                placeholder="Medidas del espacio o parcela: ancho x fondo x alto"
-                className="rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500 md:col-span-2"
-              />
+              <SpaceMeasurements values={form} setValues={setForm} appearance="dark" className="md:col-span-2" />
 
               <label htmlFor="sourceDeclared" className="sr-only">
                 ¿Cómo nos has conocido?

@@ -113,7 +113,10 @@ const endpoints = [
       city: "Sevilla",
       projectType: "Garaje / sótano",
       budget: "10.000 € - 20.000 €",
-      dimensions: "4,2 x 5,5 x 2,9 m",
+      height: "2,9",
+      width: "4,2",
+      depth: "5,5",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
       message: "Quiero una propuesta llave en mano.",
       attribution,
@@ -128,6 +131,10 @@ const endpoints = [
       "projectType",
       "budget",
       "dimensions",
+      "height",
+      "width",
+      "depth",
+      "dimensionsUnknown",
       "sourceDeclared",
       "message",
       "attribution",
@@ -140,7 +147,11 @@ const endpoints = [
       city: "Sevilla",
       projectType: "Garaje / sótano",
       budget: "10.000 € - 20.000 €",
-      dimensions: "4,2 x 5,5 x 2,9 m",
+      dimensions: "Altura: 2.9 m · Anchura: 4.2 m · Fondo: 5.5 m",
+      height: "2.9",
+      width: "4.2",
+      depth: "5.5",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
     },
   },
@@ -158,7 +169,10 @@ const endpoints = [
       profile: "Cliente particular",
       projectType: "Sala dedicada",
       stage: "Proyecto definido",
-      dimensions: "6 x 5 x 3,2 m",
+      height: "3,2",
+      width: "5",
+      depth: "6",
+      dimensionsUnknown: false,
       investment: "Más de 40.000 €",
       sourceDeclared: "Google",
       message: "Busco integración arquitectónica completa.",
@@ -178,6 +192,10 @@ const endpoints = [
       "projectType",
       "budget",
       "dimensions",
+      "height",
+      "width",
+      "depth",
+      "dimensionsUnknown",
       "sourceDeclared",
       "message",
       "attribution",
@@ -190,7 +208,11 @@ const endpoints = [
       city: "Madrid",
       projectType: "Sala dedicada",
       budget: "Más de 40.000 €",
-      dimensions: "6 x 5 x 3,2 m",
+      dimensions: "Altura: 3.2 m · Anchura: 5 m · Fondo: 6 m",
+      height: "3.2",
+      width: "5",
+      depth: "6",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
     },
   },
@@ -207,7 +229,10 @@ const endpoints = [
       location: "Málaga",
       profile: "Arquitecto",
       projectType: "Villa",
-      dimensions: "6,5 x 5,2 x 3,2 m",
+      height: "3,2",
+      width: "5,2",
+      depth: "6,5",
+      dimensionsUnknown: false,
       investment: "€35,000 – €50,000",
       sourceDeclared: "Google",
       message: "Necesito documentación técnica de integración.",
@@ -227,6 +252,10 @@ const endpoints = [
       "projectType",
       "budget",
       "dimensions",
+      "height",
+      "width",
+      "depth",
+      "dimensionsUnknown",
       "sourceDeclared",
       "message",
       "attribution",
@@ -239,7 +268,11 @@ const endpoints = [
       city: "Málaga",
       projectType: "Villa",
       budget: "€35,000 – €50,000",
-      dimensions: "6,5 x 5,2 x 3,2 m",
+      dimensions: "Altura: 3.2 m · Anchura: 5.2 m · Fondo: 6.5 m",
+      height: "3.2",
+      width: "5.2",
+      depth: "6.5",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
     },
   },
@@ -254,7 +287,10 @@ const endpoints = [
       city: "Sevilla",
       projectType: "Simulador para vivienda",
       budget: "15.000–25.000 €",
-      dimensions: "5,8 x 4,6 x 3,1 m",
+      height: "3,1",
+      width: "4,6",
+      depth: "5,8",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
       message: "Necesito validar altura y profundidad.",
       attribution: {
@@ -271,6 +307,10 @@ const endpoints = [
       "projectType",
       "budget",
       "dimensions",
+      "height",
+      "width",
+      "depth",
+      "dimensionsUnknown",
       "sourceDeclared",
       "message",
       "attribution",
@@ -282,7 +322,11 @@ const endpoints = [
       city: "Sevilla",
       projectType: "Simulador para vivienda",
       budget: "15.000–25.000 €",
-      dimensions: "5,8 x 4,6 x 3,1 m",
+      dimensions: "Altura: 3.1 m · Anchura: 4.6 m · Fondo: 5.8 m",
+      height: "3.1",
+      width: "4.6",
+      depth: "5.8",
+      dimensionsUnknown: false,
       sourceDeclared: "Google",
     },
   },
@@ -352,6 +396,103 @@ async function invoke(endpoint, body, fetchImplementation) {
 
 function unexpectedFetch({ url }) {
   throw new Error(`Acceso de red no esperado en la prueba: ${url}`);
+}
+
+function successfulFetch({ url }) {
+  if (url === RESEND_URL) return jsonResponse(200, { id: "email-test-id" });
+  if (url === CRM_URL) return jsonResponse(200, { ok: true, leadId: "crm-test-id" });
+  return unexpectedFetch({ url });
+}
+
+for (const endpoint of endpoints) {
+  test(`${endpoint.name}: exige altura, anchura y fondo aunque exista dimensions legacy`, async () => {
+    for (const field of ["height", "width", "depth"]) {
+      const body = { ...clone(endpoint.validBody), dimensions: "6 x 5 x 3 m" };
+      delete body[field];
+      const { response, calls } = await invoke(endpoint, body, unexpectedFetch);
+      assert.equal(response.statusCode, 400, field);
+      assert.equal(response.payload.ok, false);
+      assert.equal(calls.length, 0, "medidas ausentes no contactan servicios externos");
+    }
+    const body = { ...clone(endpoint.validBody), dimensions: "6 x 5 x 3 m" };
+    for (const field of ["height", "width", "depth"]) delete body[field];
+    const { response, calls } = await invoke(endpoint, body, unexpectedFetch);
+    assert.equal(response.statusCode, 400);
+    assert.equal(calls.length, 0);
+  });
+
+  test(`${endpoint.name}: rechaza cero, negativos, texto y formatos no permitidos antes de Resend/CRM`, async () => {
+    const invalidValues = [
+      "", "0", "0,00", "-1", "NaN", "Infinity", "12 m²", "3 m", "6 x 5", "1e2", "3.141", "3,141", 3, null, {}, [],
+    ];
+    for (const field of ["height", "width", "depth"]) {
+      for (const value of invalidValues) {
+        const body = { ...clone(endpoint.validBody), [field]: value, dimensions: "6 x 5 x 3 m" };
+        const { response, calls } = await invoke(endpoint, body, unexpectedFetch);
+        assert.equal(response.statusCode, 400, `${field}=${JSON.stringify(value)}`);
+        assert.equal(response.payload.ok, false);
+        assert.equal(calls.length, 0, "no contacta Resend ni CRM");
+      }
+    }
+  });
+
+  test(`${endpoint.name}: normaliza coma/punto y conserva tres ejes inequívocos en correo y CRM`, async () => {
+    const body = {
+      ...clone(endpoint.validBody), height: " 03,20 ", width: "04.10", depth: "06,00",
+      dimensions: "TEXTO LEGACY QUE NO DEBE UTILIZARSE",
+    };
+    const { response, calls } = await invoke(endpoint, body, successfulFetch);
+    assertSuccessAfterEmail(response);
+    assert.equal(calls.length, 2);
+    const email = parseRequestBody(calls[0].options);
+    const crm = parseRequestBody(calls[1].options);
+    assert.equal(crm.height, "3.2");
+    assert.equal(crm.width, "4.1");
+    assert.equal(crm.depth, "6");
+    assert.equal(crm.dimensionsUnknown, false);
+    assert.equal(crm.dimensions, "Altura: 3.2 m · Anchura: 4.1 m · Fondo: 6 m");
+    for (const [label, value] of [["Altura", "3.2 m"], ["Anchura", "4.1 m"], ["Fondo", "6 m"]]) {
+      assert.ok(email.text.includes(`${label}: ${value}`));
+      assert.ok(email.html.includes(label));
+      assert.ok(email.html.includes(value));
+    }
+    assert.ok(!email.text.includes(body.dimensions));
+    assert.ok(!email.html.includes(body.dimensions));
+  });
+
+  test(`${endpoint.name}: dimensionsUnknown true ignora valores contradictorios y explica planificación`, async () => {
+    const body = {
+      ...clone(endpoint.validBody), dimensionsUnknown: true,
+      height: "-50", width: "<script>invalid</script>", depth: "NaN", dimensions: "LEGACY CONFLICTIVO",
+    };
+    const { response, calls } = await invoke(endpoint, body, successfulFetch);
+    assertSuccessAfterEmail(response);
+    assert.equal(calls.length, 2);
+    const email = parseRequestBody(calls[0].options);
+    const crm = parseRequestBody(calls[1].options);
+    assert.equal(crm.dimensionsUnknown, true);
+    for (const field of ["height", "width", "depth"]) assert.equal(crm[field], "");
+    assert.equal(crm.dimensions, "Todavía no las sabe (proyecto en planificación)");
+    for (const output of [email.text, email.html]) {
+      assert.ok(output.includes(crm.dimensions));
+      assert.ok(!output.includes("LEGACY CONFLICTIVO"));
+      assert.ok(!output.includes("-50"));
+      assert.ok(!output.includes("NaN"));
+      assert.ok(!output.includes("invalid"));
+    }
+  });
+
+  test(`${endpoint.name}: dimensionsUnknown no admite el string true`, async () => {
+    for (const hasDimensions of [true, false]) {
+      const body = { ...clone(endpoint.validBody), dimensionsUnknown: "true" };
+      if (!hasDimensions) {
+        for (const field of ["height", "width", "depth"]) delete body[field];
+      }
+      const { response, calls } = await invoke(endpoint, body, unexpectedFetch);
+      assert.equal(response.statusCode, 400);
+      assert.equal(calls.length, 0);
+    }
+  });
 }
 
 for (const endpoint of endpoints) {

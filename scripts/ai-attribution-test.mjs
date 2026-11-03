@@ -241,7 +241,7 @@ test("website handler forwards assistant first/last fields to a mocked CRM witho
     const { default: handler } = await import("../api/website-lead.js");
     const lead = toLeadAttribution(mergeAttribution(null, detect({ referrer: "https://chatgpt.com/" }), { now: START }));
     const response = { statusCode: 0, payload: null, setHeader() {}, status(code) { this.statusCode = code; return this; }, json(payload) { this.payload = payload; return this; } };
-    await handler({ method: "POST", body: { privacyConsent: true, name: "Prueba local", email: "test@example.invalid", phone: "600111222", projectType: "Garaje / sótano", budget: "20.000 € - 30.000 €", dimensions: "4 x 5 x 3", sourceDeclared: "Otro", attribution: lead } }, response);
+    await handler({ method: "POST", body: { privacyConsent: true, name: "Prueba local", email: "test@example.invalid", phone: "600111222", projectType: "Garaje / sótano", budget: "20.000 € - 30.000 €", height: "3", width: "4", depth: "5", dimensionsUnknown: false, sourceDeclared: "Otro", attribution: lead } }, response);
     assert.equal(response.statusCode, 200);
     assert.equal(response.payload.crmSynced, true);
     const crm = calls.find((call) => call.url.includes("crm.example.invalid")).body;

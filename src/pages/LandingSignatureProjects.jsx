@@ -1,4 +1,6 @@
 import MeasurementConsent from "../components/MeasurementConsent.jsx";
+import SpaceMeasurements from "../components/SpaceMeasurements.jsx";
+import { EMPTY_SPACE_MEASUREMENTS, getSpaceMeasurementsError } from "../../shared/space-measurements.js";
 import { captureFormMeasurementConsent } from "../lib/form-measurement-consent.js";
 import { enhancedConversionData } from "../lib/consent.js";
 import React, { useEffect, useMemo, useState } from "react";
@@ -207,7 +209,7 @@ export default function LandingSignatureProjects() {
     company: "",
     profile: "",
     projectType: "",
-    dimensions: "",
+    ...EMPTY_SPACE_MEASUREMENTS,
     investment: "",
     sourceDeclared: "",
     message: "",
@@ -220,7 +222,7 @@ export default function LandingSignatureProjects() {
     profile: "",
     projectType: "",
     stage: "",
-    dimensions: "",
+    ...EMPTY_SPACE_MEASUREMENTS,
     investment: "",
     sourceDeclared: "",
     message: "",
@@ -295,6 +297,12 @@ export default function LandingSignatureProjects() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const spaceMeasurementsError = getSpaceMeasurementsError(form, "es");
+    if (spaceMeasurementsError) {
+      setSubmitState("error");
+      setSubmitError(spaceMeasurementsError);
+      return;
+    }
     const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "es");
 
     if (submitState === "sending") return;
@@ -378,6 +386,12 @@ export default function LandingSignatureProjects() {
 
   const handleTechnicalSubmit = async (e) => {
     e.preventDefault();
+    const spaceMeasurementsError = getSpaceMeasurementsError(technicalForm, "es");
+    if (spaceMeasurementsError) {
+      setTechnicalSubmitState("error");
+      setTechnicalSubmitError(spaceMeasurementsError);
+      return;
+    }
     const measurementConsent = captureFormMeasurementConsent(e.currentTarget, "es");
     if (technicalSubmitState === "sending") return;
 
@@ -1247,16 +1261,13 @@ export default function LandingSignatureProjects() {
               </select>
             </FormField>
 
-            <FormField label="Dimensiones aproximadas *">
-              <input
-                required
-                name="dimensions"
-                placeholder="Ancho × Fondo × Altura · o «Aún no las sé»"
-                value={form.dimensions}
-                onChange={(e) => setForm({ ...form, dimensions: e.target.value })}
-                className="signature-input"
-              />
-            </FormField>
+            <SpaceMeasurements
+              values={form}
+              setValues={setForm}
+              language="es"
+              appearance="signature"
+              className="sm:col-span-2"
+            />
 
             <FormField label="Inversión prevista del proyecto *" className="sm:col-span-2">
               <select
@@ -1449,12 +1460,13 @@ export default function LandingSignatureProjects() {
                     </select>
                   </FormField>
 
-                  <FormField label="Dimensiones aproximadas *">
-                    <input required name="dimensions" placeholder="Ancho × Fondo × Altura · o «Aún no las sé»"
-                      value={technicalForm.dimensions}
-                      onChange={(e) => setTechnicalForm({ ...technicalForm, dimensions: e.target.value })}
-                      className="signature-input" />
-                  </FormField>
+                  <SpaceMeasurements
+                    values={technicalForm}
+                    setValues={setTechnicalForm}
+                    language="es"
+                    appearance="signature"
+                    className="sm:col-span-2"
+                  />
 
                   <FormField label="Inversión prevista *">
                     <select required name="investment" value={technicalForm.investment}
