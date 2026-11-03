@@ -1,5 +1,7 @@
 import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../../shared/garden-budget.js";
 import LeadBudgetOptions from "../components/LeadBudgetOptions.jsx";
+import SpaceMeasurements from "../components/SpaceMeasurements.jsx";
+import { EMPTY_SPACE_MEASUREMENTS, getSpaceMeasurementsError } from "../../shared/space-measurements.js";
 import GardenBudgetNotice from "../components/GardenBudgetNotice.jsx";
 import { ubriqueProjectPhotos, landingProjectImageSizes } from "../data/ubriqueProjectPhotos.js";
 import { villafrancaProjectPhotos } from "../data/villafrancaProjectPhotos.js";
@@ -164,7 +166,7 @@ export default function LandingSimuladoresGolfAds2() {
     phone: "",
     city: "",
     projectType: "",
-    dimensions: "",
+    ...EMPTY_SPACE_MEASUREMENTS,
     budget: "",
     sourceDeclared: "",
     message: "",
@@ -272,7 +274,9 @@ export default function LandingSimuladoresGolfAds2() {
   };
 
   const moveToStepTwo = () => {
-    if (!form.projectType || !form.dimensions || !form.budget || !isGardenBudgetValid(form)) return;
+    if (!form.projectType || getSpaceMeasurementsError(form) || !form.budget || !isGardenBudgetValid(form)) return;
+    setSubmitError("");
+    setSubmitState("idle");
     setStep(2);
     pushDataLayer("form_step_completed", "hero_form", {
       form_step: 1,
@@ -283,6 +287,17 @@ export default function LandingSimuladoresGolfAds2() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const dimensionsError = getSpaceMeasurementsError(form);
+    if (dimensionsError) {
+      setStep(1);
+      setSubmitState("error");
+      setSubmitError(dimensionsError);
+      return;
+    }
+    if (step === 1) {
+      moveToStepTwo();
+      return;
+    }
     if (!isGardenBudgetValid(form)) {
       setSubmitState("error");
       setSubmitError(GARDEN_BUDGET_NOTICE);
@@ -471,8 +486,8 @@ export default function LandingSimuladoresGolfAds2() {
               step={step}
               setStep={setStep}
               form={form}
+              setForm={setForm}
               handleChange={handleChange}
-              moveToStepTwo={moveToStepTwo}
               handleSubmit={handleSubmit}
               submitState={submitState}
               submitError={submitError}
@@ -983,8 +998,8 @@ function LeadForm({
   step,
   setStep,
   form,
+  setForm,
   handleChange,
-  moveToStepTwo,
   handleSubmit,
   submitState,
   submitError,
@@ -1015,8 +1030,6 @@ function LeadForm({
       </div>
     );
   }
-
-  const stepOneComplete = form.projectType && form.dimensions && form.budget && isGardenBudgetValid(form);
 
   return (
     <form
@@ -1073,16 +1086,7 @@ function LeadForm({
           </select>
           <GardenBudgetNotice projectType={form.projectType} />
 
-          <FieldLabel htmlFor="dimensions" text="Medidas aproximadas" />
-          <input
-            id="dimensions"
-            name="dimensions"
-            value={form.dimensions}
-            onChange={handleChange}
-            required
-            placeholder="Ej.: 3,5 m ancho × 5 m fondo × 2,8 m alto · o escribe «Aún no las sé»"
-            className="w-full rounded-2xl border border-white/10 bg-white px-4 py-3 text-zinc-950 outline-none focus:border-emerald-500"
-          />
+          <SpaceMeasurements values={form} setValues={setForm} appearance="dark" />
 
           <FieldLabel htmlFor="budget" text="Rango de inversión previsto" />
           <select
@@ -1098,9 +1102,7 @@ function LeadForm({
           </select>
 
           <button
-            type="button"
-            onClick={moveToStepTwo}
-            disabled={!stepOneComplete}
+            type="submit"
             className="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-6 py-4 font-black text-zinc-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Continuar

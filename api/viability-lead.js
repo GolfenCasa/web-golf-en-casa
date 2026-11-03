@@ -1,5 +1,6 @@
 import { isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../shared/garden-budget.js";
 import { normaliseMeasurementConsent } from "../shared/measurement-consent.js";
+import { getSpaceMeasurementsError, normaliseSpaceMeasurements } from "../shared/space-measurements.js";
 import { toCrmSource } from "./_lib/crm-source.js";
 import {
   getAttributionSummaryRows,
@@ -16,7 +17,7 @@ const CRM_TIMEOUT_MS = 15000;
 const PRIVACY_POLICY_VERSION = "2026-09-20";
 
 const requiredFields = [
-  "name", "email", "phone", "projectType", "budget", "dimensions", "sourceDeclared",
+  "name", "email", "phone", "projectType", "budget", "sourceDeclared",
 ];
 
 const clean = (value, max = 500) =>
@@ -65,6 +66,13 @@ export default async function handler(request, response) {
   }
 
   const measurementConsent = normaliseMeasurementConsent(body.measurementConsent);
+  const spaceMeasurements = normaliseSpaceMeasurements(body);
+  if (!spaceMeasurements.valid) {
+    return response.status(400).json({
+      ok: false,
+      error: getSpaceMeasurementsError(body, body.language),
+    });
+  }
 
   const data = {
     name: clean(body.name, 120),
@@ -73,7 +81,7 @@ export default async function handler(request, response) {
     city: clean(body.city, 160),
     projectType: clean(body.projectType, 120),
     budget: clean(body.budget, 120),
-    dimensions: clean(body.dimensions, 200),
+    ...spaceMeasurements,
     sourceDeclared: clean(body.sourceDeclared, 160),
     message: clean(body.message, 4000),
     attribution: sanitizeLeadAttribution(body.attribution),
@@ -124,7 +132,10 @@ export default async function handler(request, response) {
     ["Ciudad / provincia", data.city || "No indicado"],
     ["Tipo de instalación", data.projectType],
     ["Presupuesto aproximado", data.budget],
-    ["Medidas del espacio", data.dimensions],
+    ["Estado de las medidas", data.dimensionsUnknown ? data.dimensions : "Medidas facilitadas"],
+    ["Altura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.height} m`],
+    ["Anchura", data.dimensionsUnknown ? "Todavía no la sabe" : `${data.width} m`],
+    ["Fondo", data.dimensionsUnknown ? "Todavía no lo sabe" : `${data.depth} m`],
     ["Cómo nos ha conocido", data.sourceDeclared],
     ["Fuente / medio", sourceLabel],
     ["Campaña", data.attribution.campaign || "No disponible"],
@@ -239,6 +250,10 @@ export default async function handler(request, response) {
             projectType: data.projectType,
             budget: data.budget,
             dimensions: data.dimensions,
+            height: data.height,
+            width: data.width,
+            depth: data.depth,
+            dimensionsUnknown: data.dimensionsUnknown,
             sourceDeclared: toCrmSource(data.sourceDeclared),
             message: [
               data.message || "",

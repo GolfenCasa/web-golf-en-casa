@@ -1,5 +1,7 @@
 import { updateLeadForm, isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../shared/garden-budget.js";
 import LeadBudgetOptions from "./components/LeadBudgetOptions.jsx";
+import SpaceMeasurements from "./components/SpaceMeasurements.jsx";
+import { EMPTY_SPACE_MEASUREMENTS, getSpaceMeasurementsError } from "../shared/space-measurements.js";
 import GardenBudgetNotice from "./components/GardenBudgetNotice.jsx";
 import MeasurementConsent from "./components/MeasurementConsent.jsx";
 import ProjectPhotoCarousel from "./components/ProjectPhotoCarousel.jsx";
@@ -249,7 +251,7 @@ export default function GolfSimulatorLanding() {
     phone: '',
     city: '',
     projectType: '',
-    dimensions: '',
+    ...EMPTY_SPACE_MEASUREMENTS,
     budget: '',
     sourceDeclared: '',
     message: '',
@@ -344,6 +346,12 @@ export default function GolfSimulatorLanding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const dimensionsError = getSpaceMeasurementsError(form);
+    if (dimensionsError) {
+      setSubmitState('error');
+      setSubmitError(dimensionsError);
+      return;
+    }
     if (!isGardenBudgetValid(form)) {
       setSubmitState("error");
       setSubmitError(GARDEN_BUDGET_NOTICE);
@@ -424,7 +432,7 @@ export default function GolfSimulatorLanding() {
         phone: '',
         city: '',
         projectType: '',
-        dimensions: '',
+        ...EMPTY_SPACE_MEASUREMENTS,
         budget: '',
         sourceDeclared: '',
         message: '',
@@ -1214,14 +1222,7 @@ export default function GolfSimulatorLanding() {
                   <option>Otro</option>
                 </select>
                 <GardenBudgetNotice projectType={form.projectType} />
-                <input
-                  name="dimensions"
-                  value={form.dimensions}
-                  onChange={handleChange}
-                  required
-                  placeholder="Medidas aproximadas: ancho × fondo × alto · o «Aún no las sé»"
-                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2"
-                />
+                <SpaceMeasurements key={submitState === 'success' ? 'submitted' : 'editing'} values={form} setValues={setForm} className="md:col-span-2" />
                 <select name="budget" value={form.budget} onChange={handleChange} required className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 outline-none focus:border-emerald-500 md:col-span-2">
                   <option value="">Presupuesto aproximado</option>
                   <LeadBudgetOptions projectType={form.projectType} allowUnknown />
