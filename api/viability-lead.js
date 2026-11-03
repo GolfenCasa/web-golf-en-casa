@@ -2,6 +2,7 @@ import { isGardenBudgetValid, GARDEN_BUDGET_NOTICE } from "../shared/garden-budg
 import { normaliseMeasurementConsent } from "../shared/measurement-consent.js";
 import { getSpaceMeasurementsError, normaliseSpaceMeasurements } from "../shared/space-measurements.js";
 import { toCrmSource } from "./_lib/crm-source.js";
+import { prependSpaceMeasurementsToCrmNotes } from "./_lib/space-measurements-message.js";
 import {
   getAttributionSummaryRows,
   sanitizeLeadAttribution,
@@ -255,7 +256,7 @@ export default async function handler(request, response) {
             depth: data.depth,
             dimensionsUnknown: data.dimensionsUnknown,
             sourceDeclared: toCrmSource(data.sourceDeclared),
-            message: [
+            message: prependSpaceMeasurementsToCrmNotes(data.dimensions, [
               data.message || "",
               data.attribution.landingPage
                 ? `Landing inicial: ${new URL(data.attribution.landingPage, "https://aquigolf.es").pathname}`
@@ -266,7 +267,7 @@ export default async function handler(request, response) {
               "Consentimiento de privacidad: Sí",
               `acceptedAt: ${consent.acceptedAt}`,
               `policyVersion: ${consent.policyVersion}`,
-            ].filter(Boolean).join(" | "),
+            ].filter(Boolean).join(" | ")),
             attribution: data.attribution,
           }),
         });
